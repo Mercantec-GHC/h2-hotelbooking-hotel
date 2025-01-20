@@ -2,7 +2,7 @@
 Her findes alt dokumentation til dette projekt.
 
 # Casebeskrivelse
-Hotel konsern ønsker et booking system til alle konsernens hoteller.
+Hotel koncern ønsker et booking system til alle koncernens hoteller.
 Hvert hotel skal have sin egen side, hvor en kunde kan booke værelser.
 
 På hjemmesiden skal man kunne se eksempler på hvordan værelset ser ud.\
