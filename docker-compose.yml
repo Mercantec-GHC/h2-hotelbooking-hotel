@@ -1,12 +1,18 @@
 version: '3'
 services: 
-  testapi:
-    image: testapi
+  dockerapp:
+    image: dockerapp
     build:
       dockerfile: BackendAPI/Dockerfile
     ports:
-    - "8080:80"
+      - "8080:80"
+      - "8081:443"
     environment:
-      ASPNETCORE_URLS: "http://+"
+      ASPNETCORE_URLS: "https://+;http://+"
       ASPNETCORE_HTTPS_PORT: "8081"
       ASPNETCORE_ENVIRONMENT: "Development"
+    volumes:
+      - ./certs:/https-certs:ro
+    environment:
+      ASPNETCORE_Kestrel__Certificates__Default__Password: "test"
+      ASPNETCORE_Kestrel__Certificates__Default__Path: "/https-certs/your_cert.pfx"
