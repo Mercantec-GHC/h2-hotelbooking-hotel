@@ -1,6 +1,6 @@
 services:
-  TestApi:
-   image: TestApi
+  testapi:
+   image: testapi
    build:
     context: ./BackendAPI
     dockerfile: Dockerfile
