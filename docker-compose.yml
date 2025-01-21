@@ -3,6 +3,6 @@ services:
   dockerapp:
     image: dockerapp
     build:
-      dockerfile: BackendAPI\Dockerfile
+      dockerfile: BackendAPI/Dockerfile
     ports:
       - "3500:8081"
