@@ -5,4 +5,5 @@ services:
     build:
       dockerfile: BackendAPI/Dockerfile
     ports:
-      - "3500:8081"
+      - "3500:8080"
+      - "3501:8081"
