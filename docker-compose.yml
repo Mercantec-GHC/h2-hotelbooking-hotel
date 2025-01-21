@@ -2,8 +2,7 @@ services:
   testapi:
    image: testapi
    build:
-    context: ./BackendAPI
-    dockerfile: Dockerfile
+    dockerfile: BackendAPI/Dockerfile
    environment:
     - ASPNETCORE_ENVIRONMENT=Development
     - ASPNETCORE_URLS=https://+:443;http://+:80
