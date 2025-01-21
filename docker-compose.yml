@@ -1,7 +1,6 @@
-version: '3.5'
 services:
-  Weatherforecase.Service:
-   image: ${DOCKER_REGISTRY-}ssldemo:v1
+  TestApi:
+   image: TestApi
    build:
     context: ./BackendAPI
     dockerfile: Dockerfile
