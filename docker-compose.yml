@@ -11,8 +11,7 @@ services:
       ASPNETCORE_URLS: "https://+;http://+"
       ASPNETCORE_HTTPS_PORT: "8081"
       ASPNETCORE_ENVIRONMENT: "Development"
-    volumes:
-      - ./certs:/https-certs:ro
-    environment:
       ASPNETCORE_Kestrel__Certificates__Default__Password: "test"
       ASPNETCORE_Kestrel__Certificates__Default__Path: "/https-certs/your_cert.pfx"
+    volumes:
+      - ./certs:/https-certs:ro
