@@ -1,0 +1,8 @@
+version: '3'
+services: 
+    dockerapp:
+        image: api
+    build:
+        dockerfile: BackendAPI/Dockerfile
+    ports:
+        - "3500:8081"
