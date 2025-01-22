@@ -1,4 +1,5 @@
 using HotelsWebApp.Components;
+using Microsoft.Extensions.Hosting;
 
 namespace HotelsWebApp
 {
@@ -30,7 +31,7 @@ namespace HotelsWebApp
             app.MapRazorComponents<App>()
                 .AddInteractiveServerRenderMode();
 
-            app.Run();
+            app.Run("0.0.0.0");
         }
     }
 }
