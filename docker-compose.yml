@@ -1,8 +1,9 @@
 version: '3.8'
 services: 
   hotelapi:
-    image: dockerapp
+    image: hotelapi
     build:
+      context: .
       dockerfile: BackendAPI/Dockerfile
     ports:
       - "8080:80"
@@ -19,8 +20,9 @@ services:
       - cert-password
 
   hotelwebapp:
-    image: dockerapp
+    image: hotelwebapp
     build:
+      context: .
       dockerfile: HotelsWebApp/Dockerfile
     ports:
       - "5000:80"
