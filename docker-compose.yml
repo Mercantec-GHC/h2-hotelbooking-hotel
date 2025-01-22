@@ -1,6 +1,5 @@
 version: '3.8'
 services: 
-
   hotelapi:
     image: dockerapp
     build:
@@ -13,11 +12,11 @@ services:
       ASPNETCORE_HTTPS_PORT: "8081"
       ASPNETCORE_ENVIRONMENT: "Development"
       ASPNETCORE_Kestrel__Certificates__Default__Path: "/https-certs/your_cert.pfx"
+      ASPNETCORE_Kestrel__Certificates__Default__Password: "/run/secrets/cert-password"
     volumes:
       - ./certs:/https-certs:ro
     secrets:
-      - source: cert-password
-        target: ASPNETCORE_Kestrel__Certificates__Default__Password
+      - cert-password
 
   hotelwebapp:
     image: dockerapp
@@ -31,11 +30,11 @@ services:
       ASPNETCORE_HTTPS_PORT: "5001"
       ASPNETCORE_ENVIRONMENT: "Release"
       ASPNETCORE_Kestrel__Certificates__Default__Path: "/https-certs/your_cert.pfx"
+      ASPNETCORE_Kestrel__Certificates__Default__Password: "/run/secrets/cert-password"
     volumes:
       - ./certs:/https-certs:ro
     secrets:
-      - source: cert-password
-        target: ASPNETCORE_Kestrel__Certificates__Default__Password
+      - cert-password
 
 secrets:
   cert-password:
