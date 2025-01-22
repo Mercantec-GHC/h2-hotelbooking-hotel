@@ -35,6 +35,6 @@ services:
     secrets:
       - cert-password
 
-    secrets:
-      cert-password:
-        external: true
+secrets:
+  cert-password:
+    external: true
