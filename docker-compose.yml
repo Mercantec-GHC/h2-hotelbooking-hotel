@@ -1,7 +1,8 @@
-version: '3'
+version: '3.8'
 services: 
-  dockerapp:
-    image: dockerapp
+
+  hotelapi:
+    image: hotelapi
     build:
       dockerfile: BackendAPI/Dockerfile
     ports:
@@ -11,7 +12,29 @@ services:
       ASPNETCORE_URLS: "https://+;http://+"
       ASPNETCORE_HTTPS_PORT: "8081"
       ASPNETCORE_ENVIRONMENT: "Development"
-      ASPNETCORE_Kestrel__Certificates__Default__Password: "test"
       ASPNETCORE_Kestrel__Certificates__Default__Path: "/https-certs/your_cert.pfx"
     volumes:
       - ./certs:/https-certs:ro
+    secrets:
+      - cert-password
+
+  hotelwebapp:
+    image: hotelwebapp
+    build:
+      dockerfile: HotelsWebApp/Dockerfile
+    ports:
+      - "5000:80"
+      - "5001:443"
+    environment:
+      ASPNETCORE_URLS: "https://+;http://+"
+      ASPNETCORE_HTTPS_PORT: "5001"
+      ASPNETCORE_ENVIRONMENT: "Release"
+      ASPNETCORE_Kestrel__Certificates__Default__Path: "/https-certs/your_cert.pfx"
+    volumes:
+      - ./certs:/https-certs:ro
+    secrets:
+      - cert-password
+
+    secrets:
+      cert-password:
+        external: true
