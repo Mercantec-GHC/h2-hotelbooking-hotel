@@ -31,7 +31,7 @@ namespace HotelsWebApp
             app.MapRazorComponents<App>()
                 .AddInteractiveServerRenderMode();
 
-            app.Run("0.0.0.0");
+            app.Run();
         }
     }
 }
