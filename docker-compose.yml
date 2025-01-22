@@ -16,7 +16,8 @@ services:
     volumes:
       - ./certs:/https-certs:ro
     secrets:
-      - cert-password
+      - source: cert-password
+        target: ASPNETCORE_Kestrel__Certificates__Default__Password
 
   hotelwebapp:
     image: dockerapp
@@ -33,7 +34,8 @@ services:
     volumes:
       - ./certs:/https-certs:ro
     secrets:
-      - cert-password
+      - source: cert-password
+        target: ASPNETCORE_Kestrel__Certificates__Default__Password
 
 secrets:
   cert-password:
