@@ -1,5 +1,6 @@
 using HotelsWebApp.Components;
 using Microsoft.Extensions.Hosting;
+using System.Security.Cryptography.X509Certificates;
 
 namespace HotelsWebApp
 {
@@ -9,12 +10,20 @@ namespace HotelsWebApp
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            string? secretFilePath = Environment.GetEnvironmentVariable("cert-password");
-            Console.WriteLine(secretFilePath);
-            if (!string.IsNullOrEmpty(secretFilePath) && File.Exists(secretFilePath))
+            string? certPasswordFile = Environment.GetEnvironmentVariable("CERT_PASSWORD");
+            
+            if (!string.IsNullOrEmpty(certPasswordFile) && File.Exists(certPasswordFile))
             {
-                string test = File.ReadAllText(secretFilePath).Trim();
-                Console.WriteLine(test);
+                string certPassword = File.ReadAllText(certPasswordFile).Trim();
+
+                builder.WebHost.ConfigureKestrel(serverOptions =>
+                {
+                    serverOptions.ConfigureHttpsDefaults(httpsOptions =>
+                    {
+                        string? certPath = Environment.GetEnvironmentVariable("CERT_PATH");
+                        httpsOptions.ServerCertificate = new X509Certificate2(certPath, certPassword);
+                    });
+                });
             }
 
             // Add services to the container.
