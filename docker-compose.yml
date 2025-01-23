@@ -10,7 +10,7 @@ services:
       - "5101:443"
     environment:
       ASPNETCORE_URLS: "https://+;http://+"
-      ASPNETCORE_HTTPS_PORT: "8081"
+      ASPNETCORE_HTTPS_PORT: "5101"
       ASPNETCORE_ENVIRONMENT: "Development"
       CERT_PATH: "/https-certs/your_cert.pfx"
       CERT_PASSWORD: /run/secrets/CertPassword
@@ -24,7 +24,6 @@ services:
     build:
       context: .
       dockerfile: HotelsWebApp/Dockerfile
-    entrypoint: source /entrypoint_overwrited.sh
     ports:
       - "5000:80"
       - "5001:443"
