@@ -9,6 +9,9 @@ namespace HotelsWebApp
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            string? secretFilePath = Environment.GetEnvironmentVariable("cert-password");
+            Console.WriteLine(secretFilePath);
+
             // Add services to the container.
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
