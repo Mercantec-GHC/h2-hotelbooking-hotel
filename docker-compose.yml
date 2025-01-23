@@ -6,16 +6,16 @@ services:
       context: .
       dockerfile: BackendAPI/Dockerfile
     ports:
-      - "8080:80"
-      - "8081:443"
+      - "5100:80"
+      - "5101:443"
     environment:
       ASPNETCORE_URLS: "https://+;http://+"
       ASPNETCORE_HTTPS_PORT: "8081"
       ASPNETCORE_ENVIRONMENT: "Development"
-      ASPNETCORE_Kestrel__Certificates__Default__Path: "test"
-      ASPNETCORE_Kestrel__Certificates__Default__Password: "/run/secrets/cert-password"
+      ASPNETCORE_Kestrel__Certificates__Default__Path: "/https-certs/your_cert.pfx"
+      ASPNETCORE_Kestrel__Certificates__Default__Password: "test"
     volumes:
-      - ./certs:/https-certs:ro
+      - certs:/https-certs:ro
     secrets:
       - cert-password
 
@@ -31,12 +31,17 @@ services:
       ASPNETCORE_URLS: "https://+;http://+"
       ASPNETCORE_HTTPS_PORT: "5001"
       ASPNETCORE_ENVIRONMENT: "Release"
-      ASPNETCORE_Kestrel__Certificates__Default__Path: "test"
-      ASPNETCORE_Kestrel__Certificates__Default__Password: "/run/secrets/cert-password"
+      ASPNETCORE_Kestrel__Certificates__Default__Path: "/https-certs/your_cert.pfx"
+      ASPNETCORE_Kestrel__Certificates__Default__Password: "test"
+      TEST_ENV: "/run/secrets/cert-password"
     volumes:
-      - ./certs:/https-certs:ro
+      - certs:/https-certs:ro
     secrets:
       - cert-password
+
+volumes:
+  certs:
+    external: true
 
 secrets:
   cert-password:
