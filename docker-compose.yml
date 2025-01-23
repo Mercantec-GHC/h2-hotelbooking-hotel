@@ -17,7 +17,7 @@ services:
     volumes:
       - certs:/https-certs:ro
     secrets:
-      - cert-password
+      - CertPassword
 
   hotelwebapp:
     image: hotelwebapp
