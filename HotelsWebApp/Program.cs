@@ -11,6 +11,11 @@ namespace HotelsWebApp
 
             string? secretFilePath = Environment.GetEnvironmentVariable("cert-password");
             Console.WriteLine(secretFilePath);
+            if (!string.IsNullOrEmpty(secretFilePath) && File.Exists(secretFilePath))
+            {
+                string test = File.ReadAllText(secretFilePath).Trim();
+                Console.WriteLine(test);
+            }
 
             // Add services to the container.
             builder.Services.AddRazorComponents()
