@@ -14,7 +14,6 @@ namespace BackendAPI
             if (!string.IsNullOrEmpty(certPasswordFile) && File.Exists(certPasswordFile))
             {
                 string certPassword = File.ReadAllText(certPasswordFile).Trim();
-                Console.WriteLine(certPassword);
 
                 builder.WebHost.ConfigureKestrel(serverOptions =>
                 {
