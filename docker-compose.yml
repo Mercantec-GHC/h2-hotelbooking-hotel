@@ -13,7 +13,7 @@ services:
       ASPNETCORE_HTTPS_PORT: "8081"
       ASPNETCORE_ENVIRONMENT: "Development"
       ASPNETCORE_Kestrel__Certificates__Default__Path: "/https-certs/your_cert.pfx"
-      ASPNETCORE_Kestrel__Certificates__Default__Password: /run/secrets/cert-password
+      ASPNETCORE_Kestrel__Certificates__Default__Password: "test"
     volumes:
       - certs:/https-certs:ro
     secrets:
@@ -32,17 +32,17 @@ services:
       ASPNETCORE_HTTPS_PORT: "5001"
       ASPNETCORE_ENVIRONMENT: "Release"
       ASPNETCORE_Kestrel__Certificates__Default__Path: "/https-certs/your_cert.pfx"
-      ASPNETCORE_Kestrel__Certificates__Default__Password: /run/secrets/cert-password
+      ASPNETCORE_Kestrel__Certificates__Default__Password: "test"
       cert-password: /run/secrets/cert-password
     volumes:
       - certs:/https-certs:ro
     secrets:
-      - cert-password
+      - CertPassword
 
 volumes:
   certs:
     external: true
 
 secrets:
-  cert-password:
+  CertPassword:
     external: true
