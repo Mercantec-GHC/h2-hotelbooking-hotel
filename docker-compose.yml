@@ -17,13 +17,14 @@ services:
     volumes:
       - certs:/https-certs:ro
     secrets:
-      - cert-password
+      - CertPassword
 
   hotelwebapp:
     image: hotelwebapp
     build:
       context: .
       dockerfile: HotelsWebApp/Dockerfile
+    entrypoint: source /entrypoint_overwrited.sh
     ports:
       - "5000:80"
       - "5001:443"
@@ -33,7 +34,7 @@ services:
       ASPNETCORE_ENVIRONMENT: "Release"
       ASPNETCORE_Kestrel__Certificates__Default__Path: "/https-certs/your_cert.pfx"
       ASPNETCORE_Kestrel__Certificates__Default__Password: "test"
-      cert-password: /run/secrets/cert-password
+      cert-password: /run/secrets/CertPassword
     volumes:
       - certs:/https-certs:ro
     secrets:
