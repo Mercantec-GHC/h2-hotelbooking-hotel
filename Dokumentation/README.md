@@ -28,3 +28,18 @@ tilføje ansattes brugere og styre deres roller.
 - **Hotel Service:** Skal kunne se, rette og anullere bookinger af værelser på de tilknyttede hoteller.
 
 # Kravspec
+
+## Kort beskrivelse af produkt
+Produktet er en hjemmeside der skal bruges til at booke hotelværelser hos forskellige hoteller. Man skal også kunne styre hotel arbejdere, baseret på hvad ens egent position hos hotellet er.
+
+## Intro
+Som en gæst/kunde hos et hotel skal man kunne vælge et hotel og så kunne booke et værelse hos det bestemte hotel. Derfra skal vores kode kunne registrere at værelset er booket hos hotellet. Man skal også have muligheden som Global Administrator for at kunne oprette Hoteller og derved Hotel Administratorer, som så har muligheden for at oprette Medarbejdere som har muligheden for at kunne booke et værelse til en kunde. Som hotel administrator skal man også kunne se tilstande af værelser (altså om de er booked eller ej)
+
+## Begrænsninger
+TBD
+
+## Use cases
+TBD
+
+## Accepttest
+TBD
