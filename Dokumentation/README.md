@@ -56,3 +56,10 @@ Krav:
 Tilpasset til hotel ansatte, hvor de skal kunne tilgå ticket system.
 Krav:
 - Man skal kunne se tickets hos det hotel man er ansat, og besvare dem.
+
+## Flow
+### Booking af værelse
+Vælge et værelse, se hvilke datoer værelset er tilgængeligt, på klik af "Book" få en kalender frem, hvor en start og slut dato skal vælges, sendes videre til confirmation-side hvor alt information, inkluderende pris, fremvises før confirmation af booking.
+
+### Ticket system
+Man får en liste med alle tickets sorteret på dato og status, man kan kun se de tickets der tilknyttet det hotel man er ansat hos, kunne vælge og besvare en ticket og redigere den status.
