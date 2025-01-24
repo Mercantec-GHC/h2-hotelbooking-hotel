@@ -35,11 +35,24 @@ Produktet er en hjemmeside der skal bruges til at booke hotelværelser hos forsk
 ## Intro
 Som en gæst/kunde hos et hotel skal man kunne vælge et hotel og så kunne booke et værelse hos det bestemte hotel. Derfra skal vores kode kunne registrere at værelset er booket hos hotellet. Man skal også have muligheden som Global Administrator for at kunne oprette Hoteller og derved Hotel Administratorer, som så har muligheden for at oprette Medarbejdere som har muligheden for at kunne booke et værelse til en kunde. Som hotel administrator skal man også kunne se tilstande af værelser (altså om de er booked eller ej)
 
-## Begrænsninger
-TBD
+## Funktionalitet
+### Hovedside
+Man skal kunne søge efter hoteller i forskellige dele af verdenen, og derfra kunne tilgå de forskellige hotellers side. Man skal også kunne have en mulighed for at logge ind fra forsiden.
+Krav:
+- Kunne logge ind
+- Søge efter hotel et specifikt sted
+- Hvis man logger ind som ansat (baseret på rolle) får man en administrator menu hvor man kan vælge hvilket hotel at administerer.
+- Global administrator skal kunne tilføje og redigere hoteller og hotel administratore.
 
-## Use cases
-TBD
+### Hotelside
+Man skal have mulighed for at booke et værelse hos det valgte hotel. Man skal også have mulighed for at oprette en ticket hos det valgte hotel, hvilket hotellets medarbejdere skal kunne tilgå og hjælpe med.
+Krav:
+- Se alle tilgængelige af hottelets værelse som kunde.
+- Se alle hotellets værelser som medarbejder, og kunne administeret dem. Alåts, kunne oprette eller slette bookings for kunder.
+- Hotel administrator skal kunne tilføje & redigere værelser og medarbejdere.
+- Som kunde skal man kunne oprette tickets.
 
-## Accepttest
-TBD
+### Administrator side
+Tilpasset til hotel ansatte, hvor de skal kunne tilgå ticket system.
+Krav:
+- Man skal kunne se tickets hos det hotel man er ansat, og besvare dem.
