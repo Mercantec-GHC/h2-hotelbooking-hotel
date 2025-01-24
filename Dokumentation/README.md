@@ -62,8 +62,12 @@ Krav:
 ### Booking af værelse
 Vælge et værelse, se hvilke datoer værelset er tilgængeligt, på klik af "Book" få en kalender frem, hvor en start og slut dato skal vælges, sendes videre til confirmation-side hvor alt information, inkluderende pris, fremvises før confirmation af booking. (Muligvis confirmation-mail)
 
+### Søgning af hotel
+Søgning skal være baseret på enten søgning af hotel navn, land eller by, hvilket hotellet har mulighed for at tilføje ved oprettelse.
+
 ### Ticket system
 Man får en liste med alle tickets sorteret på dato og status, man kan kun se de tickets der tilknyttet det hotel man er ansat hos, kunne vælge og besvare en ticket og redigere den status.
+
 
 ## Datamodel
 ### ER Diagram
