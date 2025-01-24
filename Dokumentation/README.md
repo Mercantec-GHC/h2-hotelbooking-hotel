@@ -51,6 +51,7 @@ Krav:
 - Se alle hotellets værelser som medarbejder, og kunne administeret dem. Alåts, kunne oprette eller slette bookings for kunder.
 - Hotel administrator skal kunne tilføje & redigere værelser og medarbejdere.
 - Som kunde skal man kunne oprette tickets.
+- Bruger skal kunne tilgå at se deres reservationer.
 
 ### Administrator side
 Tilpasset til hotel ansatte, hvor de skal kunne tilgå ticket system.
@@ -59,7 +60,17 @@ Krav:
 
 ## Flow
 ### Booking af værelse
-Vælge et værelse, se hvilke datoer værelset er tilgængeligt, på klik af "Book" få en kalender frem, hvor en start og slut dato skal vælges, sendes videre til confirmation-side hvor alt information, inkluderende pris, fremvises før confirmation af booking.
+Vælge et værelse, se hvilke datoer værelset er tilgængeligt, på klik af "Book" få en kalender frem, hvor en start og slut dato skal vælges, sendes videre til confirmation-side hvor alt information, inkluderende pris, fremvises før confirmation af booking. (Muligvis confirmation-mail)
 
 ### Ticket system
 Man får en liste med alle tickets sorteret på dato og status, man kan kun se de tickets der tilknyttet det hotel man er ansat hos, kunne vælge og besvare en ticket og redigere den status.
+
+## Datamodel
+### ER Diagram
+TBD (Vi bruger EFCore Tools)
+
+## Prioritering
+1. Global Administration (Oprettelse af hoteller, og tilføje hotel administrator til dem)
+2. Hotel Administration (Oprettelse af værelser og tilføje ansatte til deres hotel)
+3. Bruger login & booking system
+4. Ticket system
