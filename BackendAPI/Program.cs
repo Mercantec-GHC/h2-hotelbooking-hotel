@@ -1,5 +1,10 @@
 
+using System;
+
 using System.Security.Cryptography.X509Certificates;
+using BackendAPI.Data;
+
+using Microsoft.EntityFrameworkCore;
 
 namespace BackendAPI
 {
@@ -25,13 +30,19 @@ namespace BackendAPI
                 });
             }
 
-            // Add services to the container.
-
+           
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            // Add services to the container.
+            builder.Services.AddDbContext<DatabaseContext>(options =>
+            {
+                var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+                options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+            });
 
+            builder.Configuration.AddUserSecrets<Program>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
