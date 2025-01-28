@@ -1,5 +1,4 @@
-﻿
-namespace CommonResources.Models
+﻿namespace CommonResources.Models
 {
     public class Role : Common
     {
