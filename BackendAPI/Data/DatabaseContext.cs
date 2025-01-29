@@ -11,7 +11,7 @@ namespace BackendAPI.Data
         {
         }
 
-        public DbSet<RoomDTO> Rooms { get; set; }
+        public DbSet<Room> Rooms { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
            

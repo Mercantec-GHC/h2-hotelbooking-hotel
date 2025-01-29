@@ -35,17 +35,48 @@ namespace BackendAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateRoom(RoomDTO roomDto)
+        public async Task<IActionResult> CreateRoom([FromForm]RoomDTO roomDto)
         {
-            var room = new RoomDTO()
+            
+            var room = new Room()
             {
-
+                ID = roomDto.ID,
+                HotelID = roomDto.HotelID,
+                Price = roomDto.Price,
+                CreatedAt = roomDto.CreatedAt,
+                UpdatedAt = roomDto.UpdatedAt,           
             };
+           
             _Context.Rooms.Add(room);
             await _Context.SaveChangesAsync();
-            return Ok();
+            return Ok(roomDto);
         }
 
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateRoom(RoomDTO roomDTO, string id)
+        {
+            var room = await _Context.Rooms.FindAsync(id);
+
+           //Updates properties of the room
+            room.Price = roomDTO.Price;
+            room.UpdatedAt = roomDTO.UpdatedAt;
+
+            await _Context.SaveChangesAsync();
+
+            return Ok(room);
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteRoom(string id)
+        {
+            var room = await _Context.Rooms.FindAsync(id);
+
+            _Context.Rooms.Remove(room);
+
+            await _Context.SaveChangesAsync();
+
+            return StatusCode(200,"Room deleted succesfully {room}");
+        }
 
 
     }

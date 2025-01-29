@@ -5,6 +5,7 @@ using System.Security.Cryptography.X509Certificates;
 using BackendAPI.Data;
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 
 namespace BackendAPI
 {
@@ -34,7 +35,12 @@ namespace BackendAPI
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerGen(c =>
+            {
+                c.MapType<DateTime>(() => new OpenApiSchema { Type = "string", Format = "date" });
+                c.MapType<DateTime?>(() => new OpenApiSchema { Type = "string", Format = "date" });
+            });
+
             // Add services to the container.
             builder.Services.AddDbContext<DatabaseContext>(options =>
             {
