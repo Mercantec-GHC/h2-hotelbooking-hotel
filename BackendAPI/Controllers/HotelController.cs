@@ -21,13 +21,13 @@ namespace BackendAPI.Controllers
         {
             var hotel = new Hotel()
                 {
-                ID = hotelDto.ID,
+                ID = Guid.NewGuid().ToString("N"),
                 Name = hotelDto.Name,
                 Description = hotelDto.Description,
                 Location = hotelDto.Location,
-                CreatedAt = hotelDto.CreatedAt,
-                UpdatedAt = hotelDto.UpdatedAt,
-                };
+                CreatedAt = DateTime.UtcNow.AddHours(1),
+                UpdatedAt = DateTime.UtcNow.AddHours(1),
+            };
             _Context.Hotels.Add(hotel);
             await _Context.SaveChangesAsync();
 

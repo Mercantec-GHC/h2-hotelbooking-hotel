@@ -21,11 +21,11 @@ namespace BackendAPI.Controllers
         {
             var bookings = new Booking()
             {
-                ID = booking.ID,
+                ID = Guid.NewGuid().ToString("N"),
                 UserID = booking.UserID,
                 RoomID = booking.RoomID,
-                CreatedAt = booking.CreatedAt,
-                UpdatedAt = booking.UpdatedAt,
+                CreatedAt = DateTime.UtcNow.AddHours(1),
+                UpdatedAt = DateTime.UtcNow.AddHours(1),
             };
             _Context.Bookings.Add(bookings);
             await _Context.SaveChangesAsync();

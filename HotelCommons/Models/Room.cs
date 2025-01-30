@@ -10,9 +10,10 @@ namespace HotelsCommons.Models
     public class Room : Common
     {
         
-        public List<Booking> Bookings { get; set; }
+       
         public string HotelID { get; set; }
         public int Price { get; set; }
+        public List<Booking> Bookings { get; set; }
         //public string available {  get; set; }
         //public int Price { get; set; }
     }
