@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BackendAPI.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20250129084345_Rooms")]
-    partial class Rooms
+    [Migration("20250129130249_BookingsHotelsRooms")]
+    partial class BookingsHotelsRooms
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,6 +33,9 @@ namespace BackendAPI.Migrations
                     b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime(6)");
 
+                    b.Property<string>("HotelID")
+                        .HasColumnType("varchar(255)");
+
                     b.Property<string>("RoomID")
                         .IsRequired()
                         .HasColumnType("varchar(255)");
@@ -46,9 +49,39 @@ namespace BackendAPI.Migrations
 
                     b.HasKey("ID");
 
+                    b.HasIndex("HotelID");
+
                     b.HasIndex("RoomID");
 
-                    b.ToTable("Booking");
+                    b.ToTable("Bookings");
+                });
+
+            modelBuilder.Entity("HotelsCommons.Models.Hotel", b =>
+                {
+                    b.Property<string>("ID")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Location")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("Hotels");
                 });
 
             modelBuilder.Entity("HotelsCommons.Models.Room", b =>
@@ -61,7 +94,7 @@ namespace BackendAPI.Migrations
 
                     b.Property<string>("HotelID")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<int>("Price")
                         .HasColumnType("int");
@@ -71,16 +104,38 @@ namespace BackendAPI.Migrations
 
                     b.HasKey("ID");
 
+                    b.HasIndex("HotelID");
+
                     b.ToTable("Rooms");
                 });
 
             modelBuilder.Entity("HotelsCommons.Models.Booking", b =>
                 {
+                    b.HasOne("HotelsCommons.Models.Hotel", null)
+                        .WithMany("Bookings")
+                        .HasForeignKey("HotelID");
+
                     b.HasOne("HotelsCommons.Models.Room", null)
                         .WithMany("Bookings")
                         .HasForeignKey("RoomID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("HotelsCommons.Models.Room", b =>
+                {
+                    b.HasOne("HotelsCommons.Models.Hotel", null)
+                        .WithMany("Rooms")
+                        .HasForeignKey("HotelID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("HotelsCommons.Models.Hotel", b =>
+                {
+                    b.Navigation("Bookings");
+
+                    b.Navigation("Rooms");
                 });
 
             modelBuilder.Entity("HotelsCommons.Models.Room", b =>

@@ -20,10 +20,16 @@ namespace BackendAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<Room>> GetRooms()
         {
-            var rooms = await _Context.Rooms.ToListAsync();
+            var rooms = await _Context.Rooms.Include(r => r.Bookings).ToListAsync();
+            var roomDTO = rooms.Select(r => new Room
+            {
+                HotelID = r.HotelID,
+                Price = r.Price,
+                Bookings = r.Bookings.Select(b => new Booking { UserID = b.UserID }).ToList()
+            }).ToList();
 
 
-            return Ok(rooms);
+            return Ok(roomDTO);
         }
 
         [HttpGet("{id}")]
@@ -75,7 +81,7 @@ namespace BackendAPI.Controllers
 
             await _Context.SaveChangesAsync();
 
-            return StatusCode(200,"Room deleted succesfully {room}");
+            return StatusCode(200,$"Room deleted succesfully {room}");
         }
 
 

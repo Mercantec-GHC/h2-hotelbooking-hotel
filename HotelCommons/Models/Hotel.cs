@@ -15,7 +15,7 @@ namespace HotelsCommons.Models
       //  public List<User> Workers { get; set; }
         public List<Booking> Bookings { get; set; }
     }
-    public class CreateHotelDTO
+    public class CreateHotelDTO : Common
     {
         public string Name { get; set; }
         public string Description { get; set; }
