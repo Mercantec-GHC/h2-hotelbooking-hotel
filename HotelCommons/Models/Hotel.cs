@@ -10,7 +10,8 @@ namespace HotelsCommons.Models
     {
         public string Name { get; set; }
         public string Description { get; set; }
-        public string Location { get; set; }
+        public string Land { get; set; }
+        public string By { get; set; }
         public List<Room> Rooms { get; set; }
       //  public List<User> Workers { get; set; }
         public List<Booking> Bookings { get; set; }
@@ -19,6 +20,7 @@ namespace HotelsCommons.Models
     {
         public string Name { get; set; }
         public string Description { get; set; }
-        public string Location { get; set; }
+        public string Land { get; set; }
+        public string By { get; set; }
     }
 }

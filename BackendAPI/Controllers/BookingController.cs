@@ -24,6 +24,8 @@ namespace BackendAPI.Controllers
                 ID = Guid.NewGuid().ToString("N"),
                 UserID = booking.UserID,
                 RoomID = booking.RoomID,
+                StartDate = booking.StartDate,
+                EndDate = booking.EndDate,
                 CreatedAt = DateTime.UtcNow.AddHours(1),
                 UpdatedAt = DateTime.UtcNow.AddHours(1),
             };

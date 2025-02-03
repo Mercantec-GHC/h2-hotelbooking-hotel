@@ -25,12 +25,38 @@ namespace BackendAPI.Controllers
             {
                 HotelID = r.HotelID,
                 Price = r.Price,
-                Bookings = r.Bookings.Select(b => new Booking { UserID = b.UserID }).ToList()
-            }).ToList();
+                ID = r.ID,
+                CreatedAt = r.CreatedAt,
+                UpdatedAt = r.UpdatedAt,
+                Bookings = r.Bookings.Select(b => new Booking
+                {
+                    ID = b.ID,
+                    RoomID = b.RoomID,
+                    UserID = b.UserID,
+                    CreatedAt = b.CreatedAt,
+                    UpdatedAt = b.UpdatedAt
+                }).ToList().ToList()
+            });
 
 
             return Ok(roomDTO);
         }
+
+   
+        [HttpGet("GetAllAvailableRooms")]
+        public async Task<ActionResult<List<Room>>> GetAvailableRooms(DateTime startDate, DateTime endDate)
+        {
+            var availableRooms = await _Context.Rooms
+                .Where(room => !_Context.Bookings.Any(b =>
+                    b.RoomID == room.ID &&
+                    b.StartDate < endDate &&  // Booking starts before the selected end date
+                    b.EndDate > startDate     // Booking ends after the selected start date
+                ))
+                .ToListAsync();
+
+            return Ok(availableRooms);
+        }
+
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Room>> GetSpecificRoom(string id)
@@ -43,14 +69,14 @@ namespace BackendAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateRoom([FromForm]RoomDTO roomDto)
         {
-            
+
             var room = new Room()
             {
-                ID = roomDto.ID,
+                ID = Guid.NewGuid().ToString("N"),
                 HotelID = roomDto.HotelID,
                 Price = roomDto.Price,
-                CreatedAt = roomDto.CreatedAt,
-                UpdatedAt = roomDto.UpdatedAt,           
+                CreatedAt = DateTime.UtcNow.AddHours(1),
+                UpdatedAt = DateTime.UtcNow.AddHours(1),
             };
            
             _Context.Rooms.Add(room);

@@ -2,6 +2,7 @@
 using HotelsCommons.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Buffers;
 
 namespace BackendAPI.Controllers
 {
@@ -24,7 +25,8 @@ namespace BackendAPI.Controllers
                 ID = Guid.NewGuid().ToString("N"),
                 Name = hotelDto.Name,
                 Description = hotelDto.Description,
-                Location = hotelDto.Location,
+                Land = hotelDto.Land,
+                By = hotelDto.By,
                 CreatedAt = DateTime.UtcNow.AddHours(1),
                 UpdatedAt = DateTime.UtcNow.AddHours(1),
             };
@@ -46,7 +48,8 @@ namespace BackendAPI.Controllers
                 ID = h.ID,
                 Name = h.Name,
                 Description = h.Description,
-                Location = h.Location,
+                Land = h.Land,
+                By = h.By,
                 CreatedAt = h.CreatedAt,
                 UpdatedAt = h.UpdatedAt,
                 Rooms = h.Rooms
@@ -74,12 +77,54 @@ namespace BackendAPI.Controllers
             return Ok(hotels);
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Hotel>> GetHotelById( string id)
+        [HttpGet("Search")]
+        public async Task<ActionResult<Hotel>> GetHotelById( string searchValue)
         {
-            var hotels = await _Context.Hotels.FindAsync(id);
+
+            var hotels = await _Context.Hotels
+            .Where(h => h.Name == searchValue || h.Land == searchValue || h.By == searchValue) 
+            .Include(h => h.Rooms)
+            .ThenInclude(r => r.Bookings)
+            .ToListAsync();
+
+            if (hotels == null || hotels.Count == 0)
+                return NotFound("No hotels found matching your search.");
+
+            var result = hotels
+                .Select(h => new Hotel
+                {
+                    ID = h.ID,
+                    Name = h.Name,
+                    Description = h.Description,
+                    Land = h.Land,
+                    By = h.By,
+                    CreatedAt = h.CreatedAt,
+                    UpdatedAt = h.UpdatedAt,
+                    Rooms = h.Rooms
+                .Select(r => new Room
+                {
+                    Price = r.Price,
+                    ID = r.ID,
+                    HotelID = r.HotelID,
+                    CreatedAt = r.CreatedAt,
+                    UpdatedAt = r.UpdatedAt,
+                    Bookings = r.Bookings.Select(b => new Booking
+                    {
+                        ID = b.ID,
+                        RoomID = b.RoomID,
+                        UserID = b.UserID,
+                        CreatedAt = b.CreatedAt,
+                        UpdatedAt = b.UpdatedAt
+                    }).ToList()
+
+                }).ToList()
+                }).ToList();
+
+
+
             return Ok(hotels);
         }
+        
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateHotel(CreateHotelDTO hotelDTO, string id)
@@ -89,7 +134,8 @@ namespace BackendAPI.Controllers
             //Updates properties of the room
             hotel.Name = hotelDTO.Name;
             hotel.Description = hotelDTO.Description;
-            hotel.Location = hotelDTO.Location;
+            hotel.Land = hotelDTO.Land;
+            hotel.By = hotelDTO.By;
 
             await _Context.SaveChangesAsync();
 
