@@ -22,8 +22,6 @@
   </ItemGroup>
 
   <ItemGroup>
-
-    <ProjectReference Include="..\CommonResources\CommonResources.csproj" />
     <ProjectReference Include="..\HotelCommons\HotelsCommons.csproj" />
 
   </ItemGroup>
