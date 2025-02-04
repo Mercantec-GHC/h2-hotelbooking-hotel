@@ -15,14 +15,6 @@ namespace CommonResources.Models
         public List<Booking> Bookings { get; set; }
     }
 
-    // UserDTO for lighter retrieval of user info
-    public class UserDTO
-    {
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Email { get; set; }
-    }
-    // UserCreateDTO to send relevant information when creating user
     public class UserCreateDTO
     {
         [JsonPropertyName("firstName")]
@@ -37,7 +29,6 @@ namespace CommonResources.Models
         [JsonPropertyName("password")]
         public string Password { get; set; }
     }
-    // UserLoginDTO to send relevant info to login in with user
     public class UserLoginDTO
     {
         [JsonPropertyName("email")]
