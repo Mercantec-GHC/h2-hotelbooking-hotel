@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using CommonResources.Context;
-using CommonResources.Models;
+using BackendAPI.Data;
+using HotelsCommons.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
 

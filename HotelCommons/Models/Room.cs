@@ -1,27 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
-
-namespace HotelsCommons.Models
+﻿namespace HotelsCommons.Models
 {
     public class Room : Common
     {
-        
-       
         public string HotelID { get; set; }
-        public int Price { get; set; }
+        public string Price { get; set; }
         public List<Booking> Bookings { get; set; }
-        //public string available {  get; set; }
-        //public int Price { get; set; }
+        public Hotel Hotel { get; set; }
     }
-    public class RoomDTO : Common
+    public class RoomDTO
     {
         public string HotelID { get; set; }
-        public int Price { get; set; }
-        //public string available {  get; set; }
-        //public int Price { get; set; }
+        public string Price { get; set; }
     }
 }
