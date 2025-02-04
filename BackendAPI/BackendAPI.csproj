@@ -9,8 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.12" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.12">
+    <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.1" />s
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.1">
+
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -20,7 +22,10 @@
   </ItemGroup>
 
   <ItemGroup>
+
+    <ProjectReference Include="..\CommonResources\CommonResources.csproj" />
     <ProjectReference Include="..\HotelCommons\HotelsCommons.csproj" />
+
   </ItemGroup>
 
 </Project>
