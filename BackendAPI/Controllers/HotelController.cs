@@ -131,7 +131,7 @@ namespace BackendAPI.Controllers
             return Ok(hotels);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id}GetHotelsById")]
         public async Task<ActionResult<Hotel>> GetHotelsById(string id)
         {
            
@@ -178,7 +178,7 @@ namespace BackendAPI.Controllers
         }
 
 
-        [HttpPut("{id}")]
+        [HttpPut("{id}UpdateHotel")]
         public async Task<IActionResult> UpdateHotel(CreateHotelDTO hotelDTO, string id)
         {
             var hotel = await _Context.Hotels.FindAsync(id);
@@ -196,7 +196,7 @@ namespace BackendAPI.Controllers
             return Ok(hotel);
         }
 
-        [HttpDelete]
+        [HttpDelete("DeleteHotel")]
         public async Task<IActionResult> DeleteHotel(string id)
         {
             var hotel = await _Context.Rooms.FindAsync(id);

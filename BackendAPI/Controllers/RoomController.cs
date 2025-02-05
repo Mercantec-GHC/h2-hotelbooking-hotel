@@ -17,7 +17,7 @@ namespace BackendAPI.Controllers
             _Context = context;
         }
 
-        [HttpGet]
+        [HttpGet("GetRoomWithBooking")]
         public async Task<ActionResult<Room>> GetRooms()
         {
             var rooms = await _Context.Rooms.Include(r => r.Bookings).ToListAsync();
@@ -58,7 +58,7 @@ namespace BackendAPI.Controllers
         }
 
 
-        [HttpGet("{id}")]
+        [HttpGet("{id}GetRoomById")]
         public async Task<ActionResult<Room>> GetSpecificRoom(string id)
         {
             var room = await _Context.Rooms.FindAsync(id);
@@ -66,7 +66,7 @@ namespace BackendAPI.Controllers
             return Ok(room);
         }
 
-        [HttpPost]
+        [HttpPost("CreateARoom")]
         public async Task<IActionResult> CreateRoom([FromForm]RoomDTO roomDto)
         {
 
@@ -84,7 +84,7 @@ namespace BackendAPI.Controllers
             return Ok(roomDto);
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("{id}UpdateRoom")]
         public async Task<IActionResult> UpdateRoom(Room roomDTO, string id)
         {
             var room = await _Context.Rooms.FindAsync(id);
@@ -98,7 +98,7 @@ namespace BackendAPI.Controllers
             return Ok(room);
         }
 
-        [HttpDelete]
+        [HttpDelete("DeleteRoom")]
         public async Task<IActionResult> DeleteRoom(string id)
         {
             var room = await _Context.Rooms.FindAsync(id);
