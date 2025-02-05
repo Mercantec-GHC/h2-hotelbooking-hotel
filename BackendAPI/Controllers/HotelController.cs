@@ -25,8 +25,10 @@ namespace BackendAPI.Controllers
                 ID = Guid.NewGuid().ToString("N"),
                 Name = hotelDto.Name,
                 Description = hotelDto.Description,
-                Land = hotelDto.Land,
-                By = hotelDto.By,
+                Country = hotelDto.Country,
+                City = hotelDto.City,
+                Region = hotelDto.Region,
+                PostalCode = hotelDto.PostalCode,
                 CreatedAt = DateTime.UtcNow.AddHours(1),
                 UpdatedAt = DateTime.UtcNow.AddHours(1),
             };
@@ -48,8 +50,10 @@ namespace BackendAPI.Controllers
                 ID = h.ID,
                 Name = h.Name,
                 Description = h.Description,
-                Land = h.Land,
-                By = h.By,
+                Country = h.Country,
+                City = h.City,
+                Region = h.Region,
+                PostalCode = h.PostalCode,
                 CreatedAt = h.CreatedAt,
                 UpdatedAt = h.UpdatedAt,
                 Rooms = h.Rooms
@@ -82,7 +86,7 @@ namespace BackendAPI.Controllers
         {
 
             var hotels = await _Context.Hotels
-            .Where(h => h.Name == searchValue || h.Land == searchValue || h.By == searchValue) 
+            .Where(h => h.Name == searchValue || h.Country == searchValue || h.City == searchValue || h.Region == searchValue || h.PostalCode == searchValue) 
             .Include(h => h.Rooms)
             .ThenInclude(r => r.Bookings)
             .ToListAsync();
@@ -96,8 +100,10 @@ namespace BackendAPI.Controllers
                     ID = h.ID,
                     Name = h.Name,
                     Description = h.Description,
-                    Land = h.Land,
-                    By = h.By,
+                    Country = h.Country,
+                    City = h.City,
+                    Region = h.Region,
+                    PostalCode = h.PostalCode,
                     CreatedAt = h.CreatedAt,
                     UpdatedAt = h.UpdatedAt,
                     Rooms = h.Rooms
@@ -134,8 +140,10 @@ namespace BackendAPI.Controllers
             //Updates properties of the room
             hotel.Name = hotelDTO.Name;
             hotel.Description = hotelDTO.Description;
-            hotel.Land = hotelDTO.Land;
-            hotel.By = hotelDTO.By;
+            hotel.Country = hotelDTO.Country;
+            hotel.City = hotelDTO.City;
+            hotel.Region = hotelDTO.Region;
+            hotel.PostalCode = hotelDTO.PostalCode;
 
             await _Context.SaveChangesAsync();
 

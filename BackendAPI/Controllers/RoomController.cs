@@ -85,7 +85,7 @@ namespace BackendAPI.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateRoom(RoomDTO roomDTO, string id)
+        public async Task<IActionResult> UpdateRoom(Room roomDTO, string id)
         {
             var room = await _Context.Rooms.FindAsync(id);
 
