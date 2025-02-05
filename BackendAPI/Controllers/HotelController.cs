@@ -17,7 +17,7 @@ namespace BackendAPI.Controllers
             _Context = context;
         }
 
-        [HttpPost]
+        [HttpPost("CreateAHotel")]
         public async Task<ActionResult> CreateHotel([FromForm]CreateHotelDTO hotelDto)
         {
             var hotel = new Hotel()
@@ -38,7 +38,7 @@ namespace BackendAPI.Controllers
             return Ok(hotelDto);
         }
 
-        [HttpGet]
+        [HttpGet("GetAllHotels")]
         public async Task<ActionResult<Hotel>> GetHotels()
         {
 
@@ -82,7 +82,7 @@ namespace BackendAPI.Controllers
         }
 
         [HttpGet("Search")]
-        public async Task<ActionResult<Hotel>> GetHotelById( string searchValue)
+        public async Task<ActionResult<Hotel>> HotelSearch( string searchValue)
         {
 
             var hotels = await _Context.Hotels
@@ -130,7 +130,53 @@ namespace BackendAPI.Controllers
 
             return Ok(hotels);
         }
-        
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Hotel>> GetHotelsById(string id)
+        {
+           
+            var hoteler = await _Context.Hotels
+                .Where(h => h.ID == id)
+                .Include(h => h.Rooms)
+                .ThenInclude(r => r.Bookings).FirstOrDefaultAsync();
+
+            var hotel = new Hotel
+            {
+                ID = hoteler.ID,
+                Name = hoteler.Name,
+                Description = hoteler.Description,
+                Country = hoteler.Country,
+                City = hoteler.City,
+                Region = hoteler.Region,
+                PostalCode = hoteler.PostalCode,
+                CreatedAt = hoteler.CreatedAt,
+                UpdatedAt = hoteler.UpdatedAt,
+                Rooms = hoteler.Rooms
+                .Select(r => new Room
+                {
+                    Price = r.Price,
+                    ID = r.ID,
+                    HotelID = r.HotelID,
+                    CreatedAt = r.CreatedAt,
+                    UpdatedAt = r.UpdatedAt,
+                    Bookings = r.Bookings.Select(b => new Booking
+                    {
+                        ID = b.ID,
+                        RoomID = b.RoomID,
+                        UserID = b.UserID,
+                        CreatedAt = b.CreatedAt,
+                        UpdatedAt = b.UpdatedAt
+                    }).ToList()
+
+                }).ToList()
+            };
+                
+
+
+
+            return Ok(hotel);
+        }
+
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateHotel(CreateHotelDTO hotelDTO, string id)

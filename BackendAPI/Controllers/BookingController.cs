@@ -58,8 +58,8 @@ namespace BackendAPI.Controllers
             var booking = await _Context.Bookings.FindAsync(id);
 
             //Updates properties of the room
-            booking.UserID = BookingDTO.UserID;
-            booking.RoomID = BookingDTO.RoomID;
+            booking.StartDate = BookingDTO.StartDate;
+            booking.EndDate = BookingDTO.EndDate;
             booking.UpdatedAt = BookingDTO.UpdatedAt;
 
             await _Context.SaveChangesAsync();
