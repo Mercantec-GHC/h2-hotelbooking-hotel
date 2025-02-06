@@ -19,6 +19,18 @@ namespace BackendAPI.Controllers
         [HttpPost("CreateBooking")]
         public async Task<ActionResult> CreateBooking([FromBody] BookingDTO booking)
         {
+            var isRoomBooked = await _Context.Bookings.AnyAsync(b =>
+             b.RoomID == booking.RoomID &&
+             ((booking.StartDate >= b.StartDate && booking.StartDate < b.EndDate) ||
+              (booking.EndDate > b.StartDate && booking.EndDate <= b.EndDate) ||
+              (booking.StartDate <= b.StartDate && booking.EndDate >= b.EndDate))
+  );
+
+            if (isRoomBooked)
+            {
+                return BadRequest("The room is already booked for the selected dates.");
+            }
+
             var bookings = new Booking()
             {
                 ID = Guid.NewGuid().ToString("N"),
