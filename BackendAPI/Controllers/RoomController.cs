@@ -58,7 +58,7 @@ namespace BackendAPI.Controllers
         }
 
 
-        [HttpGet("{id}GetRoomById")]
+        [HttpGet("{id}")]
         public async Task<ActionResult<Room>> GetSpecificRoom(string id)
         {
             var room = await _Context.Rooms.FindAsync(id);
@@ -66,8 +66,8 @@ namespace BackendAPI.Controllers
             return Ok(room);
         }
 
-        [HttpPost("CreateARoom")]
-        public async Task<IActionResult> CreateRoom([FromForm]RoomDTO roomDto)
+        [HttpPost("CreateRoom")]
+        public async Task<IActionResult> CreateRoom([FromBody]RoomDTO roomDto)
         {
 
             var room = new Room()
@@ -78,13 +78,18 @@ namespace BackendAPI.Controllers
                 CreatedAt = DateTime.UtcNow.AddHours(1),
                 UpdatedAt = DateTime.UtcNow.AddHours(1),
             };
-           
+
+            var hotel = await _Context.Hotels
+                .Include(h => h.Rooms)
+                .FirstOrDefaultAsync(r => r.ID == roomDto.HotelID);
+
+            hotel.Rooms.Add(room);
             _Context.Rooms.Add(room);
             await _Context.SaveChangesAsync();
             return Ok(roomDto);
         }
 
-        [HttpPut("{id}UpdateRoom")]
+        [HttpPut("{id}")]
         public async Task<IActionResult> UpdateRoom(Room roomDTO, string id)
         {
             var room = await _Context.Rooms.FindAsync(id);
@@ -98,7 +103,7 @@ namespace BackendAPI.Controllers
             return Ok(room);
         }
 
-        [HttpDelete("DeleteRoom")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteRoom(string id)
         {
             var room = await _Context.Rooms.FindAsync(id);

@@ -9,6 +9,7 @@
     }
     public class RoomDTO
     {
+        public string ID { get; set; }
         public string HotelID { get; set; }
         public string Price { get; set; }
     }

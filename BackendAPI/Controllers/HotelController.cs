@@ -17,8 +17,8 @@ namespace BackendAPI.Controllers
             _Context = context;
         }
 
-        [HttpPost("CreateAHotel")]
-        public async Task<ActionResult> CreateHotel([FromForm]CreateHotelDTO hotelDto)
+        [HttpPost("CreateHotel")]
+        public async Task<ActionResult> CreateHotel([FromBody]CreateHotelDTO hotelDto)
         {
             var hotel = new Hotel()
                 {
@@ -46,7 +46,7 @@ namespace BackendAPI.Controllers
                 .ThenInclude(r => r.Bookings).ToListAsync();
             var hotels = hoteler    
                 .Select(h => new Hotel
-            {
+                {
                 ID = h.ID,
                 Name = h.Name,
                 Description = h.Description,
@@ -61,18 +61,7 @@ namespace BackendAPI.Controllers
                 {
                     Price = r.Price,
                     ID = r.ID,
-                    HotelID = r.HotelID,
-                    CreatedAt = r.CreatedAt,
-                    UpdatedAt = r.UpdatedAt,
-                    Bookings = r.Bookings.Select(b => new Booking
-                    {
-                        ID = b.ID,
-                        RoomID = b.RoomID,
-                        UserID = b.UserID,
-                        CreatedAt = b.CreatedAt,
-                        UpdatedAt = b.UpdatedAt
-                    }).ToList()
-                    
+                    HotelID = r.HotelID                    
                 }).ToList()
             }).ToList();
 
@@ -131,7 +120,7 @@ namespace BackendAPI.Controllers
             return Ok(hotels);
         }
 
-        [HttpGet("{id}GetHotelsById")]
+        [HttpGet("{id}")]
         public async Task<ActionResult<Hotel>> GetHotelsById(string id)
         {
            
@@ -178,7 +167,7 @@ namespace BackendAPI.Controllers
         }
 
 
-        [HttpPut("{id}UpdateHotel")]
+        [HttpPut("{id}")]
         public async Task<IActionResult> UpdateHotel(CreateHotelDTO hotelDTO, string id)
         {
             var hotel = await _Context.Hotels.FindAsync(id);
@@ -196,7 +185,7 @@ namespace BackendAPI.Controllers
             return Ok(hotel);
         }
 
-        [HttpDelete("DeleteHotel")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteHotel(string id)
         {
             var hotel = await _Context.Rooms.FindAsync(id);

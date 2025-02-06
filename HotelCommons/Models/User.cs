@@ -18,6 +18,7 @@ namespace HotelsCommons.Models
     // UserDTO for lighter retrieval of user info
     public class UserDTO
     {
+        public string ID { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }

@@ -16,8 +16,8 @@ namespace BackendAPI.Controllers
             _Context = context;
         }
 
-        [HttpPost("CreateABooking")]
-        public async Task<ActionResult> CreateBooking([FromForm] Booking booking)
+        [HttpPost("CreateBooking")]
+        public async Task<ActionResult> CreateBooking([FromBody] BookingDTO booking)
         {
             var bookings = new Booking()
             {
@@ -44,7 +44,7 @@ namespace BackendAPI.Controllers
             return Ok(bookings);
         }
 
-        [HttpGet("{id}GetBookingById")]
+        [HttpGet("{id}")]
         public async Task<ActionResult<Room>> GetBookingById(string id)
         {
             var booking = await _Context.Bookings.FindAsync(id);
@@ -52,7 +52,7 @@ namespace BackendAPI.Controllers
             return Ok(booking);
         }
 
-        [HttpPut("{id}UpdateABooking")]
+        [HttpPut("{id}")]
         public async Task<IActionResult> UpdateBooking(Booking BookingDTO, string id)
         {
             var booking = await _Context.Bookings.FindAsync(id);
@@ -67,7 +67,7 @@ namespace BackendAPI.Controllers
             return Ok(booking);
         }
 
-        [HttpDelete("DeleteABooking")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBooking(string id)
         {
             var booking = await _Context.Rooms.FindAsync(id);
