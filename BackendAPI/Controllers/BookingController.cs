@@ -24,12 +24,18 @@ namespace BackendAPI.Controllers
              ((booking.StartDate >= b.StartDate && booking.StartDate < b.EndDate) ||
               (booking.EndDate > b.StartDate && booking.EndDate <= b.EndDate) ||
               (booking.StartDate <= b.StartDate && booking.EndDate >= b.EndDate))
-  );
+            );
 
             if (isRoomBooked)
             {
                 return BadRequest("The room is already booked for the selected dates.");
             }
+
+            var room = await _Context.Rooms
+                .FirstOrDefaultAsync(r => r.ID == booking.RoomID);
+
+            var DaysBetween = (booking.EndDate - booking.StartDate).Days;
+            var NewPrice = DaysBetween * room.DailyPrice;
 
             var bookings = new Booking()
             {
@@ -38,6 +44,7 @@ namespace BackendAPI.Controllers
                 RoomID = booking.RoomID,
                 StartDate = booking.StartDate,
                 EndDate = booking.EndDate,
+                Price = NewPrice,
                 CreatedAt = DateTime.UtcNow.AddHours(1),
                 UpdatedAt = DateTime.UtcNow.AddHours(1),
             };

@@ -59,7 +59,7 @@ namespace BackendAPI.Controllers
                 Rooms = h.Rooms
                 .Select(r => new Room
                 {
-                    Price = r.Price,
+                    DailyPrice = r.DailyPrice,
                     ID = r.ID,
                     HotelID = r.HotelID                    
                 }).ToList()
@@ -98,7 +98,7 @@ namespace BackendAPI.Controllers
                     Rooms = h.Rooms
                 .Select(r => new Room
                 {
-                    Price = r.Price,
+                    DailyPrice = r.DailyPrice,
                     ID = r.ID,
                     HotelID = r.HotelID,
                     CreatedAt = r.CreatedAt,
@@ -143,7 +143,7 @@ namespace BackendAPI.Controllers
                 Rooms = hoteler.Rooms
                 .Select(r => new Room
                 {
-                    Price = r.Price,
+                    DailyPrice = r.DailyPrice,
                     ID = r.ID,
                     HotelID = r.HotelID,
                     CreatedAt = r.CreatedAt,

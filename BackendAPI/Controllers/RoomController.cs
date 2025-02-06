@@ -24,7 +24,7 @@ namespace BackendAPI.Controllers
             var roomDTO = rooms.Select(r => new Room
             {
                 HotelID = r.HotelID,
-                Price = r.Price,
+                DailyPrice = r.DailyPrice,
                 ID = r.ID,
                 CreatedAt = r.CreatedAt,
                 UpdatedAt = r.UpdatedAt,
@@ -74,7 +74,7 @@ namespace BackendAPI.Controllers
             {
                 ID = Guid.NewGuid().ToString("N"),
                 HotelID = roomDto.HotelID,
-                Price = roomDto.Price,
+                DailyPrice = roomDto.DailyPrice,
                 CreatedAt = DateTime.UtcNow.AddHours(1),
                 UpdatedAt = DateTime.UtcNow.AddHours(1),
             };
@@ -95,7 +95,7 @@ namespace BackendAPI.Controllers
             var room = await _Context.Rooms.FindAsync(id);
 
            //Updates properties of the room
-            room.Price = roomDTO.Price;
+            room.DailyPrice = roomDTO.DailyPrice;
             room.UpdatedAt = roomDTO.UpdatedAt;
 
             await _Context.SaveChangesAsync();

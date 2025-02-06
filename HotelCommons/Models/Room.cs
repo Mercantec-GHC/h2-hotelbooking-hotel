@@ -3,7 +3,7 @@
     public class Room : Common
     {
         public string HotelID { get; set; }
-        public string Price { get; set; }
+        public float DailyPrice { get; set; }
         public List<Booking> Bookings { get; set; }
         public Hotel Hotel { get; set; }
     }
@@ -11,6 +11,6 @@
     {
         public string ID { get; set; }
         public string HotelID { get; set; }
-        public string Price { get; set; }
+        public float DailyPrice { get; set; }
     }
 }
