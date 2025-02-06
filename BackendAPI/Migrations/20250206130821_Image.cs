@@ -5,19 +5,14 @@
 namespace BackendAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class NewLocationstoHotel : Migration
+    public partial class Image : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.RenameColumn(
-                name: "Location",
-                table: "Hotels",
-                newName: "Land");
-
             migrationBuilder.AddColumn<string>(
-                name: "By",
-                table: "Hotels",
+                name: "Image",
+                table: "Rooms",
                 type: "longtext",
                 nullable: false)
                 .Annotation("MySql:CharSet", "utf8mb4");
@@ -27,13 +22,8 @@ namespace BackendAPI.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "By",
-                table: "Hotels");
-
-            migrationBuilder.RenameColumn(
-                name: "Land",
-                table: "Hotels",
-                newName: "Location");
+                name: "Image",
+                table: "Rooms");
         }
     }
 }

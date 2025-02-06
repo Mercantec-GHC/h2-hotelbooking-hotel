@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BackendAPI.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20250204122209_NewProperties")]
-    partial class NewProperties
+    [Migration("20250206125243_Tables")]
+    partial class Tables
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -53,6 +53,9 @@ namespace BackendAPI.Migrations
 
                     b.Property<string>("HotelID")
                         .HasColumnType("varchar(255)");
+
+                    b.Property<float>("Price")
+                        .HasColumnType("float");
 
                     b.Property<string>("RoomID")
                         .IsRequired()
@@ -153,13 +156,12 @@ namespace BackendAPI.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
 
+                    b.Property<float>("DailyPrice")
+                        .HasColumnType("float");
+
                     b.Property<string>("HotelID")
                         .IsRequired()
                         .HasColumnType("varchar(255)");
-
-                    b.Property<string>("Price")
-                        .IsRequired()
-                        .HasColumnType("longtext");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime(6)");

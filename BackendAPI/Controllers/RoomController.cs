@@ -25,6 +25,7 @@ namespace BackendAPI.Controllers
             {
                 HotelID = r.HotelID,
                 DailyPrice = r.DailyPrice,
+                Image = r.Image,
                 ID = r.ID,
                 CreatedAt = r.CreatedAt,
                 UpdatedAt = r.UpdatedAt,
@@ -77,6 +78,7 @@ namespace BackendAPI.Controllers
                 DailyPrice = roomDto.DailyPrice,
                 CreatedAt = DateTime.UtcNow.AddHours(1),
                 UpdatedAt = DateTime.UtcNow.AddHours(1),
+                Image = roomDto.Image,
             };
 
             var hotel = await _Context.Hotels
