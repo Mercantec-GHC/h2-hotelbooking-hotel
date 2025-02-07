@@ -25,7 +25,6 @@ namespace BackendAPI.Controllers
             {
                 HotelID = r.HotelID,
                 DailyPrice = r.DailyPrice,
-                Image = r.Image,
                 ID = r.ID,
                 CreatedAt = r.CreatedAt,
                 UpdatedAt = r.UpdatedAt,
