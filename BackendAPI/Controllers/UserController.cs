@@ -17,11 +17,20 @@ namespace BackendAPI.Controllers
             _Context = context;
         }
 
-        // GET: api/<UserController>
+        // GET: api/User
         [HttpGet]
-        public IEnumerable<string> Get()
+        public async Task<ActionResult<IEnumerable<UserDTO>>> GetUsers()
         {
-            return new string[] { "value1", "value2" };
+            var User = await _Context.Users.Select(user => new UserDTO
+            {
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                ID = user.ID,
+                Email = user.Email
+            })
+            .ToListAsync();
+
+            return Ok(User);
         }
 
         // GET api/<UserController>/5
@@ -94,6 +103,7 @@ namespace BackendAPI.Controllers
                 ID = Guid.NewGuid().ToString("N"),
                 Email = userDTO.Email,
                 FirstName = userDTO.FirstName,
+                LastName = userDTO.LastName,
                 CreatedAt = DateTime.UtcNow.AddHours(1),
                 UpdatedAt = DateTime.UtcNow.AddHours(1),
                 PasswordBackdoor = userDTO.Password,

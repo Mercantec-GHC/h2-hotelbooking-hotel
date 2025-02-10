@@ -16,9 +16,27 @@ namespace BackendAPI.Controllers
             _Context = context;
         }
 
-        [HttpPost]
-        public async Task<ActionResult> CreateBooking([FromForm] Booking booking)
+        [HttpPost("CreateBooking")]
+        public async Task<ActionResult> CreateBooking([FromBody] BookingDTO booking)
         {
+            var isRoomBooked = await _Context.Bookings.AnyAsync(b =>
+             b.RoomID == booking.RoomID &&
+             ((booking.StartDate >= b.StartDate && booking.StartDate < b.EndDate) ||
+              (booking.EndDate > b.StartDate && booking.EndDate <= b.EndDate) ||
+              (booking.StartDate <= b.StartDate && booking.EndDate >= b.EndDate))
+            );
+
+            if (isRoomBooked)
+            {
+                return BadRequest("The room is already booked for the selected dates.");
+            }
+
+            var room = await _Context.Rooms
+                .FirstOrDefaultAsync(r => r.ID == booking.RoomID);
+
+            var DaysBetween = (booking.EndDate - booking.StartDate).Days;
+            var NewPrice = DaysBetween * room.DailyPrice;
+
             var bookings = new Booking()
             {
                 ID = Guid.NewGuid().ToString("N"),
@@ -26,6 +44,7 @@ namespace BackendAPI.Controllers
                 RoomID = booking.RoomID,
                 StartDate = booking.StartDate,
                 EndDate = booking.EndDate,
+                Price = NewPrice,
                 CreatedAt = DateTime.UtcNow.AddHours(1),
                 UpdatedAt = DateTime.UtcNow.AddHours(1),
             };
@@ -35,7 +54,7 @@ namespace BackendAPI.Controllers
             return Ok(booking);
         }
 
-        [HttpGet]
+        [HttpGet("GetAllBookings")]
         public async Task<ActionResult<Booking>> GetBookings()
         {
             var bookings = await _Context.Bookings.ToListAsync();
@@ -58,8 +77,8 @@ namespace BackendAPI.Controllers
             var booking = await _Context.Bookings.FindAsync(id);
 
             //Updates properties of the room
-            booking.UserID = BookingDTO.UserID;
-            booking.RoomID = BookingDTO.RoomID;
+            booking.StartDate = BookingDTO.StartDate;
+            booking.EndDate = BookingDTO.EndDate;
             booking.UpdatedAt = BookingDTO.UpdatedAt;
 
             await _Context.SaveChangesAsync();
@@ -67,7 +86,7 @@ namespace BackendAPI.Controllers
             return Ok(booking);
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBooking(string id)
         {
             var booking = await _Context.Rooms.FindAsync(id);
