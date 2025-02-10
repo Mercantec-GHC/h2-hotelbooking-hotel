@@ -77,7 +77,7 @@ namespace BackendAPI.Controllers
                 DailyPrice = roomDto.DailyPrice,
                 CreatedAt = DateTime.UtcNow.AddHours(1),
                 UpdatedAt = DateTime.UtcNow.AddHours(1),
-                Image = roomDto.Image,
+             
             };
 
             var hotel = await _Context.Hotels
