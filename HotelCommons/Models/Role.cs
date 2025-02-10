@@ -3,6 +3,6 @@
     public class Role : Common
     {
         public string Name { get; set; }
-        public User User { get; set; }
+        public ICollection<UserRole> UserRoles { get; set; }
     }
 }
