@@ -1,7 +1,9 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BackendAPI.Controllers
 {
+    [Authorize(Roles = "GlobalAdmin")]
     [ApiController]
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase

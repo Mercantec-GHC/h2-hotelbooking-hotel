@@ -4,9 +4,13 @@ using System;
 
 
 using System.Security.Cryptography.X509Certificates;
+using System.Text;
 using BackendAPI.Data;
-
+using BackendAPI.Extensions;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 namespace BackendAPI
@@ -33,21 +37,71 @@ namespace BackendAPI
                 });
             }
 
-           
-            builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen(c =>
-            {
-                c.MapType<DateTime>(() => new OpenApiSchema { Type = "string", Format = "date" });
-                c.MapType<DateTime?>(() => new OpenApiSchema { Type = "string", Format = "date" });
-            });
+            ConfigurationManager Configuration = builder.Configuration;
 
             // Add services to the container.
             builder.Services.AddDbContext<DatabaseContext>(options =>
             {
                 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
                 options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+            });
+
+            builder.Services.AddControllers();
+
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = Configuration["Jwt:Issuer"],
+                    ValidAudience = Configuration["Jwt:Issuer"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
+                };
+            });
+
+            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+            builder.Services.AddEndpointsApiExplorer();
+            //builder.Services.AddSwaggerGen(c =>
+            //{
+            //    c.MapType<DateTime>(() => new OpenApiSchema { Type = "string", Format = "date" });
+            //    c.MapType<DateTime?>(() => new OpenApiSchema { Type = "string", Format = "date" });
+            //});
+
+            builder.Services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
+
+                c.MapType<DateTime>(() => new OpenApiSchema { Type = "string", Format = "date" });
+                c.MapType<DateTime?>(() => new OpenApiSchema { Type = "string", Format = "date" });
+
+                // Tilføj JWT-autentificeringskonfiguration
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    In = ParameterLocation.Header,
+                    Description = "Indsæt 'Bearer {token}'",
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey,
+                    BearerFormat = "JWT",
+                    Scheme = "Bearer"
+                });
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        new string[] {}
+                    }
+                });
             });
 
             builder.Configuration.AddUserSecrets<Program>();
@@ -58,10 +112,13 @@ namespace BackendAPI
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
+
+                //app.ApplyMigrations();
             }
 
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
 
