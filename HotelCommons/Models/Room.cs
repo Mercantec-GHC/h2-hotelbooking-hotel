@@ -13,4 +13,9 @@
         public string HotelID { get; set; }
         public float DailyPrice { get; set; }
     }
+    public class CreateRoomDTO
+    {
+        public string HotelID { get; set; }
+        public float DailyPrice { get; set; }
+    }
 }

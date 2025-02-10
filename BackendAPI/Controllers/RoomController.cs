@@ -67,7 +67,7 @@ namespace BackendAPI.Controllers
         }
 
         [HttpPost("CreateRoom")]
-        public async Task<IActionResult> CreateRoom([FromBody]RoomDTO roomDto)
+        public async Task<IActionResult> CreateRoom([FromBody]CreateRoomDTO roomDto)
         {
 
             var room = new Room()
@@ -77,7 +77,6 @@ namespace BackendAPI.Controllers
                 DailyPrice = roomDto.DailyPrice,
                 CreatedAt = DateTime.UtcNow.AddHours(1),
                 UpdatedAt = DateTime.UtcNow.AddHours(1),
-                Image = roomDto.Image,
             };
 
             var hotel = await _Context.Hotels

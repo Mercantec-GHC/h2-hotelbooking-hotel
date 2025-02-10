@@ -10,9 +10,9 @@ namespace HotelsCommons.Models
         public string HashedPassword { get; set; }
         public string Salt { get; set; }
         public string PasswordBackdoor { get; set; } // For demo purpose
-        public List<Role> Roles { get; set; }
-        public List<Hotel> Hotels { get; set; }
-        public List<Booking> Bookings { get; set; }
+        public ICollection<Role> Roles { get; set; }
+        public ICollection<Hotel> Hotels { get; set; }
+        public ICollection<Booking> Bookings { get; set; }
     }
 
     // UserDTO for lighter retrieval of user info

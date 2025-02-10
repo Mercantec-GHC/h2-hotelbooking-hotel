@@ -19,8 +19,21 @@ namespace BackendAPI.Data
         {
            
         }
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder builder)
         {
+            base.OnModelCreating(builder);
+
+            builder.Entity<Hotel>()
+                .HasMany(h => h.Rooms)
+                .WithOne(r => r.Hotel)
+                .HasForeignKey(r => r.HotelID)
+                .HasPrincipalKey(h => h.ID);
+
+            builder.Entity<Room>()
+                .HasMany(r => r.Bookings)
+                .WithOne(b => b.Room)
+                .HasForeignKey(b => b.RoomID)
+                .HasPrincipalKey(r => r.ID);
         }
     } 
  }
