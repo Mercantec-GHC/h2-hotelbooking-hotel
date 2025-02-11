@@ -42,6 +42,11 @@ namespace BackendAPI.Data
                 .WithMany(r => r.UserRoles)
                 .HasForeignKey(ur => ur.RoleId);
 
+            builder.Entity<Booking>()
+                .HasOne(bu => bu.User)
+                .WithMany(b => b.Bookings)
+                .HasForeignKey(b => b.UserID);
+
             builder.Entity<Ticket>()
                 .HasOne(t => t.User)
                 .WithMany(u => u.Tickets)

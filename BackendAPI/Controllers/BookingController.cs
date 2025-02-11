@@ -35,7 +35,10 @@ namespace BackendAPI.Controllers
 
             var room = await _Context.Rooms
                 .FirstOrDefaultAsync(r => r.ID == booking.RoomID);
-
+            if (room == null)
+            {
+                throw new Exception($"Room with ID {booking.RoomID} not found.");
+            }
             var DaysBetween = (booking.EndDate - booking.StartDate).Days;
             var NewPrice = DaysBetween * room.DailyPrice;
 
