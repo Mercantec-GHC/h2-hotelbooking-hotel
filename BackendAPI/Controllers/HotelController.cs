@@ -1,11 +1,13 @@
 ﻿using BackendAPI.Data;
 using HotelsCommons.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Buffers;
 
 namespace BackendAPI.Controllers
 {
+    [Authorize(Roles = "GlobalAdmin")]
     [Route("api/[controller]")]
     [ApiController]
     public class HotelController : Controller
@@ -22,7 +24,7 @@ namespace BackendAPI.Controllers
         {
             var hotel = new Hotel()
                 {
-                ID = Guid.NewGuid().ToString("N"),
+                ID = Guid.NewGuid().ToString(),
                 Name = hotelDto.Name,
                 Description = hotelDto.Description,
                 Country = hotelDto.Country,

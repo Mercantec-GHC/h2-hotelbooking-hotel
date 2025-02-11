@@ -1,10 +1,12 @@
 ﻿using BackendAPI.Data;
 using HotelsCommons.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace BackendAPI.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class BookingController : ControllerBase
@@ -39,7 +41,7 @@ namespace BackendAPI.Controllers
 
             var bookings = new Booking()
             {
-                ID = Guid.NewGuid().ToString("N"),
+                ID = Guid.NewGuid().ToString(),
                 UserID = booking.UserID,
                 RoomID = booking.RoomID,
                 StartDate = booking.StartDate,

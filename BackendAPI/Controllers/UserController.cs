@@ -100,7 +100,7 @@ namespace BackendAPI.Controllers
 
             return new User
             {
-                ID = Guid.NewGuid().ToString("N"),
+                ID = Guid.NewGuid().ToString(),
                 Email = userDTO.Email,
                 FirstName = userDTO.FirstName,
                 LastName = userDTO.LastName,

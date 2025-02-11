@@ -54,6 +54,18 @@ namespace BackendAPI.Data
                 .HasForeignKey(m => m.TicketId)
                 .HasPrincipalKey(t => t.Id);
 
+            builder.Entity<Hotel>()
+                .HasMany(h => h.Rooms)
+                .WithOne(r => r.Hotel)
+                .HasForeignKey(r => r.HotelID)
+                .HasPrincipalKey(h => h.ID);
+
+            builder.Entity<Room>()
+                .HasMany(r => r.Bookings)
+                .WithOne(b => b.Room)
+                .HasForeignKey(b => b.RoomID)
+                .HasPrincipalKey(r => r.ID);
+
             string globalAdminRoleId = Guid.NewGuid().ToString();
             builder.Entity<Role>().HasData(
                 new Role { ID = globalAdminRoleId, Name = "GlobalAdmin" },
@@ -84,17 +96,6 @@ namespace BackendAPI.Data
                 RoleId = globalAdminRoleId
             }
         );
-            builder.Entity<Hotel>()
-                .HasMany(h => h.Rooms)
-                .WithOne(r => r.Hotel)
-                .HasForeignKey(r => r.HotelID)
-                .HasPrincipalKey(h => h.ID);
-
-            builder.Entity<Room>()
-                .HasMany(r => r.Bookings)
-                .WithOne(b => b.Room)
-                .HasForeignKey(b => b.RoomID)
-                .HasPrincipalKey(r => r.ID);
 
         }
     } 

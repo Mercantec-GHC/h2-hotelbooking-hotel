@@ -141,28 +141,28 @@ namespace BackendAPI.Migrations
                     b.HasData(
                         new
                         {
-                            ID = "28142fee-6927-4dd7-a45f-07f9e884914f",
+                            ID = "62579076-ac15-4233-8407-968400064459",
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "GlobalAdmin",
                             UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            ID = "6585f642-72d3-46f3-af33-bb40166080bc",
+                            ID = "9ecf29fa-0d7d-4eb0-af90-eeb64f1bc78d",
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "HotelAdmin",
                             UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            ID = "a8e58212-7b3d-4787-80c6-a642935bc052",
+                            ID = "6645375f-1b99-4db3-9ad5-686aff24d108",
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "HotelWorker",
                             UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            ID = "9b49e594-5a60-4d02-8100-3d8e30d33593",
+                            ID = "f7854e4e-a59b-4cd6-aaff-8f0ed108a34f",
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "User",
                             UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
@@ -272,14 +272,14 @@ namespace BackendAPI.Migrations
                     b.HasData(
                         new
                         {
-                            ID = "0a7b1aa9-6652-415f-b6b7-42adfc96f38d",
+                            ID = "95d8b95d-2bcc-44e3-89f4-5c038bfd2862",
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "admin@example.com",
                             FirstName = "Admin",
-                            HashedPassword = "$2a$11$s5Ko4emzfAPh1HZ1MnGbruISIGd.UF6J1X3yEyDYPNMbzfgFUltWi",
+                            HashedPassword = "$2a$11$GfxMZH098cWt9iNZk/dngOYKpI.Z.juiwL9r4L3w1/dOfbOO9kqdy",
                             LastName = "User",
                             PasswordBackdoor = "password",
-                            Salt = "$2a$11$s5Ko4emzfAPh1HZ1MnGbru",
+                            Salt = "$2a$11$GfxMZH098cWt9iNZk/dngO",
                             UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         });
                 });
@@ -296,13 +296,13 @@ namespace BackendAPI.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("UsersRoles");
+                    b.ToTable("UserRoles");
 
                     b.HasData(
                         new
                         {
-                            UserId = "0a7b1aa9-6652-415f-b6b7-42adfc96f38d",
-                            RoleId = "28142fee-6927-4dd7-a45f-07f9e884914f"
+                            UserId = "95d8b95d-2bcc-44e3-89f4-5c038bfd2862",
+                            RoleId = "62579076-ac15-4233-8407-968400064459"
                         });
                 });
 
