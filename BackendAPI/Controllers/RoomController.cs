@@ -20,22 +20,27 @@ namespace BackendAPI.Controllers
         [HttpGet("GetRoomWithBooking")]
         public async Task<ActionResult<Room>> GetRooms()
         {
-            var rooms = await _Context.Rooms.Include(r => r.Bookings).ToListAsync();
-            var roomDTO = rooms.Select(r => new Room
+            var rooms = await _Context.Rooms
+       .Include(r => r.Bookings)
+       .Include(r => r.Images) // Include Room Images
+       .ToListAsync();
+
+            var roomDTO = rooms.Select(r => new
             {
-                HotelID = r.HotelID,
-                DailyPrice = r.DailyPrice,
-                ID = r.ID,
-                CreatedAt = r.CreatedAt,
-                UpdatedAt = r.UpdatedAt,
-                Bookings = r.Bookings.Select(b => new Booking
+                r.ID,
+                r.HotelID,
+                r.DailyPrice,
+                r.CreatedAt,
+                r.UpdatedAt,
+                Bookings = r.Bookings.Select(b => new
                 {
-                    ID = b.ID,
-                    RoomID = b.RoomID,
-                    UserID = b.UserID,
-                    CreatedAt = b.CreatedAt,
-                    UpdatedAt = b.UpdatedAt
-                }).ToList().ToList()
+                    b.ID,
+                    b.RoomID,
+                    b.UserID,
+                    b.CreatedAt,
+                    b.UpdatedAt
+                }).ToList(),
+                Images = r.Images.Select(img => img.ImagePath).ToList() // Include image paths
             });
 
 
@@ -77,10 +82,10 @@ namespace BackendAPI.Controllers
                 DailyPrice = roomDto.DailyPrice,
                 CreatedAt = DateTime.UtcNow.AddHours(1),
                 UpdatedAt = DateTime.UtcNow.AddHours(1),
-
-             
-
+                
             };
+            var images = DefaultImages.RoomImages.Select(imagePath => new RoomImage { ImagePath = imagePath }).ToList();
+            room.Images = images;
 
             var hotel = await _Context.Hotels
                 .Include(h => h.Rooms)
