@@ -14,6 +14,7 @@ namespace HotelsCommons.Models
         public ICollection<Hotel> Hotels { get; set; }
         public ICollection<Booking> Bookings { get; set; }
         public ICollection<Ticket> Tickets { get; set; }
+        public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
     }
 
     // UserDTO for lighter retrieval of user info
@@ -25,7 +26,6 @@ namespace HotelsCommons.Models
         public string Email { get; set; }
     }
 
-    // UserCreateDTO to send relevant information when creating user
     public class UserCreateDTO
     {
         [JsonPropertyName("firstName")]
@@ -41,13 +41,30 @@ namespace HotelsCommons.Models
         public string Password { get; set; }
     }
 
-    // UserLoginDTO to send relevant info to login in with user
+    public class UserUpdateDTO
+    {
+        [JsonPropertyName("firstName")]
+        public string FirstName { get; set; }
+
+        [JsonPropertyName("lastName")]
+        public string LastName { get; set; }
+
+        [JsonPropertyName("email")]
+        public string Email { get; set; }
+    }
+
     public class UserLoginDTO
     {
         [JsonPropertyName("email")]
         public string Email { get; set; }
 
-        [JsonPropertyName("passsword")]
+        [JsonPropertyName("password")]
+        public string Password { get; set; }
+    }
+
+    public class PasswordDTO
+    {
+        [JsonPropertyName("password")]
         public string Password { get; set; }
     }
 }
