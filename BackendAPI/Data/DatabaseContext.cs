@@ -20,6 +20,7 @@ namespace BackendAPI.Data
         public DbSet<Ticket> Tickets { get; set; }
         public DbSet<TicketMessage> TicketMessages { get; set; }
         public DbSet<DiscountCode> DiscountCodes { get; set; }
+        public DbSet<RoomImage> RoomImages { get; set; } // Add RoomImages table
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

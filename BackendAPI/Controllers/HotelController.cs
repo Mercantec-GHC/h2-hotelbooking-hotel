@@ -33,6 +33,7 @@ namespace BackendAPI.Controllers
                 PostalCode = hotelDto.PostalCode,
                 CreatedAt = DateTime.UtcNow.AddHours(1),
                 UpdatedAt = DateTime.UtcNow.AddHours(1),
+                
             };
             _Context.Hotels.Add(hotel);
             await _Context.SaveChangesAsync();
@@ -41,14 +42,18 @@ namespace BackendAPI.Controllers
         }
 
         [HttpGet("GetAllHotels")]
-        public async Task<ActionResult<Hotel>> GetHotels()
+        public async Task<ActionResult<List<HotelDTO>>> GetHotels()
         {
+            var hoteler = await _Context.Hotels
+                .Include(h => h.Rooms)
+                    .ThenInclude(r => r.Bookings)
+               
+                .Include(h => h.Rooms)
+                    
+                .ToListAsync();
 
-            var hoteler = await _Context.Hotels.Include(h => h.Rooms)
-                .ThenInclude(r => r.Bookings).ToListAsync();
-            var hotels = hoteler    
-                .Select(h => new Hotel
-                {
+            var hotels = hoteler.Select(h => new HotelDTO
+            {
                 ID = h.ID,
                 Name = h.Name,
                 Description = h.Description,
@@ -58,17 +63,17 @@ namespace BackendAPI.Controllers
                 PostalCode = h.PostalCode,
                 CreatedAt = h.CreatedAt,
                 UpdatedAt = h.UpdatedAt,
-                Rooms = h.Rooms
-                .Select(r => new Room
+               
+                Rooms = h.Rooms.Select(r => new RoomDTO
                 {
-                    DailyPrice = r.DailyPrice,
                     ID = r.ID,
-                    HotelID = r.HotelID                    
+                    HotelID = r.HotelID,
+                    DailyPrice = r.DailyPrice,
+                  
+
                 }).ToList()
             }).ToList();
 
-
-           
             return Ok(hotels);
         }
 
