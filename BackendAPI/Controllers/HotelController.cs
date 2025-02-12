@@ -31,7 +31,7 @@ namespace BackendAPI.Controllers
                 PostalCode = hotelDto.PostalCode,
                 CreatedAt = DateTime.UtcNow.AddHours(1),
                 UpdatedAt = DateTime.UtcNow.AddHours(1),
-                Images = hotelDto.ImagePaths.Select(path => new HotelImage { ImagePath = path }).ToList()
+                
             };
             _Context.Hotels.Add(hotel);
             await _Context.SaveChangesAsync();
@@ -45,9 +45,9 @@ namespace BackendAPI.Controllers
             var hoteler = await _Context.Hotels
                 .Include(h => h.Rooms)
                     .ThenInclude(r => r.Bookings)
-                .Include(h => h.Images) // Include Hotel images
+               
                 .Include(h => h.Rooms)
-                    .ThenInclude(r => r.Images) // Include Room images
+                    
                 .ToListAsync();
 
             var hotels = hoteler.Select(h => new HotelDTO
@@ -61,13 +61,14 @@ namespace BackendAPI.Controllers
                 PostalCode = h.PostalCode,
                 CreatedAt = h.CreatedAt,
                 UpdatedAt = h.UpdatedAt,
-                Images = h.Images?.Select(img => img.ImagePath).ToList() ?? new List<string>(), // FIXED: Ensure extracting ImagePath
+               
                 Rooms = h.Rooms.Select(r => new RoomDTO
                 {
                     ID = r.ID,
                     HotelID = r.HotelID,
                     DailyPrice = r.DailyPrice,
-                    Images = r.Images?.Select(img => img.ImagePath).ToList() ?? new List<string>() // FIXED: Ensure extracting ImagePath
+                  
+
                 }).ToList()
             }).ToList();
 

@@ -11,7 +11,7 @@
         public List<Room> Rooms { get; set; }
         public List<User> Workers { get; set; }
         public List<Booking> Bookings { get; set; }
-        public List<HotelImage> Images { get; set; } = new List<HotelImage>();
+        
     }
 
     public class HotelDTO
@@ -25,7 +25,7 @@
         public string PostalCode { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
-        public List<string> Images { get; set; } // Only store image paths
+
         public List<RoomDTO> Rooms { get; set; }
     }
     public class CreateHotelDTO
@@ -36,6 +36,6 @@
         public string Region { get; set; }
         public string City { get; set; }
         public string PostalCode { get; set; }
-         public List<string> ImagePaths { get; set; } = new List<string>();
+       
     }
 }
