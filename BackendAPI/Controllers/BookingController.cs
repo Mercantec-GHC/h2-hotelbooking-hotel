@@ -19,7 +19,7 @@ namespace BackendAPI.Controllers
         }
 
         [HttpPost("CreateBooking")]
-        public async Task<ActionResult> CreateBooking([FromBody] BookingDTO booking)
+        public async Task<ActionResult> CreateBooking([FromBody] CreateBookingDTO booking)
         {
             var isRoomBooked = await _Context.Bookings.AnyAsync(b =>
              b.RoomID == booking.RoomID &&
@@ -39,8 +39,20 @@ namespace BackendAPI.Controllers
             {
                 throw new Exception($"Room with ID {booking.RoomID} not found.");
             }
+            var discountCode = await _Context.DiscountCodes
+                .FirstOrDefaultAsync(dc => dc.Code == booking.DiscountCode);
+
+            float finalPrice;
             var DaysBetween = (booking.EndDate - booking.StartDate).Days;
             var NewPrice = DaysBetween * room.DailyPrice;
+            if (discountCode != null)
+            {
+                var DiscountedPrice = NewPrice / 100 * discountCode.Percentage;
+                finalPrice = NewPrice - DiscountedPrice;
+            } else
+            {
+                finalPrice = NewPrice;
+            }
 
             var bookings = new Booking()
             {
@@ -49,7 +61,7 @@ namespace BackendAPI.Controllers
                 RoomID = booking.RoomID,
                 StartDate = booking.StartDate,
                 EndDate = booking.EndDate,
-                Price = NewPrice,
+                Price = finalPrice,
                 CreatedAt = DateTime.UtcNow.AddHours(1),
                 UpdatedAt = DateTime.UtcNow.AddHours(1),
             };

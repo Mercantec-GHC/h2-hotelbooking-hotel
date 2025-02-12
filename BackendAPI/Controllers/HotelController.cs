@@ -190,9 +190,9 @@ namespace BackendAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteHotel(string id)
         {
-            var hotel = await _Context.Rooms.FindAsync(id);
+            var hotel = await _Context.Hotels.FindAsync(id);
 
-            _Context.Rooms.Remove(hotel);
+            _Context.Hotels.Remove(hotel);
 
             await _Context.SaveChangesAsync();
 
