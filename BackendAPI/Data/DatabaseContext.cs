@@ -102,6 +102,18 @@ namespace BackendAPI.Data
                     RoleId = hotelWorkerRoleId
                 }
             );
+            
+            builder.Entity<Hotel>()
+                .HasMany(h => h.Rooms)
+                .WithOne(r => r.Hotel)
+                .HasForeignKey(r => r.HotelID)
+                .HasPrincipalKey(h => h.ID);
+
+            builder.Entity<Room>()
+                .HasMany(r => r.Bookings)
+                .WithOne(b => b.Room)
+                .HasForeignKey(b => b.RoomID)
+                .HasPrincipalKey(r => r.ID);
         }
     } 
  }
