@@ -1,11 +1,12 @@
 ﻿using BackendAPI.Data;
 using HotelsCommons.Models;
-
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace BackendAPI.Controllers
 {
+    [Authorize(Roles = "HotelAdmin")]
     [Route("api/[controller]")]
     [ApiController]
     public class RoomController : ControllerBase
@@ -72,7 +73,7 @@ namespace BackendAPI.Controllers
 
             var room = new Room()
             {
-                ID = Guid.NewGuid().ToString("N"),
+                ID = Guid.NewGuid().ToString(),
                 HotelID = roomDto.HotelID,
                 DailyPrice = roomDto.DailyPrice,
                 CreatedAt = DateTime.UtcNow.AddHours(1),

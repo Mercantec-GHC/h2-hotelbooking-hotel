@@ -1,10 +1,12 @@
 ﻿using BackendAPI.Data;
 using HotelsCommons.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace BackendAPI.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class BookingController : ControllerBase
@@ -17,7 +19,7 @@ namespace BackendAPI.Controllers
         }
 
         [HttpPost("CreateBooking")]
-        public async Task<ActionResult> CreateBooking([FromBody] BookingDTO booking)
+        public async Task<ActionResult> CreateBooking([FromBody] CreateBookingDTO booking)
         {
             var isRoomBooked = await _Context.Bookings.AnyAsync(b =>
              b.RoomID == booking.RoomID &&
@@ -33,18 +35,33 @@ namespace BackendAPI.Controllers
 
             var room = await _Context.Rooms
                 .FirstOrDefaultAsync(r => r.ID == booking.RoomID);
+            if (room == null)
+            {
+                throw new Exception($"Room with ID {booking.RoomID} not found.");
+            }
+            var discountCode = await _Context.DiscountCodes
+                .FirstOrDefaultAsync(dc => dc.Code == booking.DiscountCode);
 
+            float finalPrice;
             var DaysBetween = (booking.EndDate - booking.StartDate).Days;
             var NewPrice = DaysBetween * room.DailyPrice;
+            if (discountCode != null)
+            {
+                var DiscountedPrice = NewPrice / 100 * discountCode.Percentage;
+                finalPrice = NewPrice - DiscountedPrice;
+            } else
+            {
+                finalPrice = NewPrice;
+            }
 
             var bookings = new Booking()
             {
-                ID = Guid.NewGuid().ToString("N"),
+                ID = Guid.NewGuid().ToString(),
                 UserID = booking.UserID,
                 RoomID = booking.RoomID,
                 StartDate = booking.StartDate,
                 EndDate = booking.EndDate,
-                Price = NewPrice,
+                Price = finalPrice,
                 CreatedAt = DateTime.UtcNow.AddHours(1),
                 UpdatedAt = DateTime.UtcNow.AddHours(1),
             };

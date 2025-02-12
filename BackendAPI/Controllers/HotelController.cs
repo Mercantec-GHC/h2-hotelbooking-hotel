@@ -1,11 +1,13 @@
 ﻿using BackendAPI.Data;
 using HotelsCommons.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Buffers;
 
 namespace BackendAPI.Controllers
 {
+    [Authorize(Roles = "GlobalAdmin")]
     [Route("api/[controller]")]
     [ApiController]
     public class HotelController : Controller
@@ -22,7 +24,7 @@ namespace BackendAPI.Controllers
         {
             var hotel = new Hotel()
                 {
-                ID = Guid.NewGuid().ToString("N"),
+                ID = Guid.NewGuid().ToString(),
                 Name = hotelDto.Name,
                 Description = hotelDto.Description,
                 Country = hotelDto.Country,
@@ -188,9 +190,9 @@ namespace BackendAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteHotel(string id)
         {
-            var hotel = await _Context.Rooms.FindAsync(id);
+            var hotel = await _Context.Hotels.FindAsync(id);
 
-            _Context.Rooms.Remove(hotel);
+            _Context.Hotels.Remove(hotel);
 
             await _Context.SaveChangesAsync();
 
