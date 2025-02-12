@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using HotelsCommons.Models;
-using System.Reflection.Emit;
 
 namespace BackendAPI.Data
 {
@@ -12,6 +11,7 @@ namespace BackendAPI.Data
         }
 
         public DbSet<User> Users { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
         public DbSet<Room> Rooms { get; set; }
@@ -70,6 +70,11 @@ namespace BackendAPI.Data
                 .WithOne(b => b.Room)
                 .HasForeignKey(b => b.RoomID)
                 .HasPrincipalKey(r => r.ID);
+
+            builder.Entity<User>()
+                .HasMany(u => u.RefreshTokens)
+                .WithOne(rt => rt.User)
+                .HasForeignKey(rt => rt.UserId);
 
             string globalAdminRoleId = Guid.NewGuid().ToString();
             builder.Entity<Role>().HasData(

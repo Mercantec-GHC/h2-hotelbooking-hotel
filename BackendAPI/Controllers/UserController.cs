@@ -3,6 +3,8 @@ using BackendAPI.Data;
 using HotelsCommons.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace BackendAPI.Controllers
 {
@@ -35,7 +37,7 @@ namespace BackendAPI.Controllers
 
         // GET api/<UserController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public string Get(string id)
         {
             return "value";
         }
@@ -61,7 +63,7 @@ namespace BackendAPI.Controllers
             }
             catch (DbUpdateException)
             {
-
+                return StatusCode(500);
             }
             return Ok("User signed up successfully");
         }
