@@ -51,14 +51,14 @@ namespace BackendAPI.Data
             builder.Entity<Ticket>()
                 .HasOne(t => t.User)
                 .WithMany(u => u.Tickets)
-                .HasForeignKey(t => t.UserEmail)
-                .HasPrincipalKey(u => u.Email);
+                .HasForeignKey(t => t.UserID)
+                .HasPrincipalKey(u => u.ID);
 
             builder.Entity<TicketMessage>()
                 .HasOne(m => m.Ticket)
                 .WithMany(t => t.Messages)
                 .HasForeignKey(m => m.TicketId)
-                .HasPrincipalKey(t => t.Id);
+                .HasPrincipalKey(t => t.ID);
 
             builder.Entity<Hotel>()
                 .HasMany(h => h.Rooms)
@@ -78,10 +78,13 @@ namespace BackendAPI.Data
                 .HasForeignKey(rt => rt.UserId);
 
             string globalAdminRoleId = Guid.NewGuid().ToString();
+            string hotelAdminRoleId = Guid.NewGuid().ToString();
+            string hotelWorkerRoleId = Guid.NewGuid().ToString();
+
             builder.Entity<Role>().HasData(
                 new Role { ID = globalAdminRoleId, Name = "GlobalAdmin" },
-                new Role { ID = Guid.NewGuid().ToString(), Name = "HotelAdmin" },
-                new Role { ID = Guid.NewGuid().ToString(), Name = "HotelWorker" },
+                new Role { ID = hotelAdminRoleId, Name = "HotelAdmin" },
+                new Role { ID = hotelWorkerRoleId, Name = "HotelWorker" },
                 new Role { ID = Guid.NewGuid().ToString(), Name = "User" }
             );
 
@@ -101,13 +104,34 @@ namespace BackendAPI.Data
             );
 
             builder.Entity<UserRole>().HasData(
-            new UserRole
-            {
-                UserId = adminUserId,
-                RoleId = globalAdminRoleId
-            }
-        );
+                new UserRole
+                {
+                    UserId = adminUserId,
+                    RoleId = globalAdminRoleId
+                },
+                new UserRole
+                {
+                    UserId = adminUserId,
+                    RoleId = hotelAdminRoleId
+                },
+                new UserRole
+                {
+                    UserId = adminUserId,
+                    RoleId = hotelWorkerRoleId
+                }
+            );
+            
+            builder.Entity<Hotel>()
+                .HasMany(h => h.Rooms)
+                .WithOne(r => r.Hotel)
+                .HasForeignKey(r => r.HotelID)
+                .HasPrincipalKey(h => h.ID);
 
+            builder.Entity<Room>()
+                .HasMany(r => r.Bookings)
+                .WithOne(b => b.Room)
+                .HasForeignKey(b => b.RoomID)
+                .HasPrincipalKey(r => r.ID);
         }
     } 
  }
