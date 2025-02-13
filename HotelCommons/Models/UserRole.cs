@@ -13,4 +13,10 @@ namespace HotelsCommons.Models
         public string RoleId { get; set; }
         public Role Role { get; set; }
     }
+
+    public class UserRoleDTO
+    {
+        public string UserId { get; set; }
+        public string RoleId { get; set; }
+    }
 }
