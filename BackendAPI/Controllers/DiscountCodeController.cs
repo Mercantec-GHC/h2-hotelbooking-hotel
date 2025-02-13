@@ -2,10 +2,11 @@
 using HotelsCommons.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace BackendAPI.Controllers
 {
-    //[Authorize("GlobalAdmin")]
+    [Authorize("GlobalAdmin")]
     [Route("api/[controller]")]
     [ApiController]
     public class DiscountCodeController : Controller
@@ -36,6 +37,13 @@ namespace BackendAPI.Controllers
             await _Context.SaveChangesAsync();
 
             return Ok(discountCodeDTO);
+        }
+
+        [HttpGet("GetAllDiscountCodes")]
+        public async Task<ActionResult<DiscountCode>> GetDiscountCodes()
+        {
+            var discountCodes = await _Context.DiscountCodes.ToListAsync();
+            return Ok(discountCodes);
         }
 
         [HttpDelete("{id}")]
