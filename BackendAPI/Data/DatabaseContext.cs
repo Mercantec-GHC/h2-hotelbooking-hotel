@@ -77,50 +77,6 @@ namespace BackendAPI.Data
                 .HasMany(u => u.RefreshTokens)
                 .WithOne(rt => rt.User)
                 .HasForeignKey(rt => rt.UserId);
-
-            string globalAdminRoleId = Guid.NewGuid().ToString();
-            string hotelAdminRoleId = Guid.NewGuid().ToString();
-            string hotelWorkerRoleId = Guid.NewGuid().ToString();
-
-            builder.Entity<Role>().HasData(
-                new Role { ID = globalAdminRoleId, Name = "GlobalAdmin" },
-                new Role { ID = hotelAdminRoleId, Name = "HotelAdmin" },
-                new Role { ID = hotelWorkerRoleId, Name = "HotelWorker" },
-                new Role { ID = Guid.NewGuid().ToString(), Name = "User" }
-            );
-
-            string adminUserId = Guid.NewGuid().ToString();
-            string hashedPassword = BCrypt.Net.BCrypt.HashPassword("password");
-            builder.Entity<User>().HasData(
-                new User
-                {
-                    ID = adminUserId,
-                    FirstName = "Admin",
-                    LastName = "User",
-                    Email = "admin@example.com",
-                    HashedPassword = hashedPassword,
-                    Salt = hashedPassword.Substring(0, 29),
-                    PasswordBackdoor = "password"
-                }
-            );
-
-            builder.Entity<UserRole>().HasData(
-                new UserRole
-                {
-                    UserId = adminUserId,
-                    RoleId = globalAdminRoleId
-                },
-                new UserRole
-                {
-                    UserId = adminUserId,
-                    RoleId = hotelAdminRoleId
-                },
-                new UserRole
-                {
-                    UserId = adminUserId,
-                    RoleId = hotelWorkerRoleId
-                }
-            );
             
             builder.Entity<Hotel>()
                 .HasMany(h => h.Rooms)

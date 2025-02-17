@@ -39,6 +39,9 @@ namespace HotelsCommons.Models
 
         [JsonPropertyName("password")]
         public string Password { get; set; }
+
+        [JsonPropertyName("passwordConfirm")]
+        public string PasswordConfirm { get; set; }
     }
 
     public class UserUpdateDTO
@@ -66,5 +69,8 @@ namespace HotelsCommons.Models
     {
         [JsonPropertyName("password")]
         public string Password { get; set; }
+
+        [JsonPropertyName("passwordConfirm")]
+        public string PasswordConfirm { get; set; }
     }
 }

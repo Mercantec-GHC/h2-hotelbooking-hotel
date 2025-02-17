@@ -19,15 +19,23 @@ namespace BackendAPI.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] UserCreateDTO userCreateDTO)
         {
+            if (userCreateDTO.Password != userCreateDTO.PasswordConfirm)
+            {
+                BadRequest("Passwords dont match.");
+            }
+
             if (await _context.Users.AnyAsync(u => u.Email == userCreateDTO.Email))
             {
                 return Conflict("Email is already in use");
             }
+
             if (!IsPasswordSecure(userCreateDTO.Password))
             {
                 return Conflict("Password is not secure");
             }
+
             var user = MapUserCreateDTO(userCreateDTO);
+
             _context.Users.Add(user);
 
             try
@@ -115,6 +123,7 @@ namespace BackendAPI.Controllers
                     u.FirstName,
                     u.LastName,
                     u.Email,
+                    RoleHierarchy = u.UserRoles.Any() ? u.UserRoles.Max(ur => ur.Role.Hierarki) : 0,
                     Roles = u.UserRoles.Select(ur => ur.Role.Name)
                 })
                 .FirstOrDefaultAsync();
@@ -128,8 +137,8 @@ namespace BackendAPI.Controllers
         }
 
         [Authorize]
-        [HttpPatch("changeInfo")]
-        public async Task<IActionResult> SetUserPassword([FromBody] UserUpdateDTO userUpdateDTO)
+        [HttpGet("ListOtherUsers")]
+        public async Task<ActionResult> ListOtherUsers()
         {
             var userId = User.FindFirstValue("UserID");
 
@@ -138,29 +147,104 @@ namespace BackendAPI.Controllers
                 return Unauthorized();
             }
 
-            var user = await _context.Users
+            var currentUser = await _context.Users
                 .Where(u => u.ID == userId)
+                .Select(u => new
+                {
+                    u.ID,
+                    u.FirstName,
+                    u.LastName,
+                    u.Email,
+                    RoleHierarchy = u.UserRoles.Any() ? u.UserRoles.Max(ur => ur.Role.Hierarki) : 0,
+                    Roles = u.UserRoles.Select(ur => ur.Role.Name)
+                })
                 .FirstOrDefaultAsync();
 
-            if (user == null)
+            if (currentUser == null)
             {
                 return StatusCode(500);
             }
 
-            user.FirstName = userUpdateDTO.FirstName;
-            user.LastName = userUpdateDTO.LastName;
-            user.Email = userUpdateDTO.Email;
-            user.UpdatedAt = DateTime.UtcNow.AddHours(1);
+            var users = await _context.Users
+                .Select(u => new
+                {
+                    u.ID,
+                    u.FirstName,
+                    u.LastName,
+                    u.Email,
+                    RoleHierarchy = u.UserRoles.Any() ? u.UserRoles.Max(ur => ur.Role.Hierarki) : 0,
+                    Roles = u.UserRoles.Select(ur => ur.Role.Name)
+                })
+                .Where(u => u.RoleHierarchy < currentUser.RoleHierarchy)
+                .ToListAsync();
+
+            return Ok(users);
+        }
+
+        [Authorize]
+        [HttpPatch("ChangeUserInfo")]
+        public async Task<IActionResult> ChangeUserInfo([FromQuery] string? userId, [FromBody] UserUpdateDTO userUpdateDTO)
+        {
+            var currentUserId = User.FindFirstValue("UserID");
+
+            if (string.IsNullOrEmpty(currentUserId))
+            {
+                return Unauthorized();
+            }
+
+            var currentUser = await _context.Users
+                .Where(u => u.ID == currentUserId)
+                .Select(u => new
+                {
+                    RoleHierarchy = u.UserRoles.Any() ? u.UserRoles.Max(ur => ur.Role.Hierarki) : 0,
+                })
+                .FirstOrDefaultAsync();
+
+            if (currentUser == null)
+            {
+                return BadRequest("Current user not found.");
+            }
+
+            var targetUserId = string.IsNullOrEmpty(userId) ? currentUserId : userId;
+
+            var targetUser = await _context.Users
+                .Where(u => u.ID == targetUserId)
+                .Select(u => new
+                {
+                    RoleHierarchy = u.UserRoles.Any() ? u.UserRoles.Max(ur => ur.Role.Hierarki) : 0,
+                    UserEntity = u
+                })
+                .FirstOrDefaultAsync();
+
+            if (targetUser == null)
+            {
+                return BadRequest("Target user not found.");
+            }
+
+            if (currentUser.RoleHierarchy <= targetUser.RoleHierarchy && currentUserId != targetUserId)
+            {
+                return Forbid("You do not have permission to change this user's info.");
+            }
+
+            targetUser.UserEntity.FirstName = userUpdateDTO.FirstName;
+            targetUser.UserEntity.LastName = userUpdateDTO.LastName;
+            targetUser.UserEntity.Email = userUpdateDTO.Email;
+            targetUser.UserEntity.UpdatedAt = DateTime.UtcNow.AddHours(1);
 
             await _context.SaveChangesAsync();
 
-            return Ok();
+            return Ok("User info changed.");
         }
 
         [Authorize]
         [HttpPatch("changePassword")]
         public async Task<IActionResult> SetUserPassword([FromBody] PasswordDTO changePasswordDTO)
         {
+            if (changePasswordDTO.Password != changePasswordDTO.PasswordConfirm)
+            {
+                BadRequest("Passwords dont match.");
+            }
+
             var userId = User.FindFirstValue("UserID");
 
             if (string.IsNullOrEmpty(userId))
@@ -192,7 +276,7 @@ namespace BackendAPI.Controllers
 
             await _context.SaveChangesAsync();
 
-            return Ok();
+            return Ok("User password changed.");
         }
 
         private string GenerateRefreshToken()
