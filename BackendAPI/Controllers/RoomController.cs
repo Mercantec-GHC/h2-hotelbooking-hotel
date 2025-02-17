@@ -154,7 +154,7 @@ namespace BackendAPI.Controllers
             }
            
             // Folder path to save the image
-            string uploadsFolder = _configuration["path:images"] ?? Environment.GetEnvironmentVariable("IMAGES_PATH");
+            string uploadsFolder = _configuration["path:images"] ?? Program.GetEnvOrSercret("IMAGES_PATH");
             Console.WriteLine(uploadsFolder);
             // Ensure the folder exists
             if (!Directory.Exists(uploadsFolder))
