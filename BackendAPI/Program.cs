@@ -104,7 +104,7 @@ namespace BackendAPI
                 });
             });
 
-            builder.Configuration.AddUserSecrets<Program>();
+            //builder.Configuration.AddUserSecrets<Program>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -115,6 +115,8 @@ namespace BackendAPI
 
                 //app.ApplyMigrations();
             }
+
+            app.InitializeDatabase(Configuration);
 
             app.UseHttpsRedirection();
 
