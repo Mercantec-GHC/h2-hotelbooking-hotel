@@ -19,6 +19,8 @@ namespace BackendAPI.Data
         public DbSet<Hotel> Hotels { get; set; }
         public DbSet<Ticket> Tickets { get; set; }
         public DbSet<TicketMessage> TicketMessages { get; set; }
+        public DbSet<DiscountCode> DiscountCodes { get; set; }
+        public DbSet<RoomImage> RoomImages { get; set; } // Add RoomImages table
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -42,6 +44,11 @@ namespace BackendAPI.Data
                 .WithMany(r => r.UserRoles)
                 .HasForeignKey(ur => ur.RoleId);
 
+            builder.Entity<Booking>()
+                .HasOne(bu => bu.User)
+                .WithMany(b => b.Bookings)
+                .HasForeignKey(b => b.UserID);
+
             builder.Entity<Ticket>()
                 .HasOne(t => t.User)
                 .WithMany(u => u.Tickets)
@@ -53,6 +60,18 @@ namespace BackendAPI.Data
                 .WithMany(t => t.Messages)
                 .HasForeignKey(m => m.TicketId)
                 .HasPrincipalKey(t => t.ID);
+
+            builder.Entity<Hotel>()
+                .HasMany(h => h.Rooms)
+                .WithOne(r => r.Hotel)
+                .HasForeignKey(r => r.HotelID)
+                .HasPrincipalKey(h => h.ID);
+
+            builder.Entity<Room>()
+                .HasMany(r => r.Bookings)
+                .WithOne(b => b.Room)
+                .HasForeignKey(b => b.RoomID)
+                .HasPrincipalKey(r => r.ID);
 
             builder.Entity<User>()
                 .HasMany(u => u.RefreshTokens)
