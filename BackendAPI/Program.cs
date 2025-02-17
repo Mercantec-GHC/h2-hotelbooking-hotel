@@ -139,8 +139,9 @@ namespace BackendAPI
             app.Run();
         }
 
-        public static string GetEnvOrSercret(string secretPath)
+        public static string GetEnvOrSercret(string secret)
         {
+            string secretPath = Environment.GetEnvironmentVariable("CERT_PATH");
             if (!string.IsNullOrEmpty(secretPath) && File.Exists(secretPath))
             {
                 return File.ReadAllText(secretPath).Trim();
