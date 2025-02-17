@@ -4,6 +4,11 @@ using HotelsCommons.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats.Jpeg;
+using SixLabors.ImageSharp.Processing;
+using System.IO;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace BackendAPI.Controllers
 {
@@ -91,13 +96,29 @@ namespace BackendAPI.Controllers
 
         [Authorize(Roles = "HotelAdmin")]
         [HttpPost("UploadRoomImage")]
-        public async Task<IActionResult> UploadRoomImage([FromQuery] string roomId, IFormFile image)
+        public async Task<IActionResult> UploadRoomImage([FromQuery] string roomId, [FromQuery] int? width,[FromQuery] int? height, IFormFile image)
         {
+           
+
             if (image == null || image.Length == 0)
             {
                 return BadRequest("No image file uploaded.");
             }
 
+            const long MaxFileSize = 4 * 1024 * 1024; // 4MB limit
+            if (image.Length > MaxFileSize)
+            {
+                return BadRequest("Image file size exceeds 4MB.");
+            }
+            string fileExtension = Path.GetExtension(image.FileName).ToLower();
+            
+             string mimeType = image.ContentType.ToLower();
+
+            if (!MimeTypes.IsValidImageExtension(fileExtension))
+            {
+                return BadRequest("Invalid file extension. Only image formats are allowed.");
+            }
+           
             // Folder path to save the image
             string uploadsFolder = _configuration["path:images"] ?? Environment.GetEnvironmentVariable("IMAGES_PATH");
             Console.WriteLine(uploadsFolder);
@@ -114,12 +135,46 @@ namespace BackendAPI.Controllers
             string filePath = Path.Combine(uploadsFolder, uniqueFileName);
             Console.WriteLine(filePath);
 
-            // Save the image file to the server
-            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            try
             {
-                await image.CopyToAsync(fileStream);
+                using (var stream = image.OpenReadStream())
+                using (var img = await SixLabors.ImageSharp.Image.LoadAsync(stream))  // Ensures it's a valid image
+                {
+                    // Resize if width and height are provided
+                    if (width.HasValue && height.HasValue)
+                    {
+                        img.Mutate(x => x.Resize(new Size(width.Value, height.Value)));
+
+                    }
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        var jpegEncoder = new JpegEncoder { Quality = 75 };
+                        // Save the image to memory (this will give you the size after resizing)
+                        await img.SaveAsync(memoryStream, jpegEncoder);
+
+                        // Check if the image exceeds the 4MB limit after resizing
+                        if (memoryStream.Length > MaxFileSize)
+                        {
+                            return BadRequest("Image file size exceeds 4MB after resizing.");
+                        }
+
+                        // If the image is within the size limit, save it to the file system
+                        memoryStream.Seek(0, SeekOrigin.Begin); // Rewind the stream before saving
+                        using (var fileStream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await memoryStream.CopyToAsync(fileStream);
+                        }
+                    }
+
+
+                }
+            }
+            catch
+            {
+                return BadRequest("Invalid image file.");
             }
 
+           
             // Return the file path (you can return the URL if needed)
             var fileUrl = $"/RoomImages/{uniqueFileName}";
 
@@ -134,6 +189,7 @@ namespace BackendAPI.Controllers
 
             return Ok(new { ImageUrl = fileUrl });
         }
+
 
         [HttpGet("GetRoomImages")]
         public async Task<ActionResult> GetRoomImages([FromQuery] string roomId)

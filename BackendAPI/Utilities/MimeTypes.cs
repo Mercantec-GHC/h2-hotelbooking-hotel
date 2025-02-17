@@ -348,11 +348,25 @@
             { ".z", "application/x-compress" },
             { ".zip", "application/x-zip-compressed" }
         };
+        private static readonly HashSet<string> ImageExtensions = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            ".bmp", ".gif", ".ico", ".jfif", ".jpe", ".jpeg", ".jpg", ".png", ".tif", ".tiff", ".webp"
+        };
 
+        public static bool IsValidImageExtension(string extension)
+        {
+            if (string.IsNullOrWhiteSpace(extension))
+            {
+                return false;
+            }
+
+            return ImageExtensions.Contains(extension);
+        }
         public static string GetMimeType(string fileName)
         {
             var extension = Path.GetExtension(fileName);
             return MimeTypeMappings.TryGetValue(extension, out var mimeType) ? mimeType : "application/octet-stream";
         }
+
     }
 }
