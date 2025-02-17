@@ -301,12 +301,15 @@ namespace BackendAPI.Controllers
 
             claims.AddRange(userRoles.Select(role => new Claim(ClaimTypes.Role, role)));
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+            string jwtIssuer = _configuration["Jwt:Issuer"] ?? Program.GetEnvOrSercret("JWT_ISSUER");
+            string jwtKey = _configuration["Jwt:Key"] ?? Program.GetEnvOrSercret("JWT_KEY");
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
-                _configuration["Jwt:Issuer"],
-                _configuration["Jwt:Issuer"],
+                jwtIssuer,
+                jwtIssuer,
                 claims,
                 expires: expirationTime,
                 signingCredentials: creds);
