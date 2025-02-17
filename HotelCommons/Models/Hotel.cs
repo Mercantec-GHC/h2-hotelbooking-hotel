@@ -8,10 +8,12 @@
         public string Region { get; set; }
         public string City { get; set; }
         public string PostalCode { get; set; }
-        public List<Room> Rooms { get; set; }
-        public List<User> Workers { get; set; }
-        public List<Booking> Bookings { get; set; }
-        
+        public ICollection<Room> Rooms { get; set; }
+        //public List<User> Workers { get; set; }
+        public ICollection<Booking> Bookings { get; set; }
+
+        public ICollection<UserHotel> UserHotels { get; set; }
+
     }
 
     public class HotelDTO
