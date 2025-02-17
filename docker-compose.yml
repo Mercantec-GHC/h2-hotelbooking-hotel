@@ -17,6 +17,10 @@ services:
       JWT_ISSUER: /run/secrets/JWT_ISSUER
       JWT_KEY: /run/secrets/JWT_KEY
       IMAGES_PATH: "/images"
+      ADMIN_PASSWORD: /run/secrets/ADMIN_PASSWORD
+      ADMIN_FIRST_NAME: /run/secrets/ADMIN_FIRST_NAME
+      ADMIN_LAST_NAME: /run/secrets/ADMIN_LAST_NAME
+      ADMIN_EMAIL: /run/secrets/ADMIN_EMAIL
     volumes:
       - certs:/https-certs:ro
       - files:/images:ro
@@ -56,4 +60,12 @@ secrets:
   JWT_ISSUER:
     external: true
   JWT_KEY:
+    external: true
+  ADMIN_PASSWORD:
+    external: true
+  ADMIN_FIRST_NAME:
+    external: true
+  ADMIN_LAST_NAME:
+    external: true
+  ADMIN_EMAIL:
     external: true
