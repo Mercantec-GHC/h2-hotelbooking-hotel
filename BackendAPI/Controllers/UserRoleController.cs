@@ -1,5 +1,4 @@
 ﻿using BackendAPI.Data;
-using BackendAPI.Migrations;
 using HotelsCommons.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
