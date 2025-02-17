@@ -29,6 +29,11 @@ services:
       - CertPassword
       - JWT_ISSUER
       - JWT_KEY
+      - ADMIN_PASSWORD
+      - ADMIN_FIRST_NAME
+      - ADMIN_LAST_NAME
+      - ADMIN_EMAIL
+      - DATABASE_CONNECTION_STRING
 
   hotelwebapp:
     image: hotelwebapp
