@@ -144,7 +144,13 @@ namespace BackendAPI
             string secretPath = Environment.GetEnvironmentVariable("CERT_PATH");
             if (!string.IsNullOrEmpty(secretPath) && File.Exists(secretPath))
             {
-                return File.ReadAllText(secretPath).Trim();
+                //return File.ReadAllText(secretPath).Trim();
+
+                string base64EncodedString = File.ReadAllText(secretPath).Trim();
+                byte[] base64EncodedBytes = Convert.FromBase64String(base64EncodedString);
+                string decodedString = Encoding.UTF8.GetString(base64EncodedBytes);
+
+                return decodedString;
             }
             return secretPath;
         }
