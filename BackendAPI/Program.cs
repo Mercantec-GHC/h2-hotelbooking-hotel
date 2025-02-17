@@ -43,6 +43,13 @@ namespace BackendAPI
             builder.Services.AddDbContext<DatabaseContext>(options =>
             {
                 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? GetEnvOrSercret("DATABASE_CONNECTION_STRING");
+                Console.WriteLine();
+                Console.WriteLine();
+                Console.WriteLine();
+                Console.WriteLine($"Connection string: {connectionString}");
+                Console.WriteLine();
+                Console.WriteLine();
+                Console.WriteLine();
                 options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
             });
 
