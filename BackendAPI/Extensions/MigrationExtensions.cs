@@ -28,10 +28,10 @@ namespace BackendAPI.Extensions
                     string hotelWorkerRoleId = Guid.NewGuid().ToString();
 
                     context.Roles.AddRange(
-                        new Role { ID = globalAdminRoleId, Name = "GlobalAdmin" },
-                        new Role { ID = concernAdminRoleId, Name = "ConcernAdmin" },
-                        new Role { ID = hotelAdminRoleId, Name = "HotelAdmin" },
-                        new Role { ID = hotelWorkerRoleId, Name = "HotelWorker" }
+                        new Role { ID = globalAdminRoleId, Name = "GlobalAdmin", Hierarki = 4 },
+                        new Role { ID = concernAdminRoleId, Name = "ConcernAdmin", Hierarki = 3 },
+                        new Role { ID = hotelAdminRoleId, Name = "HotelAdmin", Hierarki = 2 },
+                        new Role { ID = hotelWorkerRoleId, Name = "HotelWorker", Hierarki = 1 }
                     );
 
                     string adminUserId = Guid.NewGuid().ToString();
