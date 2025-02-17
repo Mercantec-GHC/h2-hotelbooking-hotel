@@ -42,7 +42,7 @@ namespace BackendAPI
             // Add services to the container.
             builder.Services.AddDbContext<DatabaseContext>(options =>
             {
-                var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+                var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? GetEnvOrSercret("DATABASE_CONNECTION_STRING");
                 options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
             });
 
