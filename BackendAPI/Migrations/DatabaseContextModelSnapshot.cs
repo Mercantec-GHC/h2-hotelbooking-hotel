@@ -22,21 +22,6 @@ namespace BackendAPI.Migrations
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
-            modelBuilder.Entity("HotelUser", b =>
-                {
-                    b.Property<string>("HotelsID")
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<string>("WorkersID")
-                        .HasColumnType("varchar(255)");
-
-                    b.HasKey("HotelsID", "WorkersID");
-
-                    b.HasIndex("WorkersID");
-
-                    b.ToTable("HotelUser");
-                });
-
             modelBuilder.Entity("HotelsCommons.Models.Booking", b =>
                 {
                     b.Property<string>("ID")
@@ -137,7 +122,12 @@ namespace BackendAPI.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime(6)");
 
+                    b.Property<string>("UserID")
+                        .HasColumnType("varchar(255)");
+
                     b.HasKey("ID");
+
+                    b.HasIndex("UserID");
 
                     b.ToTable("Hotels");
                 });
@@ -344,6 +334,21 @@ namespace BackendAPI.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("HotelsCommons.Models.UserHotel", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("HotelId")
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("UserId", "HotelId");
+
+                    b.HasIndex("HotelId");
+
+                    b.ToTable("UserHotels");
+                });
+
             modelBuilder.Entity("HotelsCommons.Models.UserRole", b =>
                 {
                     b.Property<string>("UserId")
@@ -357,21 +362,6 @@ namespace BackendAPI.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("UserRoles");
-                });
-
-            modelBuilder.Entity("HotelUser", b =>
-                {
-                    b.HasOne("HotelsCommons.Models.Hotel", null)
-                        .WithMany()
-                        .HasForeignKey("HotelsID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("HotelsCommons.Models.User", null)
-                        .WithMany()
-                        .HasForeignKey("WorkersID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("HotelsCommons.Models.Booking", b =>
@@ -395,6 +385,13 @@ namespace BackendAPI.Migrations
                     b.Navigation("Room");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("HotelsCommons.Models.Hotel", b =>
+                {
+                    b.HasOne("HotelsCommons.Models.User", null)
+                        .WithMany("Hotels")
+                        .HasForeignKey("UserID");
                 });
 
             modelBuilder.Entity("HotelsCommons.Models.RefreshToken", b =>
@@ -460,6 +457,25 @@ namespace BackendAPI.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("HotelsCommons.Models.UserHotel", b =>
+                {
+                    b.HasOne("HotelsCommons.Models.Hotel", "Hotel")
+                        .WithMany("UserHotels")
+                        .HasForeignKey("HotelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HotelsCommons.Models.User", "User")
+                        .WithMany("UserHotels")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Hotel");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("HotelsCommons.Models.UserRole", b =>
                 {
                     b.HasOne("HotelsCommons.Models.Role", "Role")
@@ -484,6 +500,8 @@ namespace BackendAPI.Migrations
                     b.Navigation("Bookings");
 
                     b.Navigation("Rooms");
+
+                    b.Navigation("UserHotels");
                 });
 
             modelBuilder.Entity("HotelsCommons.Models.Role", b =>
@@ -507,9 +525,13 @@ namespace BackendAPI.Migrations
                 {
                     b.Navigation("Bookings");
 
+                    b.Navigation("Hotels");
+
                     b.Navigation("RefreshTokens");
 
                     b.Navigation("Tickets");
+
+                    b.Navigation("UserHotels");
 
                     b.Navigation("UserRoles");
                 });

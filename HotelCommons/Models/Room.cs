@@ -22,7 +22,7 @@ namespace HotelsCommons.Models
     {
         public string HotelID { get; set; }
         public float DailyPrice { get; set; }
-        public List<IFormFile> Images { get; set; } = new List<IFormFile>();
+        
 
     }
 }

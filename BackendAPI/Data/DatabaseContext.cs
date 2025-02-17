@@ -17,6 +17,7 @@ namespace BackendAPI.Data
         public DbSet<Room> Rooms { get; set; }
         public DbSet<Booking> Bookings { get; set; }
         public DbSet<Hotel> Hotels { get; set; }
+        public DbSet<UserHotel> UserHotels { get; set; }
         public DbSet<Ticket> Tickets { get; set; }
         public DbSet<TicketMessage> TicketMessages { get; set; }
         public DbSet<DiscountCode> DiscountCodes { get; set; }
@@ -89,6 +90,19 @@ namespace BackendAPI.Data
                 .WithOne(b => b.Room)
                 .HasForeignKey(b => b.RoomID)
                 .HasPrincipalKey(r => r.ID);
+
+            builder.Entity<UserHotel>()
+                .HasKey(ur => new { ur.UserId, ur.HotelId });
+
+            builder.Entity<UserHotel>()
+                .HasOne(ur => ur.User)
+                .WithMany(u => u.UserHotels)
+                .HasForeignKey(ur => ur.UserId);
+
+            builder.Entity<UserHotel>()
+                .HasOne(ur => ur.Hotel)
+                .WithMany(r => r.UserHotels)
+                .HasForeignKey(ur => ur.HotelId);
         }
     } 
  }
