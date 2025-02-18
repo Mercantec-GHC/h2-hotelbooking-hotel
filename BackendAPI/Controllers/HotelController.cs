@@ -8,13 +8,12 @@ using System.Security.Claims;
 
 namespace BackendAPI.Controllers
 {
-    [Authorize(Roles = "GlobalAdmin")]
     [Route("api/[controller]")]
     [ApiController]
     public class HotelController(DatabaseContext _context) : Controller
     {
-       
 
+        [Authorize(Roles = "GlobalAdmin")]
         [HttpPost("CreateHotel")]
         public async Task<ActionResult> CreateHotel([FromBody]CreateHotelDTO hotelDto)
         {
@@ -169,7 +168,7 @@ namespace BackendAPI.Controllers
             return Ok(hotel);
         }
 
-
+        [Authorize(Roles = "GlobalAdmin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateHotel(CreateHotelDTO hotelDTO, string id)
         {
@@ -188,6 +187,7 @@ namespace BackendAPI.Controllers
             return Ok(hotel);
         }
 
+        [Authorize(Roles = "GlobalAdmin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteHotel(string id)
         {
