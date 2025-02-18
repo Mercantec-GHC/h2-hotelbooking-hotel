@@ -43,13 +43,6 @@ namespace BackendAPI
             builder.Services.AddDbContext<DatabaseContext>(options =>
             {
                 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? GetEnvOrSercret("DATABASE_CONNECTION_STRING");
-                Console.WriteLine();
-                Console.WriteLine();
-                Console.WriteLine();
-                Console.WriteLine($"Connection string: {connectionString}");
-                Console.WriteLine();
-                Console.WriteLine();
-                Console.WriteLine();
                 options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
             });
 
@@ -117,6 +110,8 @@ namespace BackendAPI
             //builder.Configuration.AddUserSecrets<Program>();
             var app = builder.Build();
 
+            app.UseCors(x => x.AllowAnyMethod().AllowAnyHeader().SetIsOriginAllowed(origin => true).AllowCredentials());
+
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
@@ -139,20 +134,14 @@ namespace BackendAPI
             app.Run();
         }
 
-        public static string GetEnvOrSercret(string secret)
+        public static string? GetEnvOrSercret(string secret)
         {
-            string secretPath = Environment.GetEnvironmentVariable(secret);
+            string? secretPath = Environment.GetEnvironmentVariable(secret);
             if (!string.IsNullOrEmpty(secretPath) && File.Exists(secretPath))
             {
                 return File.ReadAllText(secretPath).Trim();
-
-                //string base64EncodedString = File.ReadAllText(secretPath).Trim();
-                //byte[] base64EncodedBytes = Convert.FromBase64String(base64EncodedString);
-                //string decodedString = Encoding.UTF8.GetString(base64EncodedBytes);
-
-                //return decodedString;
             }
-            return secretPath;
+            return null;
         }
     }
 }
