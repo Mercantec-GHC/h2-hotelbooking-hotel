@@ -21,6 +21,7 @@ services:
       ADMIN_FIRST_NAME: /run/secrets/ADMIN_FIRST_NAME
       ADMIN_LAST_NAME: /run/secrets/ADMIN_LAST_NAME
       ADMIN_EMAIL: /run/secrets/ADMIN_EMAIL
+      DATABASE_CONNECTION_STRING: /run/secrets/DATABASE_CONNECTION_STRING
     volumes:
       - certs:/https-certs:ro
       - files:/images:ro
@@ -28,6 +29,11 @@ services:
       - CertPassword
       - JWT_ISSUER
       - JWT_KEY
+      - ADMIN_PASSWORD
+      - ADMIN_FIRST_NAME
+      - ADMIN_LAST_NAME
+      - ADMIN_EMAIL
+      - DATABASE_CONNECTION_STRING
 
   hotelwebapp:
     image: hotelwebapp
@@ -68,4 +74,6 @@ secrets:
   ADMIN_LAST_NAME:
     external: true
   ADMIN_EMAIL:
+    external: true
+  DATABASE_CONNECTION_STRING:
     external: true
