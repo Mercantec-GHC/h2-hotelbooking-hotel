@@ -4,20 +4,16 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Buffers;
+using System.Security.Claims;
 
 namespace BackendAPI.Controllers
 {
     [Authorize(Roles = "GlobalAdmin")]
     [Route("api/[controller]")]
     [ApiController]
-    public class HotelController : Controller
+    public class HotelController(DatabaseContext _context) : Controller
     {
-        private readonly DatabaseContext _Context;
-
-        public HotelController(DatabaseContext context)
-        {
-            _Context = context;
-        }
+       
 
         [HttpPost("CreateHotel")]
         public async Task<ActionResult> CreateHotel([FromBody]CreateHotelDTO hotelDto)
@@ -33,22 +29,27 @@ namespace BackendAPI.Controllers
                 PostalCode = hotelDto.PostalCode,
                 CreatedAt = DateTime.UtcNow.AddHours(1),
                 UpdatedAt = DateTime.UtcNow.AddHours(1),
+                
             };
-            _Context.Hotels.Add(hotel);
-            await _Context.SaveChangesAsync();
+            _context.Hotels.Add(hotel);
+            await _context.SaveChangesAsync();
 
             return Ok(hotelDto);
         }
 
         [HttpGet("GetAllHotels")]
-        public async Task<ActionResult<Hotel>> GetHotels()
+        public async Task<ActionResult<List<HotelDTO>>> GetHotels()
         {
+            var hoteler = await _context.Hotels
+                .Include(h => h.Rooms)
+                    .ThenInclude(r => r.Bookings)
+               
+                .Include(h => h.Rooms)
+                    
+                .ToListAsync();
 
-            var hoteler = await _Context.Hotels.Include(h => h.Rooms)
-                .ThenInclude(r => r.Bookings).ToListAsync();
-            var hotels = hoteler    
-                .Select(h => new Hotel
-                {
+            var hotels = hoteler.Select(h => new HotelDTO
+            {
                 ID = h.ID,
                 Name = h.Name,
                 Description = h.Description,
@@ -58,17 +59,17 @@ namespace BackendAPI.Controllers
                 PostalCode = h.PostalCode,
                 CreatedAt = h.CreatedAt,
                 UpdatedAt = h.UpdatedAt,
-                Rooms = h.Rooms
-                .Select(r => new Room
+               
+                Rooms = h.Rooms.Select(r => new RoomDTO
                 {
-                    DailyPrice = r.DailyPrice,
                     ID = r.ID,
-                    HotelID = r.HotelID                    
+                    HotelID = r.HotelID,
+                    DailyPrice = r.DailyPrice,
+                  
+
                 }).ToList()
             }).ToList();
 
-
-           
             return Ok(hotels);
         }
 
@@ -76,7 +77,7 @@ namespace BackendAPI.Controllers
         public async Task<ActionResult<Hotel>> HotelSearch( string searchValue)
         {
 
-            var hotels = await _Context.Hotels
+            var hotels = await _context.Hotels
             .Where(h => h.Name == searchValue || h.Country == searchValue || h.City == searchValue || h.Region == searchValue || h.PostalCode == searchValue) 
             .Include(h => h.Rooms)
             .ThenInclude(r => r.Bookings)
@@ -126,7 +127,7 @@ namespace BackendAPI.Controllers
         public async Task<ActionResult<Hotel>> GetHotelsById(string id)
         {
            
-            var hoteler = await _Context.Hotels
+            var hoteler = await _context.Hotels
                 .Where(h => h.ID == id)
                 .Include(h => h.Rooms)
                 .ThenInclude(r => r.Bookings).FirstOrDefaultAsync();
@@ -172,7 +173,7 @@ namespace BackendAPI.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateHotel(CreateHotelDTO hotelDTO, string id)
         {
-            var hotel = await _Context.Hotels.FindAsync(id);
+            var hotel = await _context.Hotels.FindAsync(id);
 
             //Updates properties of the room
             hotel.Name = hotelDTO.Name;
@@ -182,7 +183,7 @@ namespace BackendAPI.Controllers
             hotel.Region = hotelDTO.Region;
             hotel.PostalCode = hotelDTO.PostalCode;
 
-            await _Context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
 
             return Ok(hotel);
         }
@@ -190,13 +191,201 @@ namespace BackendAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteHotel(string id)
         {
-            var hotel = await _Context.Hotels.FindAsync(id);
+            var hotel = await _context.Hotels.FindAsync(id);
 
-            _Context.Hotels.Remove(hotel);
+            _context.Hotels.Remove(hotel);
 
-            await _Context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
 
             return StatusCode(200, $"Hotel deleted succesfully {hotel}");
+        }
+
+        [Authorize]
+        [HttpPost("AddUserHotels")]
+        public async Task<ActionResult> AddUserHotels([FromBody] UserHotelsDTO userHotelsDTO)
+        {
+            var userId = User.FindFirstValue("UserID");
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized();
+            }
+
+            var currentUser = await _context.Users
+                .Where(u => u.ID == userId)
+                .Select(u => new
+                {
+                    u.ID,
+                    RoleHierarchy = u.UserRoles.Any() ? u.UserRoles.Max(ur => ur.Role.Hierarki) : 0,
+                })
+                .FirstOrDefaultAsync();
+
+            if (currentUser == null)
+            {
+                return BadRequest("Current user not found.");
+            }
+
+            var targetUser = await _context.Users
+                .Where(u => u.ID == userHotelsDTO.UserId)
+                .Select(u => new
+                {
+                    u.ID,
+                    RoleHierarchy = u.UserRoles.Any() ? u.UserRoles.Max(ur => ur.Role.Hierarki) : 0,
+                    ExistingHotelIds = u.UserHotels.Select(ur => ur.HotelId).ToList()
+                })
+                .FirstOrDefaultAsync();
+
+            if (targetUser == null)
+            {
+                return BadRequest("Target user not found.");
+            }
+
+            foreach (var hotelId in userHotelsDTO.HotelIds)
+            {
+                var Hotels = await _context.Hotels
+                    .FirstOrDefaultAsync(r => r.ID == hotelId);
+
+                if (Hotels == null)
+                {
+                    return BadRequest($"Role with ID {hotelId} not found.");
+                }
+                               
+                if (targetUser.ExistingHotelIds.Contains(hotelId))
+                {
+                    return BadRequest($"User with ID {userHotelsDTO.UserId} already has hotel with ID {hotelId}.");
+                }
+
+                var userHotel = new UserHotel()
+                {
+                    UserId = userHotelsDTO.UserId,
+                    HotelId = hotelId,
+                };
+
+                _context.UserHotels.Add(userHotel);
+            }
+
+            await _context.SaveChangesAsync();
+
+            return Ok("Hotels successfully added!");
+        }
+
+        [Authorize]
+        [HttpGet("GetUserHotels")]
+        public async Task<ActionResult> GetUserHotels([FromQuery] string userId)
+        {
+            var currentUserId = User.FindFirstValue("UserID");
+
+            if (string.IsNullOrEmpty(currentUserId))
+            {
+                return Unauthorized();
+            }
+
+            var currentUser = await _context.Users
+                .Where(u => u.ID == currentUserId)
+                .Select(u => new
+                {
+                    RoleHierarchy = u.UserRoles.Any() ? u.UserRoles.Max(ur => ur.Role.Hierarki) : 0,
+                })
+                .FirstOrDefaultAsync();
+
+            if (currentUser == null)
+            {
+                return BadRequest("Current user not found.");
+            }
+
+            var targetUser = await _context.Users
+                .Where(u => u.ID == userId)
+                .Select(u => new
+                {
+                    RoleHierarchy = u.UserRoles.Any() ? u.UserRoles.Max(ur => ur.Role.Hierarki) : 0,
+                })
+                .FirstOrDefaultAsync();
+
+            if (targetUser == null)
+            {
+                return BadRequest("Target user not found.");
+            }
+
+            if (currentUser.RoleHierarchy <= targetUser.RoleHierarchy)
+            {
+                return Forbid("You do not have permission to view this user's hotels.");
+            }
+
+            var userHotels = await _context.UserHotels
+                .Where(ur => ur.UserId == userId)
+                .Select(ur => ur.Hotel)
+                .Select(r => new
+                {
+                    r.Name,
+                    r.ID
+                })
+                .ToListAsync();
+
+            return Ok(userHotels);
+        }
+
+        [Authorize]
+        [HttpDelete("RemoveUserHotels")]
+        public async Task<ActionResult> RemoveUserHotels([FromBody] UserHotelsDTO userHotelsDTO)
+        {
+            var userId = User.FindFirstValue("UserID");
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized();
+            }
+
+            var currentUser = await _context.Users
+                .Where(u => u.ID == userId)
+                .Select(u => new
+                {
+                    RoleHierarchy = u.UserRoles.Any() ? u.UserRoles.Max(ur => ur.Role.Hierarki) : 0,
+                })
+                .FirstOrDefaultAsync();
+
+            if (currentUser == null)
+            {
+                return BadRequest("Current user not found.");
+            }
+
+            var targetUser = await _context.Users
+                .Where(u => u.ID == userHotelsDTO.UserId)
+                .Select(u => new
+                {
+                    RoleHierarchy = u.UserRoles.Any() ? u.UserRoles.Max(ur => ur.Role.Hierarki) : 0,
+                    ExistingHotelIds = u.UserHotels.Select(ur => ur.HotelId).ToList()
+                })
+                .FirstOrDefaultAsync();
+
+            if (targetUser == null)
+            {
+                return BadRequest("Target user not found.");
+            }
+
+            foreach (var hotelId in userHotelsDTO.HotelIds)
+            {
+                var hotel = await _context.Hotels
+                    .FirstOrDefaultAsync(r => r.ID == hotelId);
+
+                if (hotel == null)
+                {
+                    return BadRequest($"Hotel with ID {hotelId} not found.");
+                }
+               
+                var userHotel = await _context.UserHotels
+                    .FirstOrDefaultAsync(ur => ur.UserId == userHotelsDTO.UserId && ur.HotelId == hotelId);
+
+                if (userHotel == null)
+                {
+                    return BadRequest($"User with ID {userHotelsDTO.UserId} does not have hotel with ID {hotelId}.");
+                }
+
+                _context.UserHotels.Remove(userHotel);
+            }
+
+            await _context.SaveChangesAsync();
+
+            return Ok("Hotels successfully removed!");
         }
     }
 }

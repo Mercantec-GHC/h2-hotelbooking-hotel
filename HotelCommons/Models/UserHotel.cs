@@ -6,17 +6,17 @@ using System.Threading.Tasks;
 
 namespace HotelsCommons.Models
 {
-    public class UserRole
+     public class UserHotel
     {
         public string UserId { get; set; }
         public User User { get; set; }
-        public string RoleId { get; set; }
-        public Role Role { get; set; }
+        public string HotelId { get; set; }
+        public Hotel Hotel { get; set; }
     }
 
-    public class UserRoleDTO
+    public class UserHotelsDTO
     {
         public string UserId { get; set; }
-        public List<String> RoleId { get; set; }
+        public List<String> HotelIds { get; set; }
     }
 }

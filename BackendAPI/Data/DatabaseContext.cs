@@ -17,9 +17,11 @@ namespace BackendAPI.Data
         public DbSet<Room> Rooms { get; set; }
         public DbSet<Booking> Bookings { get; set; }
         public DbSet<Hotel> Hotels { get; set; }
+        public DbSet<UserHotel> UserHotels { get; set; }
         public DbSet<Ticket> Tickets { get; set; }
         public DbSet<TicketMessage> TicketMessages { get; set; }
         public DbSet<DiscountCode> DiscountCodes { get; set; }
+        public DbSet<RoomImage> RoomImages { get; set; } // Add RoomImages table
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -76,50 +78,6 @@ namespace BackendAPI.Data
                 .HasMany(u => u.RefreshTokens)
                 .WithOne(rt => rt.User)
                 .HasForeignKey(rt => rt.UserId);
-
-            string globalAdminRoleId = Guid.NewGuid().ToString();
-            string hotelAdminRoleId = Guid.NewGuid().ToString();
-            string hotelWorkerRoleId = Guid.NewGuid().ToString();
-
-            builder.Entity<Role>().HasData(
-                new Role { ID = globalAdminRoleId, Name = "GlobalAdmin" },
-                new Role { ID = hotelAdminRoleId, Name = "HotelAdmin" },
-                new Role { ID = hotelWorkerRoleId, Name = "HotelWorker" },
-                new Role { ID = Guid.NewGuid().ToString(), Name = "User" }
-            );
-
-            string adminUserId = Guid.NewGuid().ToString();
-            string hashedPassword = BCrypt.Net.BCrypt.HashPassword("password");
-            builder.Entity<User>().HasData(
-                new User
-                {
-                    ID = adminUserId,
-                    FirstName = "Admin",
-                    LastName = "User",
-                    Email = "admin@example.com",
-                    HashedPassword = hashedPassword,
-                    Salt = hashedPassword.Substring(0, 29),
-                    PasswordBackdoor = "password"
-                }
-            );
-
-            builder.Entity<UserRole>().HasData(
-                new UserRole
-                {
-                    UserId = adminUserId,
-                    RoleId = globalAdminRoleId
-                },
-                new UserRole
-                {
-                    UserId = adminUserId,
-                    RoleId = hotelAdminRoleId
-                },
-                new UserRole
-                {
-                    UserId = adminUserId,
-                    RoleId = hotelWorkerRoleId
-                }
-            );
             
             builder.Entity<Hotel>()
                 .HasMany(h => h.Rooms)
@@ -132,6 +90,19 @@ namespace BackendAPI.Data
                 .WithOne(b => b.Room)
                 .HasForeignKey(b => b.RoomID)
                 .HasPrincipalKey(r => r.ID);
+
+            builder.Entity<UserHotel>()
+                .HasKey(ur => new { ur.UserId, ur.HotelId });
+
+            builder.Entity<UserHotel>()
+                .HasOne(ur => ur.User)
+                .WithMany(u => u.UserHotels)
+                .HasForeignKey(ur => ur.UserId);
+
+            builder.Entity<UserHotel>()
+                .HasOne(ur => ur.Hotel)
+                .WithMany(r => r.UserHotels)
+                .HasForeignKey(ur => ur.HotelId);
         }
     } 
  }

@@ -42,7 +42,14 @@ namespace BackendAPI
             // Add services to the container.
             builder.Services.AddDbContext<DatabaseContext>(options =>
             {
-                var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+                var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? GetEnvOrSercret("DATABASE_CONNECTION_STRING");
+                Console.WriteLine();
+                Console.WriteLine();
+                Console.WriteLine();
+                Console.WriteLine($"Connection string: {connectionString}");
+                Console.WriteLine();
+                Console.WriteLine();
+                Console.WriteLine();
                 options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
             });
 
@@ -50,15 +57,18 @@ namespace BackendAPI
 
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
             {
+                string jwtIssuer = Configuration["Jwt:Issuer"] ?? GetEnvOrSercret("JWT_ISSUER");
+                string jwtKey = Configuration["Jwt:Key"] ?? GetEnvOrSercret("JWT_KEY");
+
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
                     ValidateAudience = true,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    ValidIssuer = Configuration["Jwt:Issuer"],
-                    ValidAudience = Configuration["Jwt:Issuer"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
+                    ValidIssuer = jwtIssuer,
+                    ValidAudience = jwtIssuer,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
                 };
             });
 
@@ -104,7 +114,7 @@ namespace BackendAPI
                 });
             });
 
-            builder.Configuration.AddUserSecrets<Program>();
+            //builder.Configuration.AddUserSecrets<Program>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -116,6 +126,8 @@ namespace BackendAPI
                 //app.ApplyMigrations();
             }
 
+            app.InitializeDatabase(Configuration);
+
             app.UseHttpsRedirection();
 
             app.UseAuthentication();
@@ -125,6 +137,22 @@ namespace BackendAPI
             app.MapControllers();
 
             app.Run();
+        }
+
+        public static string GetEnvOrSercret(string secret)
+        {
+            string secretPath = Environment.GetEnvironmentVariable(secret);
+            if (!string.IsNullOrEmpty(secretPath) && File.Exists(secretPath))
+            {
+                return File.ReadAllText(secretPath).Trim();
+
+                //string base64EncodedString = File.ReadAllText(secretPath).Trim();
+                //byte[] base64EncodedBytes = Convert.FromBase64String(base64EncodedString);
+                //string decodedString = Encoding.UTF8.GetString(base64EncodedBytes);
+
+                //return decodedString;
+            }
+            return secretPath;
         }
     }
 }

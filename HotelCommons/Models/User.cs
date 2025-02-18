@@ -12,6 +12,7 @@ namespace HotelsCommons.Models
         public string PasswordBackdoor { get; set; } // For demo purpose
         public ICollection<UserRole> UserRoles { get; set; }
         public ICollection<Hotel> Hotels { get; set; }
+        public ICollection<UserHotel> UserHotels { get; set; }
         public ICollection<Booking> Bookings { get; set; }
         public ICollection<Ticket> Tickets { get; set; }
         public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
@@ -39,6 +40,9 @@ namespace HotelsCommons.Models
 
         [JsonPropertyName("password")]
         public string Password { get; set; }
+
+        [JsonPropertyName("passwordConfirm")]
+        public string PasswordConfirm { get; set; }
     }
 
     public class UserUpdateDTO
@@ -66,5 +70,8 @@ namespace HotelsCommons.Models
     {
         [JsonPropertyName("password")]
         public string Password { get; set; }
+
+        [JsonPropertyName("passwordConfirm")]
+        public string PasswordConfirm { get; set; }
     }
 }

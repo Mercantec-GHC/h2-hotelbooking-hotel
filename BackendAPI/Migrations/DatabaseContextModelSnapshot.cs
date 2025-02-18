@@ -22,21 +22,6 @@ namespace BackendAPI.Migrations
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
-            modelBuilder.Entity("HotelUser", b =>
-                {
-                    b.Property<string>("HotelsID")
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<string>("WorkersID")
-                        .HasColumnType("varchar(255)");
-
-                    b.HasKey("HotelsID", "WorkersID");
-
-                    b.HasIndex("WorkersID");
-
-                    b.ToTable("HotelUser");
-                });
-
             modelBuilder.Entity("HotelsCommons.Models.Booking", b =>
                 {
                     b.Property<string>("ID")
@@ -79,6 +64,29 @@ namespace BackendAPI.Migrations
                     b.ToTable("Bookings");
                 });
 
+            modelBuilder.Entity("HotelsCommons.Models.DiscountCode", b =>
+                {
+                    b.Property<string>("ID")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("Percentage")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("DiscountCodes");
+                });
+
             modelBuilder.Entity("HotelsCommons.Models.Hotel", b =>
                 {
                     b.Property<string>("ID")
@@ -114,9 +122,43 @@ namespace BackendAPI.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime(6)");
 
+                    b.Property<string>("UserID")
+                        .HasColumnType("varchar(255)");
+
                     b.HasKey("ID");
 
+                    b.HasIndex("UserID");
+
                     b.ToTable("Hotels");
+                });
+
+            modelBuilder.Entity("HotelsCommons.Models.RefreshToken", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("ExpiryDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<bool>("IsRevoked")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("RefreshTokens");
                 });
 
             modelBuilder.Entity("HotelsCommons.Models.Role", b =>
@@ -126,6 +168,9 @@ namespace BackendAPI.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
+
+                    b.Property<int>("Hierarki")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -137,36 +182,6 @@ namespace BackendAPI.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("Roles");
-
-                    b.HasData(
-                        new
-                        {
-                            ID = "22e8f8ef-fb16-4e0a-877e-fed313c1fb04",
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "GlobalAdmin",
-                            UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            ID = "13a62af5-0156-4e62-8868-9ec8c397dcc0",
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "HotelAdmin",
-                            UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            ID = "64e49d22-7778-433f-8c82-da5bccef3b69",
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "HotelWorker",
-                            UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            ID = "1ae09e40-a029-4ad1-8d08-94701dfd9aed",
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "User",
-                            UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        });
                 });
 
             modelBuilder.Entity("HotelsCommons.Models.Room", b =>
@@ -194,26 +209,66 @@ namespace BackendAPI.Migrations
                     b.ToTable("Rooms");
                 });
 
-            modelBuilder.Entity("HotelsCommons.Models.Ticket", b =>
+            modelBuilder.Entity("HotelsCommons.Models.RoomImage", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("varchar(255)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<string>("UserEmail")
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("RoomID")
                         .IsRequired()
                         .HasColumnType("varchar(255)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserEmail");
+                    b.HasIndex("RoomID");
+
+                    b.ToTable("RoomImages");
+                });
+
+            modelBuilder.Entity("HotelsCommons.Models.Ticket", b =>
+                {
+                    b.Property<string>("ID")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Topic")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("UserID")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("UserID");
 
                     b.ToTable("Tickets");
                 });
 
             modelBuilder.Entity("HotelsCommons.Models.TicketMessage", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<string>("ID")
                         .HasColumnType("varchar(255)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("Message")
                         .IsRequired()
@@ -223,9 +278,18 @@ namespace BackendAPI.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(255)");
 
-                    b.HasKey("Id");
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("UserID")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("ID");
 
                     b.HasIndex("TicketId");
+
+                    b.HasIndex("UserID");
 
                     b.ToTable("TicketMessages");
                 });
@@ -240,7 +304,7 @@ namespace BackendAPI.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -268,20 +332,21 @@ namespace BackendAPI.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("Users");
+                });
 
-                    b.HasData(
-                        new
-                        {
-                            ID = "e447005d-abe5-484d-aa3f-842c66d46c1b",
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Email = "admin@example.com",
-                            FirstName = "Admin",
-                            HashedPassword = "$2a$11$VDCY1M1dIGldYNb2I/zKg.fETb2uh8XZq07BFDCqzv8iuIIbWoeEK",
-                            LastName = "User",
-                            PasswordBackdoor = "password",
-                            Salt = "$2a$11$VDCY1M1dIGldYNb2I/zKg.",
-                            UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        });
+            modelBuilder.Entity("HotelsCommons.Models.UserHotel", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("HotelId")
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("UserId", "HotelId");
+
+                    b.HasIndex("HotelId");
+
+                    b.ToTable("UserHotels");
                 });
 
             modelBuilder.Entity("HotelsCommons.Models.UserRole", b =>
@@ -297,28 +362,6 @@ namespace BackendAPI.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("UserRoles");
-
-                    b.HasData(
-                        new
-                        {
-                            UserId = "e447005d-abe5-484d-aa3f-842c66d46c1b",
-                            RoleId = "22e8f8ef-fb16-4e0a-877e-fed313c1fb04"
-                        });
-                });
-
-            modelBuilder.Entity("HotelUser", b =>
-                {
-                    b.HasOne("HotelsCommons.Models.Hotel", null)
-                        .WithMany()
-                        .HasForeignKey("HotelsID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("HotelsCommons.Models.User", null)
-                        .WithMany()
-                        .HasForeignKey("WorkersID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("HotelsCommons.Models.Booking", b =>
@@ -344,6 +387,24 @@ namespace BackendAPI.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("HotelsCommons.Models.Hotel", b =>
+                {
+                    b.HasOne("HotelsCommons.Models.User", null)
+                        .WithMany("Hotels")
+                        .HasForeignKey("UserID");
+                });
+
+            modelBuilder.Entity("HotelsCommons.Models.RefreshToken", b =>
+                {
+                    b.HasOne("HotelsCommons.Models.User", "User")
+                        .WithMany("RefreshTokens")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("HotelsCommons.Models.Room", b =>
                 {
                     b.HasOne("HotelsCommons.Models.Hotel", "Hotel")
@@ -355,12 +416,22 @@ namespace BackendAPI.Migrations
                     b.Navigation("Hotel");
                 });
 
+            modelBuilder.Entity("HotelsCommons.Models.RoomImage", b =>
+                {
+                    b.HasOne("HotelsCommons.Models.Room", "Room")
+                        .WithMany("Images")
+                        .HasForeignKey("RoomID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Room");
+                });
+
             modelBuilder.Entity("HotelsCommons.Models.Ticket", b =>
                 {
                     b.HasOne("HotelsCommons.Models.User", "User")
                         .WithMany("Tickets")
-                        .HasForeignKey("UserEmail")
-                        .HasPrincipalKey("Email")
+                        .HasForeignKey("UserID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -375,7 +446,34 @@ namespace BackendAPI.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("HotelsCommons.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Ticket");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("HotelsCommons.Models.UserHotel", b =>
+                {
+                    b.HasOne("HotelsCommons.Models.Hotel", "Hotel")
+                        .WithMany("UserHotels")
+                        .HasForeignKey("HotelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HotelsCommons.Models.User", "User")
+                        .WithMany("UserHotels")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Hotel");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("HotelsCommons.Models.UserRole", b =>
@@ -402,6 +500,8 @@ namespace BackendAPI.Migrations
                     b.Navigation("Bookings");
 
                     b.Navigation("Rooms");
+
+                    b.Navigation("UserHotels");
                 });
 
             modelBuilder.Entity("HotelsCommons.Models.Role", b =>
@@ -412,6 +512,8 @@ namespace BackendAPI.Migrations
             modelBuilder.Entity("HotelsCommons.Models.Room", b =>
                 {
                     b.Navigation("Bookings");
+
+                    b.Navigation("Images");
                 });
 
             modelBuilder.Entity("HotelsCommons.Models.Ticket", b =>
@@ -423,7 +525,13 @@ namespace BackendAPI.Migrations
                 {
                     b.Navigation("Bookings");
 
+                    b.Navigation("Hotels");
+
+                    b.Navigation("RefreshTokens");
+
                     b.Navigation("Tickets");
+
+                    b.Navigation("UserHotels");
 
                     b.Navigation("UserRoles");
                 });
