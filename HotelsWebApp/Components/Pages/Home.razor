@@ -67,7 +67,7 @@ else
         try
         {
             var client = HttpClientFactory.CreateClient();
-            hoteler = await client.GetFromJsonAsync<List<HotelDTO>>("https://localhost:7090/api/Hotel/GetAllHotels");
+            hoteler = await client.GetFromJsonAsync<List<HotelDTO>>("https://10.135.71.51:5101/api/Hotel/GetAllHotels");
         }
         catch (Exception ex)
         {

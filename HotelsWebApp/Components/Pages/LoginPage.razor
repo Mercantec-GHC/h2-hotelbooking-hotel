@@ -1,44 +1,66 @@
 ﻿@page "/Login"
+@using HotelsCommons.Models
+@using HotelsWebApp.AuthServices
+@inject NavigationManager Navigation
+@inject HttpClient Http
+@inject AuthService AuthService
 
 
 
 
 
-    <div class="">
-        <button class="btn btn-secondary">Back</button>
-    </div>
+<div class="">
+    <button class="btn btn-secondary">Back</button>
+</div>
 
-    <center>
+<center>
     <div class=" p-3 align-content-end">
-      <h1 class="display-1">Login</h1>
+        <h1 class="display-1">Login</h1>
     </div>     
 
-  
-
- 
-  <div class="row">
     <div class="">
-      1 of 3
-    </div>
-    <div class="">
-        <form>
+        <form @onsubmit=Login>
             <div class="mb-3">
                 <label for="exampleInputEmail1" class="form-label">Email address</label>
-                <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                <input type="email" class="form-control w-25" id="exampleInputEmail1" @bind="LoginDTO.Email" aria-describedby="emailHelp" placeholder="Email address">
                 <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
             </div>
             <div class="mb-3">
                 <label for="exampleInputPassword1" class="form-label">Password</label>
-                <input type="password" class="form-control" id="exampleInputPassword1">
+                <input type="password" class="form-control w-25" id="exampleInputPassword1" @bind="LoginDTO.Password" placeholder="Password">
             </div>
-           
+
             <button type="submit " class="btn btn-primary">Submit</button>
+            {
+            <p style="color: red">@errorMessage</p>
+            }
         </form>
     </div>
-    
-  </div>
+
+
 
 </center>
 @code {
+    private UserLoginDTO LoginDTO = new UserLoginDTO();
+    private string errorMessage = "";
+
+    private async Task Login()
+    {
+        try
+        {
+            AuthService.Login(LoginDTO);
+
+            // var response = await Http.PostAsJsonAsync("https://localhost:7090/api/Auth/login", LoginDTO);
+            // if (response.IsSuccessStatusCode)
+            // {
+            //     var token = await response.Content.ReadAsStringAsync();
+            //     Navigation.NavigateTo("/");
+            // }
+        }
+        catch (Exception)
+        {
+            errorMessage = "Login failed. Please try again.";
+        }
+    }
 
 }

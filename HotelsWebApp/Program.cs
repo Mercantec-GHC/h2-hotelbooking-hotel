@@ -1,3 +1,4 @@
+using HotelsWebApp.AuthServices;
 using HotelsWebApp.Components;
 using Microsoft.Extensions.Hosting;
 using System.Security.Cryptography.X509Certificates;
@@ -30,8 +31,9 @@ namespace HotelsWebApp
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
             builder.Services.AddHttpClient();
-
-
+            builder.Services.AddHttpContextAccessor();
+            builder.Services.AddSingleton<AuthService>();
+           
             var app = builder.Build();
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 Console.WriteLine($"Connection String: {connectionString}");
