@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BackendAPI.Controllers
 {
-    [Authorize("GlobalAdmin")]
+    [Authorize(Roles = "ConcernAdmin")]
     [Route("api/[controller]")]
     [ApiController]
     public class DiscountCodeController : Controller
