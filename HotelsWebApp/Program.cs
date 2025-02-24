@@ -1,6 +1,9 @@
+
 using HotelsWebApp.Components;
 using Microsoft.Extensions.Hosting;
+using System;
 using System.Security.Cryptography.X509Certificates;
+using HotelAdmin.WebView.Services;
 
 namespace HotelsWebApp
 {
@@ -29,7 +32,9 @@ namespace HotelsWebApp
             // Add services to the container.
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
-
+            builder.Services.AddHttpContextAccessor();           
+            builder.Services.AddHotelLibrary();
+           
             var app = builder.Build();
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 

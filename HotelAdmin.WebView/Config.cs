@@ -11,7 +11,6 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddBlazorBootstrap();
 
             //services.AddHttpClient();
-            services.AddBlazoredLocalStorage();
 
             services.AddHotelLibrary();
 
