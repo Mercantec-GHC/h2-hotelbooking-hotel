@@ -168,7 +168,7 @@ namespace BackendAPI.Controllers
             return Ok(hotel);
         }
 
-        [Authorize(Roles = "GlobalAdmin")]
+        [Authorize(Roles = "ConcernAdmin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateHotel(CreateHotelDTO hotelDTO, string id)
         {
@@ -187,7 +187,7 @@ namespace BackendAPI.Controllers
             return Ok(hotel);
         }
 
-        [Authorize(Roles = "GlobalAdmin")]
+        [Authorize(Roles = "ConcernAdmin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteHotel(string id)
         {
