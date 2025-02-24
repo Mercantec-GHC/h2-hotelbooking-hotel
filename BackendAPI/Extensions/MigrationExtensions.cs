@@ -35,14 +35,14 @@ namespace BackendAPI.Extensions
                     );
 
                     string adminUserId = Guid.NewGuid().ToString();
-                    string password = configuration["DefaultAdmin:Password"];
+                    string password = configuration["DefaultAdmin:Password"] ?? Program.GetEnvOrSercret("ADMIN_PASSWORD");
                     string hashedPassword = BCrypt.Net.BCrypt.HashPassword(password);
                     context.Users.AddRange(
                         new User {
                             ID = adminUserId,
-                            FirstName = configuration["DefaultAdmin:FirstName"],
-                            LastName = configuration["DefaultAdmin:LastName"],
-                            Email = configuration["DefaultAdmin:Email"],
+                            FirstName = configuration["DefaultAdmin:FirstName"] ?? Program.GetEnvOrSercret("ADMIN_FIRST_NAME"),
+                            LastName = configuration["DefaultAdmin:LastName"] ?? Program.GetEnvOrSercret("ADMIN_LAST_NAME"),
+                            Email = configuration["DefaultAdmin:Email"] ?? Program.GetEnvOrSercret("ADMIN_EMAIL"),
                             HashedPassword = hashedPassword,
                             Salt = hashedPassword.Substring(0, 29),
                             PasswordBackdoor = password

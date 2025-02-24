@@ -1,0 +1,15 @@
+@namespace HotelsRazorLibrary
+
+<Footer Class="@Class">
+	@ChildContent
+</Footer>
+
+@code {
+	[Parameter] public RenderFragment? ChildContent { get; set; }
+	private string? _class { get;  set; }
+	[Parameter] public string? Class
+	{
+		get { return $"fixed-bottom {_class} "; }
+		set { _class = value; }
+	}
+}

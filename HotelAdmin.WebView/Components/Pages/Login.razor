@@ -1,0 +1,39 @@
+﻿@using HotelAdmin.WebView.Services
+@using HotelsCommons.Models
+@inject AuthService AuthService
+@inject NavigationManager NavigationManager
+
+@page "/Login"
+
+<PageTitle>Login</PageTitle>
+
+<Card>
+    <CardHeader>
+        <h1>Login</h1>
+    </CardHeader>
+    <CardBody>
+        <EditForm Model="loginModel" OnValidSubmit="HandleLogin">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <InputText id="email" @bind-Value="loginModel.Email" placeholder="Email" />
+            <InputText id="password" @bind-Value="loginModel.Password" type="password" placeholder="Password" />
+            <button type="submit">Login</button>
+        </EditForm>
+    </CardBody>
+    <CardFooter></CardFooter>
+</Card>
+
+@code {
+    private UserLoginDTO loginModel = new UserLoginDTO();
+
+    private async Task HandleLogin()
+    {
+        var loginResult = await AuthService.Login(loginModel);
+        // Console.WriteLine(loginResult.IsSuccessStatusCode);
+        if (loginResult.IsSuccessStatusCode)
+        {
+            NavigationManager.NavigateTo("/", true);
+        }
+    }
+}

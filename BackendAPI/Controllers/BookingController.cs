@@ -103,6 +103,7 @@ namespace BackendAPI.Controllers
             return Ok(booking);
         }
 
+        [Authorize(Roles = "HotelWorker")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBooking(string id)
         {

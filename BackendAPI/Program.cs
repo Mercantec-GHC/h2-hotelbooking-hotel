@@ -42,7 +42,7 @@ namespace BackendAPI
             // Add services to the container.
             builder.Services.AddDbContext<DatabaseContext>(options =>
             {
-                var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+                var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? GetEnvOrSercret("DATABASE_CONNECTION_STRING");
                 options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
             });
 
@@ -50,15 +50,18 @@ namespace BackendAPI
 
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
             {
+                string jwtIssuer = Configuration["Jwt:Issuer"] ?? GetEnvOrSercret("JWT_ISSUER");
+                string jwtKey = Configuration["Jwt:Key"] ?? GetEnvOrSercret("JWT_KEY");
+
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
                     ValidateAudience = true,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    ValidIssuer = Configuration["Jwt:Issuer"],
-                    ValidAudience = Configuration["Jwt:Issuer"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
+                    ValidIssuer = jwtIssuer,
+                    ValidAudience = jwtIssuer,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
                 };
             });
 
@@ -107,6 +110,8 @@ namespace BackendAPI
             //builder.Configuration.AddUserSecrets<Program>();
             var app = builder.Build();
 
+            app.UseCors(x => x.AllowAnyMethod().AllowAnyHeader().SetIsOriginAllowed(origin => true).AllowCredentials());
+
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
@@ -123,10 +128,19 @@ namespace BackendAPI
             app.UseAuthentication();
             app.UseAuthorization();
 
-
             app.MapControllers();
 
             app.Run();
+        }
+
+        public static string? GetEnvOrSercret(string secret)
+        {
+            string? secretPath = Environment.GetEnvironmentVariable(secret);
+            if (!string.IsNullOrEmpty(secretPath) && File.Exists(secretPath))
+            {
+                return File.ReadAllText(secretPath).Trim();
+            }
+            return null;
         }
     }
 }

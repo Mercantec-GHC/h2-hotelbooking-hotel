@@ -14,10 +14,26 @@ services:
       ASPNETCORE_ENVIRONMENT: "Development"
       CERT_PATH: "/https-certs/your_cert.pfx"
       CERT_PASSWORD: /run/secrets/CertPassword
+      JWT_ISSUER: /run/secrets/JWT_ISSUER
+      JWT_KEY: /run/secrets/JWT_KEY
+      IMAGES_PATH: "/images"
+      ADMIN_PASSWORD: /run/secrets/ADMIN_PASSWORD
+      ADMIN_FIRST_NAME: /run/secrets/ADMIN_FIRST_NAME
+      ADMIN_LAST_NAME: /run/secrets/ADMIN_LAST_NAME
+      ADMIN_EMAIL: /run/secrets/ADMIN_EMAIL
+      DATABASE_CONNECTION_STRING: /run/secrets/DATABASE_CONNECTION_STRING
     volumes:
       - certs:/https-certs:ro
+      - files:/images:ro
     secrets:
       - CertPassword
+      - JWT_ISSUER
+      - JWT_KEY
+      - ADMIN_PASSWORD
+      - ADMIN_FIRST_NAME
+      - ADMIN_LAST_NAME
+      - ADMIN_EMAIL
+      - DATABASE_CONNECTION_STRING
 
   hotelwebapp:
     image: hotelwebapp
@@ -41,7 +57,23 @@ services:
 volumes:
   certs:
     external: true
+  files:
+    external: true
 
 secrets:
   CertPassword:
+    external: true
+  JWT_ISSUER:
+    external: true
+  JWT_KEY:
+    external: true
+  ADMIN_PASSWORD:
+    external: true
+  ADMIN_FIRST_NAME:
+    external: true
+  ADMIN_LAST_NAME:
+    external: true
+  ADMIN_EMAIL:
+    external: true
+  DATABASE_CONNECTION_STRING:
     external: true

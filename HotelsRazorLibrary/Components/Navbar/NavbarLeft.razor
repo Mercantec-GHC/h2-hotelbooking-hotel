@@ -1,0 +1,46 @@
+﻿@namespace HotelsRazorLibrary
+@inject NavigationManager NavigationManager
+@inject SidenavService SidenavService
+
+<div class="hl-cover-full hl-disabler d-none" @onclick="SidenavService.Close"></div>
+
+<div class="hl-nav-left bg-dark text-light border-end @Class">
+    <div class="hl-nav-left-top border-bottom">
+        <button class="btn hl-btn-close text-light d-lg-none" type="button" @onclick="SidenavService.Close">🗙</button>
+    </div>
+    <div class="hl-nav-left-content">
+        @ChildContent
+    </div>
+</div>
+
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public string? Class { get; set; }
+
+    protected override async void OnAfterRender(bool firstrender)
+    {
+        await SidenavService.Close();
+    }
+
+    private void HandleLocationChanged(object sender, LocationChangedEventArgs e)
+    {
+        StateHasChanged();
+    }
+
+    protected override void OnInitialized()
+    {
+        NavigationManager.LocationChanged += HandleLocationChanged;
+
+    }
+
+    public void Dispose()
+    {
+        NavigationManager.LocationChanged -= HandleLocationChanged;
+    }
+
+    private string GetCurrentUrl()
+    {
+        var uriBuilder = new UriBuilder(NavigationManager.Uri);
+        return uriBuilder.Path;
+    }
+}

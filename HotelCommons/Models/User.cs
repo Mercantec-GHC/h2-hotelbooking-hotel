@@ -75,9 +75,32 @@ namespace HotelsCommons.Models
         public string PasswordConfirm { get; set; }
     }
 
-    public class LoginResponse
+
+    public class LoginResult
     {
+        public bool Successful { get; set; }
+        public string Error { get; set; }
+
         public string Token { get; set; }
-        public User User { get; set; }
+
+        public double ExpiresIn { get; set; }
+        public string RefreshToken { get; set; }
+    }
+
+    public class RegisterResult
+    {
+        public bool Successful { get; set; }
+        public IEnumerable<string> Errors { get; set; }
+    }
+
+    public class UserResultDTO
+    {
+        public string Id { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Email { get; set; }
+        public int RoleHierarchy { get; set; }
+        public List<string> Roles { get; set; }
+
     }
 }

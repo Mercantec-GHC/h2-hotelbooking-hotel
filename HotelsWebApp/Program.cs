@@ -49,7 +49,7 @@ namespace HotelsWebApp
 
             var app = builder.Build();
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-            Console.WriteLine($"Connection String: {connectionString}");
+
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
