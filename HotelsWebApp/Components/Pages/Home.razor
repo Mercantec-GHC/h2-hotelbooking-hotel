@@ -45,21 +45,30 @@
 }
 else
 {
-    <div class="row">
-        @foreach (var hotel in Hotels)
-        {
-            <div class="Hotels">
-                <h3>@hotel.Name</h3>
-                <p>@hotel.Country</p>
-                <p>@hotel.City</p>
-                <p>@hotel.PostalCode</p>
-                <p>@hotel.Region</p>
-                <p>@hotel.Description</p>
-
-            </div>
-        }
+    <div class="container mt-4">
+        <div class="row g-3">
+            @foreach (var hotel in Hotels)
+            {
+                <div class="col-md-6 col-lg-4">
+                
+                    <div class="card text-dark bg-light mb-3 shadow-sm" style="max-width: 18rem;">
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold">@hotel.Name</h5>
+                            <p class="card-text"><strong>Description:</strong> @hotel.Description</p>
+                            <p class="card-text"><strong>Country:</strong> @hotel.Country</p>
+                            <p class="card-text"><strong>Region:</strong> @hotel.Region</p>
+                            <p class="card-text"><strong>City:</strong> @hotel.City</p>
+                            <p class="card-text"><strong>Postal Code:</strong> @hotel.PostalCode</p>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
     </div>
-}
+
+          
+            
+        }
 
 @code {
   
