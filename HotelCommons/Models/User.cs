@@ -75,6 +75,7 @@ namespace HotelsCommons.Models
         public string PasswordConfirm { get; set; }
     }
 
+
     public class LoginResult
     {
         public bool Successful { get; set; }
@@ -100,5 +101,6 @@ namespace HotelsCommons.Models
         public string Email { get; set; }
         public int RoleHierarchy { get; set; }
         public List<string> Roles { get; set; }
+
     }
 }

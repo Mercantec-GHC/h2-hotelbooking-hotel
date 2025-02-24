@@ -1,5 +1,4 @@
-﻿using Blazored.LocalStorage;
-using HotelsRazorLibrary.Services;
+﻿using HotelAdmin.WebView.Services;
 using Microsoft.AspNetCore.Components.Authorization;
 
 namespace Microsoft.Extensions.DependencyInjection
