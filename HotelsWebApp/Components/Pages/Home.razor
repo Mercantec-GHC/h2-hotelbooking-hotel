@@ -1,6 +1,8 @@
 ﻿@page "/"
 @using HotelsCommons.Models
+@using HotelsWebApp.AuthServices
 @inject IHttpClientFactory HttpClientFactory
+@inject AuthService AuthService
 <PageTitle>Home</PageTitle>
 
 
@@ -37,14 +39,14 @@
     <div class="col-2 link-primary">More hotels</div>
 </div>
 
-@if (hoteler == null)
+@if (Hotels == null)
 {
     <p>Indlæser...</p>
 }
 else
 {
     <div class="row">
-        @foreach (var hotel in hoteler)
+        @foreach (var hotel in Hotels)
         {
             <div class="Hotels">
                 <h3>@hotel.Name</h3>
@@ -60,18 +62,18 @@ else
 }
 
 @code {
-    private List<HotelDTO> hoteler;
+  
+    private List<HotelDTO> Hotels = new();
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            var client = HttpClientFactory.CreateClient();
-            hoteler = await client.GetFromJsonAsync<List<HotelDTO>>("https://10.135.71.51:5101/api/Hotel/GetAllHotels");
+            Hotels = await AuthService.GetAllHotels(); 
         }
         catch (Exception ex)
         {
-            Console.Error.WriteLine($"Fejl ved hentning af hoteler: {ex.Message}");
+            Console.Error.WriteLine($"Error fetching hotels: {ex.Message}");
         }
     }
 }

@@ -30,10 +30,10 @@
                 <input type="password" class="form-control w-25" id="exampleInputPassword1" @bind="LoginDTO.Password" placeholder="Password">
             </div>
 
-            <button type="submit " class="btn btn-primary">Submit</button>
-            {
+            <button type="submit" class="btn btn-primary">Submit</button>
+            
             <p style="color: red">@errorMessage</p>
-            }
+            
         </form>
     </div>
 
@@ -43,24 +43,38 @@
 @code {
     private UserLoginDTO LoginDTO = new UserLoginDTO();
     private string errorMessage = "";
+    private bool isLoggingIn;
 
     private async Task Login()
     {
+        if (isLoggingIn) return;
+        isLoggingIn = true;
         try
         {
-            AuthService.Login(LoginDTO);
 
-            // var response = await Http.PostAsJsonAsync("https://localhost:7090/api/Auth/login", LoginDTO);
-            // if (response.IsSuccessStatusCode)
-            // {
-            //     var token = await response.Content.ReadAsStringAsync();
-            //     Navigation.NavigateTo("/");
-            // }
+            var user = await AuthService.Login(LoginDTO); 
+
+            if (user != null)
+            {
+                Navigation.NavigateTo("/");
+            }
+            else
+            {
+                errorMessage = "Invalid email or password.";
+            }
         }
-        catch (Exception)
+        catch (Exception ex)
         {
             errorMessage = "Login failed. Please try again.";
+            Console.WriteLine($"Error: {ex.Message}");
+        }
+        finally
+        {
+            isLoggingIn = false;
         }
     }
 
+     
 }
+
+

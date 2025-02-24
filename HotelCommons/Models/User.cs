@@ -74,4 +74,10 @@ namespace HotelsCommons.Models
         [JsonPropertyName("passwordConfirm")]
         public string PasswordConfirm { get; set; }
     }
+
+    public class LoginResponse
+    {
+        public string Token { get; set; }
+        public User User { get; set; }
+    }
 }
