@@ -1,0 +1,80 @@
+﻿@page "/Login"
+@using HotelsCommons.Models
+@using HotelsWebApp.AuthServices
+@inject NavigationManager Navigation
+@inject HttpClient Http
+@inject AuthService AuthService
+
+
+
+
+
+<div class="">
+    <button class="btn btn-secondary">Back</button>
+</div>
+
+<center>
+    <div class=" p-3 align-content-end">
+        <h1 class="display-1">Login</h1>
+    </div>     
+
+    <div class="">
+        <form @onsubmit=Login>
+            <div class="mb-3">
+                <label for="exampleInputEmail1" class="form-label">Email address</label>
+                <input type="email" class="form-control w-25" id="exampleInputEmail1" @bind="LoginDTO.Email" aria-describedby="emailHelp" placeholder="Email address">
+                <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+            </div>
+            <div class="mb-3">
+                <label for="exampleInputPassword1" class="form-label">Password</label>
+                <input type="password" class="form-control w-25" id="exampleInputPassword1" @bind="LoginDTO.Password" placeholder="Password">
+            </div>
+
+            <button type="submit" class="btn btn-primary">Submit</button>
+            
+            <p style="color: red">@errorMessage</p>
+            
+        </form>
+    </div>
+
+
+
+</center>
+@code {
+    private UserLoginDTO LoginDTO = new UserLoginDTO();
+    private string errorMessage = "";
+    private bool isLoggingIn;
+
+    private async Task Login()
+    {
+        if (isLoggingIn) return;
+        isLoggingIn = true;
+        try
+        {
+
+            var user = await AuthService.Login(LoginDTO); 
+
+            if (user != null)
+            {
+                Navigation.NavigateTo("/");
+            }
+            else
+            {
+                errorMessage = "Invalid email or password.";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = "Login failed. Please try again.";
+            Console.WriteLine($"Error: {ex.Message}");
+        }
+        finally
+        {
+            isLoggingIn = false;
+        }
+    }
+
+     
+}
+
+
