@@ -19,8 +19,16 @@
             <LeftNavItem Name="Add user" Href="/users/add" Margin="30px"></LeftNavItem>
         </LeftNavDropdown>
         <LeftNavItem Name="Tickets" Href="/tickets"></LeftNavItem>
-        <LeftNavItem Name="Login" Href="/login"></LeftNavItem>
-        <LeftNavItem Name="Logout" Href="/logout"></LeftNavItem>
+
+        <AuthorizeView>
+            <Authorized>
+                <LeftNavItem Name="Logout" Href="/logout"></LeftNavItem>
+            </Authorized>
+            <NotAuthorized>
+                <LeftNavItem Name="Login" Href="/login"></LeftNavItem>
+            </NotAuthorized>
+        </AuthorizeView>
+
     </NavbarLeft>
 
     <article class="hl-navbar-margin">

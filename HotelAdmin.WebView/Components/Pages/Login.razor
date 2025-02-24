@@ -1,5 +1,4 @@
-﻿@using HotelAdmin.WebView.Services
-@using HotelsCommons.Models
+﻿@using HotelsCommons.Models
 @inject AuthService AuthService
 @inject NavigationManager NavigationManager
 
@@ -30,7 +29,6 @@
     private async Task HandleLogin()
     {
         var loginResult = await AuthService.Login(loginModel);
-        // Console.WriteLine(loginResult.IsSuccessStatusCode);
         if (loginResult.IsSuccessStatusCode)
         {
             NavigationManager.NavigateTo("/", true);

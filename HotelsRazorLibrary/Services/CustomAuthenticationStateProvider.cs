@@ -5,7 +5,7 @@ using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Text.Json;
 
-namespace HotelAdmin.WebView.Services
+namespace HotelsRazorLibrary.Services
 {
     public class CustomAuthenticationStateProvider : AuthenticationStateProvider
     {

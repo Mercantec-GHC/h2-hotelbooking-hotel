@@ -5,8 +5,6 @@
     <Router AppAssembly="typeof(Routes).Assembly" OnNavigateAsync="HandleNavigationAsync">
         <Found Context="routeData">
             <CascadingValue Value="routeData" >
-                @* <RouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)" />
-                <FocusOnNavigate RouteData="routeData" Selector="h1" /> *@
                 <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(Layout.MainLayout)">
                     <NotAuthorized>
                         @if (!context.User.Identity.IsAuthenticated)

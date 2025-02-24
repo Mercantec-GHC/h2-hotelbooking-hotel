@@ -1,6 +1,4 @@
 ﻿using Blazored.LocalStorage;
-using HotelAdmin.WebView.Services;
-using Microsoft.AspNetCore.Components.Authorization;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -9,9 +7,6 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddSharedServices(this IServiceCollection services)
         {
             services.AddBlazorBootstrap();
-
-            //services.AddHttpClient();
-            services.AddBlazoredLocalStorage();
 
             services.AddHotelLibrary();
 

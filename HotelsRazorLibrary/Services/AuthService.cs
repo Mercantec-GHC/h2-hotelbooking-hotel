@@ -8,7 +8,7 @@ using HotelsCommons.Models;
 using System.Net.Http;
 using System.IdentityModel.Tokens.Jwt;
 
-namespace HotelAdmin.WebView.Services
+namespace HotelsRazorLibrary.Services
 {
     public class AuthService : IAuthService
     {
