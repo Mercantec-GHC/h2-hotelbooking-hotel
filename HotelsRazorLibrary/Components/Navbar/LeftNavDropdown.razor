@@ -1,0 +1,41 @@
+﻿@namespace HotelsRazorLibrary
+
+<div class="hl-nav-left-item hl-nav-left-item-hover @Class" @onclick="Toggle">
+	<div class="hl-container" style="margin-left: @Margin;">
+		<i class="bi bi-caret-right-fill"></i>
+	</div>
+	<p>@Name</p>
+</div>
+
+<div class="hl-nav-left-dropdown @GetDropdownClass()" style="height: @(IsOpen ? "auto" : "0px")">
+	@ChildContent
+</div>
+
+@code {
+	[Parameter] public RenderFragment? ChildContent { get; set; }
+	[Parameter] public string? Name { get; set; }
+	[Parameter] public string Margin { get; set; } = "0";
+	private string? _class { get; set; }
+	[Parameter] public string? Class
+	{
+		get {
+			string classes = $"{_class}";
+			if (IsOpen)
+			{
+				classes += "hl-nav-left-item-open";
+			}
+			return classes;
+		}
+		set { _class = value; }
+	}
+	private bool IsOpen = false;
+
+	private void Toggle()
+	{
+		IsOpen = !IsOpen;
+	}
+
+	private string GetDropdownClass() {
+		return IsOpen ? "hl-dropdown-open" : "";
+	}
+}

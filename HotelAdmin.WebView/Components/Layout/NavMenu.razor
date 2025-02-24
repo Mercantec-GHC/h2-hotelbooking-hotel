@@ -1,0 +1,17 @@
+﻿@inject SidenavService SidenavService
+
+<header>
+    <nav class="navbar navbar-dark fixed-top navbar-expand-sm bg-dark border-bottom hl-shadow hl-navbar">
+        <div class="mx-3" style="height: 40px;">
+            <a class="navbar-brand p-0" href="">
+                <img src="@($"/images/logo_02.png")" height="40" alt="Logo">
+            </a>
+        <button class="navbar-toggler d-block d-lg-none" type="button" @onclick="SidenavService.Open">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </nav>
+
+    <div style="height: 57px;">
+    </div>
+</header>
