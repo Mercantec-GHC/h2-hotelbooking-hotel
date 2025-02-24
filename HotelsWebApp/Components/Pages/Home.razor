@@ -1,6 +1,5 @@
 ﻿@page "/"
 @using HotelsCommons.Models
-@using HotelsWebApp.AuthServices
 @inject IHttpClientFactory HttpClientFactory
 @inject AuthService AuthService
 <PageTitle>Home</PageTitle>
@@ -39,7 +38,7 @@
     <div class="col-2 link-primary">More hotels</div>
 </div>
 
-@if (Hotels == null)
+@* @if (Hotels == null)
 {
     <p>Indlæser...</p>
 }
@@ -68,23 +67,23 @@ else
 
           
             
-        }
+        } *@
 
 @code {
   
-    private List<HotelDTO> Hotels = new();
+    // private List<HotelDTO> Hotels = new();
 
-    protected override async Task OnInitializedAsync()
-    {
-        try
-        {
-            Hotels = await AuthService.GetAllHotels(); 
-        }
-        catch (Exception ex)
-        {
-            Console.Error.WriteLine($"Error fetching hotels: {ex.Message}");
-        }
-    }
+    // protected override async Task OnInitializedAsync()
+    // {
+    //     try
+    //     {
+    //         Hotels = await AuthService.GetAllHotels(); 
+    //     }
+    //     catch (Exception ex)
+    //     {
+    //         Console.Error.WriteLine($"Error fetching hotels: {ex.Message}");
+    //     }
+    // }
 }
 
 

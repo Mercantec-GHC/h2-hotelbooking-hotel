@@ -1,8 +1,9 @@
-using HotelsWebApp.AuthServices;
+
 using HotelsWebApp.Components;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Security.Cryptography.X509Certificates;
+using HotelAdmin.WebView.Services;
 
 namespace HotelsWebApp
 {
@@ -31,22 +32,9 @@ namespace HotelsWebApp
             // Add services to the container.
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
-            //builder.Services.AddHttpClient();
-            builder.Services.AddHttpContextAccessor();
-            //builder.Services.AddSingleton<AuthService>();
-            builder.Services.AddHttpClient<AuthService>(client =>
-            {
-                client.BaseAddress = new Uri("https://10.135.71.51:5101"); 
-            }).ConfigurePrimaryHttpMessageHandler(() =>
-            {
-                Console.WriteLine("Test");
-                 return new HttpClientHandler
-                 {
-                  
-                     ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
-                 };
-             });
-
+            builder.Services.AddHttpContextAccessor();           
+            builder.Services.AddHotelLibrary();
+           
             var app = builder.Build();
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
