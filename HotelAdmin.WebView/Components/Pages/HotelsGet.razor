@@ -1,0 +1,17 @@
+﻿@page "/hotel/{Id}"
+
+<PageTitle>Get Hotel</PageTitle>
+
+<Card>
+    <CardHeader>
+        <h1>Get Hotel</h1>
+    </CardHeader>
+    <CardBody>
+        <p>@Id</p>
+    </CardBody>
+    <CardFooter></CardFooter>
+</Card>
+
+@code {
+    [Parameter] public string? Id { get; set; }
+}

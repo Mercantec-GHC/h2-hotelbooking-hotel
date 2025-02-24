@@ -1,0 +1,17 @@
+﻿@page "/user/{Id}"
+
+<PageTitle>Get User</PageTitle>
+
+<Card>
+    <CardHeader>
+        <h1>Get User</h1>
+    </CardHeader>
+    <CardBody>
+        <p>@Id</p>
+    </CardBody>
+    <CardFooter></CardFooter>
+</Card>
+
+@code {
+    [Parameter] public string? Id { get; set; }
+}
