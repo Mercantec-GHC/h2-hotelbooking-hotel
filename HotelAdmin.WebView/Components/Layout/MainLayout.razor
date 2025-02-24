@@ -1,0 +1,39 @@
+﻿@inherits LayoutComponentBase
+
+<LayoutData>
+    <NavMenu />
+</LayoutData>
+
+<main class="flex-shrink-0 py-3">
+
+    <NavbarLeft Class="hl-shadow position-fixed top-0 start-0">
+        <LeftNavItem Name="Home" Href="/"></LeftNavItem>
+
+        <LeftNavDropdown Name="Hotels">
+            <LeftNavItem Name="All hotels" Href="/hotels" Margin="30px"></LeftNavItem>
+            <LeftNavItem Name="Add hotel" Href="/hotels/add" Margin="30px"></LeftNavItem>
+        </LeftNavDropdown>
+
+        <LeftNavDropdown Name="Users">
+            <LeftNavItem Name="All users" Href="/users" Margin="30px"></LeftNavItem>
+            <LeftNavItem Name="Add user" Href="/users/add" Margin="30px"></LeftNavItem>
+        </LeftNavDropdown>
+        <LeftNavItem Name="Tickets" Href="/tickets"></LeftNavItem>
+    </NavbarLeft>
+
+    <article class="container-xxlbd-gutter mt-3 my-md-4 bd-layout hl-navbar-margin">
+        @Body
+    </article>
+
+    <div id="blazor-error-ui">
+        An unhandled error has occurred.
+        <a href="" class="reload">Reload</a>
+        <a class="dismiss">🗙</a>
+    </div>
+</main>
+
+<LayoutData>
+    <FixedFooter Class="hl-shadow">
+        @* <p class="m-0">Test</p> *@
+    </FixedFooter>
+</LayoutData>
