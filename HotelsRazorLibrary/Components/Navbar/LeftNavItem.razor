@@ -1,0 +1,37 @@
+﻿@namespace HotelsRazorLibrary
+
+<div class="hl-nav-left-item @Class">
+	@if (Href != null)
+	{
+		<NavLink href="@Href" Match="NavLinkMatch.All">
+			<p style="margin-left: @Margin;">@Name</p>
+		</NavLink>
+	}
+	else
+	{
+		<p style="margin-left: @Margin;">@Name</p>
+	}
+</div>
+
+@code {
+	[Parameter] public string? Name { get; set; }
+	[Parameter] public string? Href { get; set; }
+	[Parameter] public string Margin { get; set; } = "20px";
+	private string? _class { get; set; }
+	[Parameter] public string? Class
+	{
+		get {
+			string classes = $"{_class}";
+			if (Href != null)
+			{
+				classes += " hl-nav-left-item-hover";
+			}
+			// if (currentUrl.Contains(Href))
+			// {
+			// 	classes += " hl-nav-left-item-active";
+			// }
+			return classes;
+		}
+		set { _class = value; }
+	}
+}
