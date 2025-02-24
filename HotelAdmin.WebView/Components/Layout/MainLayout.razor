@@ -19,10 +19,14 @@
             <LeftNavItem Name="Add user" Href="/users/add" Margin="30px"></LeftNavItem>
         </LeftNavDropdown>
         <LeftNavItem Name="Tickets" Href="/tickets"></LeftNavItem>
+        <LeftNavItem Name="Login" Href="/login"></LeftNavItem>
+        <LeftNavItem Name="Logout" Href="/logout"></LeftNavItem>
     </NavbarLeft>
 
-    <article class="container-xxlbd-gutter mt-3 my-md-4 bd-layout hl-navbar-margin">
-        @Body
+    <article class="hl-navbar-margin">
+        <div class="container-xxl bd-gutter mt-3 my-md-4 bd-layout ">
+            @Body
+        </div>
     </article>
 
     <div id="blazor-error-ui">

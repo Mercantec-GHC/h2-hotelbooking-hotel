@@ -1,8 +1,32 @@
-﻿<Router AppAssembly="typeof(Routes).Assembly">
-    <Found Context="routeData">
-        <CascadingValue Value="routeData" >
-            <RouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)" />
-            <FocusOnNavigate RouteData="routeData" Selector="h1" />
-        </CascadingValue>
-    </Found>
-</Router>
+﻿@inject NavigationManager navigationManager
+@inject AuthService AuthService
+
+<CascadingAuthenticationState>
+    <Router AppAssembly="typeof(Routes).Assembly" OnNavigateAsync="HandleNavigationAsync">
+        <Found Context="routeData">
+            <CascadingValue Value="routeData" >
+                @* <RouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)" />
+                <FocusOnNavigate RouteData="routeData" Selector="h1" /> *@
+                <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(Layout.MainLayout)">
+                    <NotAuthorized>
+                        @if (!context.User.Identity.IsAuthenticated)
+                        {
+                            navigationManager.NavigateTo($"/", true);
+                        }
+                        else
+                        {
+                            <p>You are not authorized to access this resource.</p>
+                        }
+                    </NotAuthorized>
+                </AuthorizeRouteView>
+            </CascadingValue>
+        </Found>
+    </Router>
+</CascadingAuthenticationState>
+
+@code {
+    private async Task HandleNavigationAsync(NavigationContext args)
+    {
+        AuthService.CheckTokenExpiry();
+    }
+}
