@@ -1,0 +1,71 @@
+﻿@page "/AllHotels"
+
+<center>
+    <h1>Here you can see all our hotels.</h1>
+</center>
+
+<br />
+
+<div class="container mt-6 d-flex justify-content-center">
+    <div class="row g-3 justify-content-center">
+        @foreach (var hotel in Hotels)
+        {
+            <div class="col-md-6 col-lg-6 d-flex justify-content-center">
+
+                <div class="card text-dark bg-light mb-3 shadow-sm h-100 w-75">
+                    <div class="card-body  rounded-2">
+                        <h5 class="card-title fw-bold">@hotel.Name</h5>
+                        <p class="card-text"><strong>Country:</strong> @hotel.Country</p>
+                        <p class="card-text"><strong>Region:</strong> @hotel.Region</p>
+                        <p class="card-text"><strong>City:</strong> @hotel.City</p>
+                        <p class="card-text"><strong>Description:</strong> @hotel.Description</p>
+                        <button class="btn btn-primary position-absolute bottom-0 end-0">Book a room</button>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+
+
+
+
+@code {
+
+    public class Test
+    {
+        public string Name = "Hotel";
+        public string Description = "Hotel i landet";
+        public string Country = "Denmark";
+        public string Region = "Syddanmark";
+        public string City = "Kolding";
+        public string PostalCode = "3300";
+    }
+
+    private List<Test> Hotels = new List<Test>();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            for (int i = 1; i <= 10; i++)
+            {
+                Hotels.Add(new Test
+                    {
+                        Name = $"Test Hotel",
+                        Description = $"Description for hotel",
+                        Country = "Denmark",
+                        Region = "Syddanmark",
+                        City = "Kolding",
+                        PostalCode = $"6600"
+                    });
+            }
+        }   
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Error fetching hotels: {ex.Message}");
+        }
+    }
+}

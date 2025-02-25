@@ -1,7 +1,8 @@
 ﻿@page "/"
+
 @using HotelsCommons.Models
 @inject IHttpClientFactory HttpClientFactory
-@inject AuthService AuthService
+
 <PageTitle>Home</PageTitle>
 
 
@@ -64,10 +65,10 @@ else
             }
         </div>
     </div>
-
+ *@
           
             
-        } *@
+        } 
 
 @code {
   
@@ -77,11 +78,16 @@ else
     // {
     //     try
     //     {
-    //         Hotels = await AuthService.GetAllHotels(); 
+    //         var client = HttpClientFactory.CreateClient();
+    //         var hotels = await client.GetFromJsonAsync<List<HotelDTO>>("https://10.135.71.51:5101/api/Hotel/GetAllHotels");
+    //         Hotels = hotels ?? new List<HotelDTO>();
+
+    //         Console.WriteLine($"Fetched {Hotels.Count} hotels.");
     //     }
     //     catch (Exception ex)
     //     {
     //         Console.Error.WriteLine($"Error fetching hotels: {ex.Message}");
+    //         Hotels = new List<HotelDTO>(); // Ensure it's never null
     //     }
     // }
 }
