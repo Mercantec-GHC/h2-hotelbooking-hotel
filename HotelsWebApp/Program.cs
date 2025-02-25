@@ -1,5 +1,7 @@
 
+using HotelsWebApp.Auth;
 using HotelsWebApp.Components;
+using Microsoft.AspNetCore.Authentication;
 using System.Security.Cryptography.X509Certificates;
 using HotelsRazorLibrary.Services;
 
@@ -27,6 +29,12 @@ namespace HotelsWebApp
                 });
             }
 
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = "jwt";
+                options.DefaultChallengeScheme = "jwt";
+            }).AddScheme<AuthenticationSchemeOptions, CustomAuthenticationHandler>("jwt", options => { });
+
             // Add services to the container.
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
@@ -48,6 +56,9 @@ namespace HotelsWebApp
 
             app.UseStaticFiles();
             app.UseAntiforgery();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.MapRazorComponents<App>()
                 .AddInteractiveServerRenderMode();

@@ -7,6 +7,14 @@
 
 <PageTitle>Login</PageTitle>
 
+<AuthorizeView>
+    <Authorized>
+        @{
+            NavigationManager.NavigateTo($"/", true);
+        }
+    </Authorized>
+</AuthorizeView>
+
 <style>
     .hl-navbar-margin {
         margin-left: 0 !important;

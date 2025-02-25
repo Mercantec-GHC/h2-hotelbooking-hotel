@@ -1,6 +1,4 @@
-﻿using Blazored.LocalStorage;
-
-namespace Microsoft.Extensions.DependencyInjection
+﻿namespace Microsoft.Extensions.DependencyInjection
 {
     public static class Config
     {
