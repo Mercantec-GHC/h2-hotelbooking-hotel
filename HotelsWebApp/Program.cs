@@ -1,6 +1,7 @@
 
 using HotelsWebApp.Components;
 using System.Security.Cryptography.X509Certificates;
+using HotelsRazorLibrary.Services;
 
 namespace HotelsWebApp
 {
