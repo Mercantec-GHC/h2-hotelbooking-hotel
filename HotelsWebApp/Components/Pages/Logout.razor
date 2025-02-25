@@ -1,0 +1,14 @@
+﻿@using HotelAdmin.WebView.Services
+@using HotelsCommons.Models
+@inject AuthService AuthService
+@inject NavigationManager NavigationManager
+
+@page "/Logout"
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await AuthService.Logout();
+        NavigationManager.NavigateTo("/");
+    }
+}
