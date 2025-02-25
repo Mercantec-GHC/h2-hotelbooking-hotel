@@ -1,11 +1,17 @@
-﻿@using HotelAdmin.WebView.Services
-@using HotelsCommons.Models
+﻿@using HotelsCommons.Models
 @inject AuthService AuthService
 @inject NavigationManager NavigationManager
+@attribute [NoLayoutPage]
 
 @page "/Login"
 
 <PageTitle>Login</PageTitle>
+
+<style>
+    .hl-navbar-margin {
+        margin-left: 0 !important;
+    }
+</style>
 
 <Card>
     <CardHeader>
@@ -30,7 +36,6 @@
     private async Task HandleLogin()
     {
         var loginResult = await AuthService.Login(loginModel);
-        // Console.WriteLine(loginResult.IsSuccessStatusCode);
         if (loginResult.IsSuccessStatusCode)
         {
             NavigationManager.NavigateTo("/", true);
