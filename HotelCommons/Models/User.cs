@@ -76,7 +76,7 @@ namespace HotelsCommons.Models
     }
 
 
-    public class LoginResult
+    public class LoginResultDTO
     {
         public bool Successful { get; set; }
         public string Error { get; set; }
@@ -85,12 +85,6 @@ namespace HotelsCommons.Models
 
         public double ExpiresIn { get; set; }
         public string RefreshToken { get; set; }
-    }
-
-    public class RegisterResult
-    {
-        public bool Successful { get; set; }
-        public IEnumerable<string> Errors { get; set; }
     }
 
     public class UserResultDTO

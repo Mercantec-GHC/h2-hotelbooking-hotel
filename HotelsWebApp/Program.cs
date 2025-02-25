@@ -1,10 +1,6 @@
 
 using HotelsWebApp.Components;
-using Microsoft.Extensions.Hosting;
-using System;
 using System.Security.Cryptography.X509Certificates;
-using HotelAdmin.WebView.Services;
-using HotelsRazorLibrary.Services;
 
 namespace HotelsWebApp
 {

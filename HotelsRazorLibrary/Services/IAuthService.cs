@@ -1,6 +1,6 @@
 ﻿using HotelsCommons.Models;
 
-namespace HotelAdmin.WebView.Services
+namespace HotelsRazorLibrary.Services
 {
     public interface IAuthService
     {

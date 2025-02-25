@@ -296,7 +296,9 @@ namespace BackendAPI.Controllers
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Email),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim("UserID", user.ID)
+                new Claim("UserID", user.ID),
+                new Claim("FirstName", user.FirstName),
+                new Claim("LastName", user.LastName)
             };
 
             claims.AddRange(userRoles.Select(role => new Claim(ClaimTypes.Role, role)));
