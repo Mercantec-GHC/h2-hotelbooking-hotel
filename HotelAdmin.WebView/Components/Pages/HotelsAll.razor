@@ -1,5 +1,5 @@
 ﻿@page "/hotels"
-@attribute [Authorize]
+@attribute [Authorize(Roles = "HotelAdmin")]
 
 <PageTitle>All Hotels</PageTitle>
 

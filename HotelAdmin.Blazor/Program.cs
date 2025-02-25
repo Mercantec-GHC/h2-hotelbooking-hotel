@@ -1,10 +1,7 @@
+using HotelAdmin.Blazor.Auth;
 using HotelAdmin.Blazor.Components;
 using HotelAdmin.WebView.Components;
-using HotelsRazorLibrary.Services;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
 
 namespace HotelAdmin.Blazor
 {
@@ -16,7 +13,11 @@ namespace HotelAdmin.Blazor
 
             //builder.Services.AddAuthentication();
 
-            ConfigurationManager Configuration = builder.Configuration;
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = "jwt";
+                options.DefaultChallengeScheme = "jwt";
+            }).AddScheme<AuthenticationSchemeOptions, CustomAuthenticationHandler>("jwt", options => { });
 
             builder.Services.AddSharedServices();
 

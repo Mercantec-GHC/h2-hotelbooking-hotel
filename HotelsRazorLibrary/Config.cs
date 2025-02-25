@@ -1,6 +1,6 @@
 ﻿using Blazored.LocalStorage;
 using HotelsRazorLibrary.Services;
-using Microsoft.AspNetCore.Authentication;
+//using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Components.Authorization;
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -16,12 +16,6 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddBlazoredLocalStorage();
 
             services.AddScoped<SidenavService>();
-
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = "jwt";
-                options.DefaultChallengeScheme = "jwt";
-            }).AddScheme<AuthenticationSchemeOptions, CustomAuthenticationHandler>("jwt", options => { });
 
             services.AddAuthorizationCore();
             services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
