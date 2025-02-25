@@ -8,7 +8,7 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             services.AddBlazorBootstrap();
 
-            services.AddHotelLibrary();
+            services.AddHotelLibrary(requireRoles:true);
 
             return services;
         }

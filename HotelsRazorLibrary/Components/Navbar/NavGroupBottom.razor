@@ -1,0 +1,9 @@
+﻿@namespace HotelsRazorLibrary
+
+<div class="hl-nav-bottom">
+    @ChildContent
+</div>
+
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+}

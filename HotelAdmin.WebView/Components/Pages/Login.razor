@@ -1,10 +1,17 @@
 ﻿@using HotelsCommons.Models
 @inject AuthService AuthService
 @inject NavigationManager NavigationManager
+@attribute [NoLayoutPage]
 
 @page "/Login"
 
 <PageTitle>Login</PageTitle>
+
+<style>
+    .hl-navbar-margin {
+        margin-left: 0 !important;
+    }
+</style>
 
 <Card>
     <CardHeader>

@@ -5,8 +5,10 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text;
 using HotelsCommons.Models;
-using System.Net.Http;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net;
+using System.Security.Claims;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace HotelsRazorLibrary.Services
 {
@@ -15,24 +17,19 @@ namespace HotelsRazorLibrary.Services
         private readonly HttpClient _httpClient;
         private readonly AuthenticationStateProvider _authenticationStateProvider;
         private readonly ILocalStorageService _localStorage;
+        private readonly bool _requireRoles;
 
-        public AuthService(HttpClient httpClient,
-                           AuthenticationStateProvider authenticationStateProvider,
-                           ILocalStorageService localStorage)
+        public AuthService(HttpClient httpClient, ILocalStorageService localStorage, AuthenticationStateProvider authenticationStateProvider)
         {
             _httpClient = httpClient;
-            _authenticationStateProvider = authenticationStateProvider;
             _localStorage = localStorage;
+            _authenticationStateProvider = authenticationStateProvider;
+            _requireRoles = Config.RequireRoles;
         }
 
         public async Task<HttpResponseMessage> Register(UserCreateDTO registerModel)
         {
-            var response = await _httpClient.PostAsJsonAsync("api/accounts", registerModel);
-
-            if (response.IsSuccessStatusCode)
-            {
-                var result = JsonSerializer.Deserialize<RegisterResult>(await response.Content.ReadAsStringAsync(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-            }
+            var response = await _httpClient.PostAsJsonAsync("api/auth/register", registerModel);
 
             return response;
         }
@@ -66,7 +63,15 @@ namespace HotelsRazorLibrary.Services
                 return response;
             }
 
-            var loginResult = JsonSerializer.Deserialize<LoginResult>(await response.Content.ReadAsStringAsync(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            var loginResult = JsonSerializer.Deserialize<LoginResultDTO>(await response.Content.ReadAsStringAsync(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+            if (!hasAuthorization(loginResult.Token))
+            {
+                return new HttpResponseMessage(HttpStatusCode.Forbidden)
+                {
+                    Content = new StringContent("User is not authorized.")
+                };
+            }
 
             await _localStorage.SetItemAsync("authToken", loginResult.Token);
             await _localStorage.SetItemAsync("refreshToken", loginResult.RefreshToken);
@@ -79,20 +84,43 @@ namespace HotelsRazorLibrary.Services
         public async Task Logout()
         {
             await _localStorage.RemoveItemAsync("authToken");
+            await _localStorage.RemoveItemAsync("refreshToken");
             ((CustomAuthenticationStateProvider)_authenticationStateProvider).MarkUserAsLoggedOut();
             _httpClient.DefaultRequestHeaders.Authorization = null;
         }
 
-        public async void CheckTokenExpiry()
+        private bool hasAuthorization(string token)
+        {
+            var claims = CustomAuthenticationStateProvider.ParseClaimsFromJwt(token);
+            var roles = claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value);
+
+            if (_requireRoles)
+            {
+                if (!roles.Any())
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        public async void CheckAccess()
         {
             var token = await _localStorage.GetItemAsync<string>("authToken");
             if (!string.IsNullOrEmpty(token))
             {
+                if (!hasAuthorization(token))
+                {
+                    await Logout();
+                    return;
+                }
+
                 var handler = new JwtSecurityTokenHandler();
                 var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
                 var expiry = jsonToken?.ValidTo;
 
-                Console.WriteLine($"Token expired: {expiry.HasValue && expiry.Value < DateTime.UtcNow}");
+                //Console.WriteLine($"Token expired: {expiry.HasValue && expiry.Value < DateTime.UtcNow}");
 
                 if (expiry.HasValue && expiry.Value < DateTime.UtcNow)
                 {

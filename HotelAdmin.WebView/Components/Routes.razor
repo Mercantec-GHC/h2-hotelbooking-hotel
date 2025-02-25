@@ -9,11 +9,11 @@
                     <NotAuthorized>
                         @if (!context.User.Identity.IsAuthenticated)
                         {
-                            navigationManager.NavigateTo($"/", true);
+                            navigationManager.NavigateTo($"/login", true);
                         }
                         else
                         {
-                            <p>You are not authorized to access this resource.</p>
+                            navigationManager.NavigateTo($"/", true);
                         }
                     </NotAuthorized>
                 </AuthorizeRouteView>
@@ -25,6 +25,6 @@
 @code {
     private async Task HandleNavigationAsync(NavigationContext args)
     {
-        AuthService.CheckTokenExpiry();
+        AuthService.CheckAccess();
     }
 }

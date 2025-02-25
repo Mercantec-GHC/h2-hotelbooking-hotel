@@ -5,31 +5,38 @@
 </LayoutData>
 
 <main class="flex-shrink-0 py-3">
+    <LayoutData>
+        <NavbarLeft Class="hl-shadow position-fixed top-0 start-0">
+            <LeftNavItem Name="Home" Href="/"></LeftNavItem>
 
-    <NavbarLeft Class="hl-shadow position-fixed top-0 start-0">
-        <LeftNavItem Name="Home" Href="/"></LeftNavItem>
+            <LeftNavDropdown Name="Hotels">
+                <LeftNavItem Name="All hotels" Href="/hotels" Margin="30px"></LeftNavItem>
+                <LeftNavItem Name="Add hotel" Href="/hotels/add" Margin="30px"></LeftNavItem>
+            </LeftNavDropdown>
 
-        <LeftNavDropdown Name="Hotels">
-            <LeftNavItem Name="All hotels" Href="/hotels" Margin="30px"></LeftNavItem>
-            <LeftNavItem Name="Add hotel" Href="/hotels/add" Margin="30px"></LeftNavItem>
-        </LeftNavDropdown>
+            <LeftNavDropdown Name="Users">
+                <LeftNavItem Name="All users" Href="/users" Margin="30px"></LeftNavItem>
+                <LeftNavItem Name="Add user" Href="/users/add" Margin="30px"></LeftNavItem>
+            </LeftNavDropdown>
+            <LeftNavItem Name="Tickets" Href="/tickets"></LeftNavItem>
+            <hr class="m-0">
 
-        <LeftNavDropdown Name="Users">
-            <LeftNavItem Name="All users" Href="/users" Margin="30px"></LeftNavItem>
-            <LeftNavItem Name="Add user" Href="/users/add" Margin="30px"></LeftNavItem>
-        </LeftNavDropdown>
-        <LeftNavItem Name="Tickets" Href="/tickets"></LeftNavItem>
+            <NavGroupBottom>
+                <hr class="m-0">
+                <AuthorizeView>
+                    <Authorized>
+                        <LeftNavUser />
+                        <hr class="m-0">
+                        <LeftNavItem Name="Logout" Href="/logout"></LeftNavItem>
+                    </Authorized>
+                    <NotAuthorized>
+                        <LeftNavItem Name="Login" Href="/login"></LeftNavItem>
+                    </NotAuthorized>
+                </AuthorizeView>
+            </NavGroupBottom>
 
-        <AuthorizeView>
-            <Authorized>
-                <LeftNavItem Name="Logout" Href="/logout"></LeftNavItem>
-            </Authorized>
-            <NotAuthorized>
-                <LeftNavItem Name="Login" Href="/login"></LeftNavItem>
-            </NotAuthorized>
-        </AuthorizeView>
-
-    </NavbarLeft>
+        </NavbarLeft>
+    </LayoutData>
 
     <article class="hl-navbar-margin">
         <div class="container-xxl bd-gutter mt-3 my-md-4 bd-layout ">
