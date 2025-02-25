@@ -1,15 +1,27 @@
 ﻿using Blazored.LocalStorage;
-using HotelAdmin.WebView.Services;
+using HotelsRazorLibrary.Services;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Components.Authorization;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
     public static class Config
     {
-        public static IServiceCollection AddHotelLibrary(this IServiceCollection services)
+        public static bool RequireRoles;
+
+        public static IServiceCollection AddHotelLibrary(this IServiceCollection services, bool requireRoles = false)
         {
+            RequireRoles = requireRoles;
+
             services.AddBlazoredLocalStorage();
+
             services.AddScoped<SidenavService>();
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = "jwt";
+                options.DefaultChallengeScheme = "jwt";
+            }).AddScheme<AuthenticationSchemeOptions, CustomAuthenticationHandler>("jwt", options => { });
 
             services.AddAuthorizationCore();
             services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();

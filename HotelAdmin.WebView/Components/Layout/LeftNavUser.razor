@@ -1,0 +1,53 @@
+﻿@using HotelsCommons.Models
+@inject AuthService AuthService
+
+<div class="hl-nav-left-item">
+	<AuthorizeView>
+		<Authorized>
+			@{
+				var firstNameClaim = context.User.Claims.FirstOrDefault(c => c.Type == "FirstName");
+				var lastNameClaim = context.User.Claims.FirstOrDefault(c => c.Type == "LastName");
+
+				var firstName = firstNameClaim != null ? firstNameClaim.Value : string.Empty;
+				var lastName = lastNameClaim != null ? lastNameClaim.Value : string.Empty;
+			}
+
+			<p style="margin-left: @Margin;">@firstName @lastName</p>
+		</Authorized>
+	</AuthorizeView>
+</div>
+
+@code {
+	[Parameter] public string Margin { get; set; } = "20px";
+	private string? _class { get; set; }
+	[Parameter]
+	public string? Class
+	{
+		get
+		{
+			string classes = $"{_class}";
+			return classes;
+		}
+		set { _class = value; }
+	}
+
+	// private string? Name
+	// {
+	// 	get
+	// 	{
+	// 		string result = "";
+	// 		if (CurrentUser != null)
+	// 		{
+	// 			result = $"{CurrentUser.FirstName} {CurrentUser.LastName}";
+	// 		}
+	// 		return result;
+	// 	}
+	// }
+
+	// private UserResultDTO CurrentUser = null;
+
+	// protected override async Task OnInitializedAsync()
+	// {
+	// 	if (CurrentUser == null) CurrentUser = await AuthService.GetUserInfo();
+	// }
+}

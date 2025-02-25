@@ -32,6 +32,6 @@
 @code {
     private async Task HandleNavigationAsync(NavigationContext args)
     {
-        AuthService.CheckTokenExpiry();
+        AuthService.CheckAccess();
     }
 }

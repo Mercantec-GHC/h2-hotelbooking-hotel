@@ -179,3 +179,17 @@
     height: calc-size(fit-content, size);
     /*max-height: 500px;*/
 }
+
+.hl-nav-bottom {
+    position: absolute;
+    bottom: 33px;
+    width: 100%;
+}
+
+@media (max-width: 991px) {
+    .hl-nav-bottom {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+    }
+}

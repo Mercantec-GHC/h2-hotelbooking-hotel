@@ -1,6 +1,7 @@
 ﻿@page "/"
 @using HotelsCommons.Models
 @inject AuthService AuthService
+@attribute [Authorize]
 
 <PageTitle>Home</PageTitle>
 
@@ -18,31 +19,6 @@
                 {
                     <p>@claim.Type: @claim.Value</p>
                 }
-
-                @if (CurrentUser != null)
-                {
-                    <ul>
-                        <li>Id: @CurrentUser.Id</li>
-                        <li>First Name: @CurrentUser.FirstName</li>
-                        <li>Last Name: @CurrentUser.LastName</li>
-                        <li>Email: @CurrentUser.Email</li>
-                        <li>Role Hierarchy: @CurrentUser.RoleHierarchy</li>
-                        <li>
-                            Roles:
-                            <ul>
-                                @foreach (var role in CurrentUser.Roles)
-                                {
-                                    <li>@role</li>
-                                }
-                            </ul>
-                        </li>
-                    </ul>
-                }
-                else
-                {
-                    <p>Loading user info...</p>
-                }
-
             </Authorized>
             <NotAuthorized>
                 <h3>Please log in to see this content.</h3>
@@ -52,12 +28,3 @@
     </CardBody>
     <CardFooter></CardFooter>
 </Card>
-
-@code {
-    private UserResultDTO CurrentUser = null;
-
-    protected override async Task OnInitializedAsync()
-    {
-        if (CurrentUser == null) CurrentUser = await AuthService.GetUserInfo();
-    }
-}

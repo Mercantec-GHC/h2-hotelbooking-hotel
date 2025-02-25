@@ -1,5 +1,10 @@
 using HotelAdmin.Blazor.Components;
 using HotelAdmin.WebView.Components;
+using HotelsRazorLibrary.Services;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace HotelAdmin.Blazor
 {
@@ -8,6 +13,10 @@ namespace HotelAdmin.Blazor
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            //builder.Services.AddAuthentication();
+
+            ConfigurationManager Configuration = builder.Configuration;
 
             builder.Services.AddSharedServices();
 
@@ -30,11 +39,24 @@ namespace HotelAdmin.Blazor
             app.UseStaticFiles();
             app.UseAntiforgery();
 
+            app.UseAuthentication();
+            app.UseAuthorization();
+
             app.MapRazorComponents<App>()
                 .AddAdditionalAssemblies(typeof(Routes).Assembly)
                 .AddInteractiveServerRenderMode();
 
             app.Run();
+        }
+
+        public static string? GetEnvOrSercret(string secret)
+        {
+            string? secretPath = Environment.GetEnvironmentVariable(secret);
+            if (!string.IsNullOrEmpty(secretPath) && File.Exists(secretPath))
+            {
+                return File.ReadAllText(secretPath).Trim();
+            }
+            return null;
         }
     }
 }
