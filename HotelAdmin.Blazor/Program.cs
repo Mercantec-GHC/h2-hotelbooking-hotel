@@ -58,7 +58,7 @@ namespace HotelAdmin.Blazor
             {
                 return File.ReadAllText(secretPath).Trim();
             }
-            return null;
+            return secretPath;
         }
     }
 }
