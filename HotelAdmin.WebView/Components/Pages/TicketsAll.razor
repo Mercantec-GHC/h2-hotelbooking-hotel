@@ -1,5 +1,6 @@
 ﻿@page "/tickets"
 @attribute [Authorize(Roles = "HotelWorker")]
+@inject ApiService ApiService
 
 <PageTitle>All Tickets</PageTitle>
 
@@ -9,6 +10,53 @@
     </CardHeader>
     <CardBody>
         <p>All Tickets</p>
+
+
+        <div class="list-group">
+            @if (tickets != null)
+            {
+                @foreach (var ticket in tickets)
+                {
+                    <a href="/ticket/@ticket.Id" class="list-group-item list-group-item-action fw-bold py-0">
+                        <div class="row justify-content-between">
+                            <div class="col border-end py-2">
+                                @ticket.Topic
+                            </div>
+                            <div class="col-auto border-end py-2">
+                                @ticket.Status
+                            </div>
+                            <div class="col-auto py-2">
+                                @ticket.CreatedAt
+                            </div>
+                        </div>
+                    </a>
+                }
+            }
+            else
+            {
+                <div class="list-group-item list-group-item-action fw-bold py-0">
+                    <div class="row justify-content-between">
+                        <div class="col py-2">
+                            <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                            <span role="status">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
     </CardBody>
     <CardFooter></CardFooter>
 </Card>
+
+@code {
+    private List<AllTicketsResult> tickets;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            tickets = await ApiService.GetAllTickets();
+            StateHasChanged();
+        }
+    }
+}

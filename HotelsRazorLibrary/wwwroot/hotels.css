@@ -73,10 +73,12 @@
     .hl-navbar-margin {
         margin-left: 270px;
     }
+}
 
-    /*.hl-disabler {
-        display: none !important;
-    }*/
+@media (min-width: 2000px) {
+    .hl-navbar-margin {
+        margin-right: 270px;
+    }
 }
 
 .hl-cover-full {

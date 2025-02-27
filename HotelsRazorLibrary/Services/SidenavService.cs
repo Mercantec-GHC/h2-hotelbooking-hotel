@@ -14,20 +14,41 @@ namespace Microsoft.Extensions.DependencyInjection
 
         public async Task Toggle()
         {
-            var module = await moduleTask.Value;
-            await module.InvokeVoidAsync("toggleNav");
+            try
+            {
+                var module = await moduleTask.Value;
+                await module.InvokeVoidAsync("toggleNav");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
         }
 
         public async Task Open()
         {
-            var module = await moduleTask.Value;
-            await module.InvokeVoidAsync("openNav");
+            try
+            {
+                var module = await moduleTask.Value;
+                await module.InvokeVoidAsync("openNav");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
         }
 
         public async Task Close()
         {
-            var module = await moduleTask.Value;
-            await module.InvokeVoidAsync("closeNav");
+            try
+            {
+                var module = await moduleTask.Value;
+                await module.InvokeVoidAsync("closeNav");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
         }
     }
 }
