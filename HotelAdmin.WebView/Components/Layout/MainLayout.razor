@@ -1,8 +1,11 @@
-﻿@inherits LayoutComponentBase
+﻿@using HotelAdmin.WebView.Components.Background
+@inherits LayoutComponentBase
 
 <LayoutData>
     <NavMenu />
 </LayoutData>
+
+<Background />
 
 <main class="flex-shrink-0 py-3">
     <LayoutData>
@@ -27,7 +30,7 @@
                     <Authorized>
                         <LeftNavUser />
                         <hr class="m-0">
-                        <LeftNavItem Name="Logout" Href="/logout"></LeftNavItem>
+                        <LeftNavItem Name="Log out" Href="/logout"></LeftNavItem>
                     </Authorized>
                     <NotAuthorized>
                         <LeftNavItem Name="Login" Href="/login"></LeftNavItem>

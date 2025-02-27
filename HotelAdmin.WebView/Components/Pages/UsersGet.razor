@@ -1,5 +1,5 @@
 ﻿@page "/user/{Id}"
-@attribute [Authorize]
+@attribute [Authorize(Roles = "HotelAdmin")]
 
 <PageTitle>Get User</PageTitle>
 
