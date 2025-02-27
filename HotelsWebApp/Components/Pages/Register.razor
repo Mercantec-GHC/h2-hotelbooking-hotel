@@ -1,5 +1,4 @@
 ﻿@page "/register"
-@using HotelAdmin.WebView.Services
 @using HotelsCommons.Models
 @inject NavigationManager Navigation
 @inject HttpClient Http
@@ -41,13 +40,21 @@
 
         </form>
     </div>
-
-
-
 </center>
 
 
 @code {
     public string errorMessage;
     private UserCreateDTO userCreateDTO = new UserCreateDTO();
+
+    private async Task HandleRegister()
+    {
+        var registerResult = await AuthService.Register(userCreateDTO);
+        if (registerResult.IsSuccessStatusCode)
+        {
+            Navigation.NavigateTo("/", true);
+        }
+    }
+
+    
 }

@@ -15,6 +15,7 @@
     {
         public string UserID { get; set; }
         public string RoomID { get; set; }
+        public float Price { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
     }
