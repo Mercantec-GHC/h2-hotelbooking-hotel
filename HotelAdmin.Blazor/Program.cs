@@ -2,6 +2,7 @@ using HotelAdmin.Blazor.Auth;
 using HotelAdmin.Blazor.Components;
 using HotelAdmin.WebView.Components;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace HotelAdmin.Blazor
 {
@@ -13,13 +14,13 @@ namespace HotelAdmin.Blazor
 
             //builder.Services.AddAuthentication();
 
+            builder.Services.AddSharedServices();
+
             builder.Services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = "jwt";
                 options.DefaultChallengeScheme = "jwt";
             }).AddScheme<AuthenticationSchemeOptions, CustomAuthenticationHandler>("jwt", options => { });
-
-            builder.Services.AddSharedServices();
 
             // Add services to the container.
             builder.Services.AddRazorComponents()

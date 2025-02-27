@@ -19,11 +19,13 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.AddAuthorizationCore();
             services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
+            services.AddScoped<CustomAuthenticationStateProvider>();
             services.AddScoped<IAuthService, AuthService>();
 
             services.AddHttpClient<AuthService>(client =>
             {
                 client.BaseAddress = new Uri("https://10.135.71.51:5101");
+                //client.BaseAddress = new Uri("https://localhost:7090");
             })
             .ConfigurePrimaryHttpMessageHandler(() =>
             {
