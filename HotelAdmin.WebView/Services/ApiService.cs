@@ -1,14 +1,9 @@
 ﻿using Blazored.LocalStorage;
 using HotelAdmin.WebView.Models;
 using HotelsCommons.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace HotelAdmin.WebView.Services
 {
@@ -53,6 +48,30 @@ namespace HotelAdmin.WebView.Services
             }
 
             return null;
+        }
+
+        public async Task<HttpResponseMessage> UpdateStatus(string id, string status)
+        {
+            await IsAuthenticatedAsync();
+            TicketStatusDTO statusModel = new TicketStatusDTO { Status = status };
+            var json = JsonSerializer.Serialize(statusModel);
+            var response = await _httpClient.PatchAsync($"api/ticket/updatestatus?ticketid={id}", new StringContent(json, Encoding.UTF8, "application/json"));
+
+            return response;
+        }
+
+        public async Task<HttpResponseMessage> CreateMessage(string id, string message)
+        {
+            await IsAuthenticatedAsync();
+            MessageCreateDTO statusModel = new MessageCreateDTO
+            {
+                TicketId = id,
+                Message = message
+            };
+            var json = JsonSerializer.Serialize(statusModel);
+            var response = await _httpClient.PostAsync("api/ticket/createmessage", new StringContent(json, Encoding.UTF8, "application/json"));
+
+            return response;
         }
 
         private async Task<bool> IsAuthenticatedAsync()
