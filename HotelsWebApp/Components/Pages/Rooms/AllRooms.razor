@@ -1,0 +1,48 @@
+﻿@page "/hotel/{Id}/rooms"
+
+@inject ApiService ApiService
+@inject NavigationManager NavigationManager
+
+<PageTitle>Rooms</PageTitle>
+
+<Card>
+    <CardHeader>
+        <h1>Room list</h1>
+    </CardHeader>
+    <CardBody>
+        <div class="row g-3">
+            @if (hotel != null)
+            {
+                @foreach (var room in hotel.Rooms)
+                {
+                    <div class="col-12 col-sm-6 col-lg-4 col-xxl-3 h-100">
+                        <Card>
+                            <img src="images/hotel.jpg" class="card-img-top" alt="">
+                            <CardBody>
+                                <p>@room.Id</p>
+                            </CardBody>
+                            <a href="@($"room/{room.Id}")" class="stretched-link"></a>
+                        </Card>
+                    </div>
+                }
+            }
+        </div>
+    </CardBody>
+</Card>
+
+
+@code {
+    [Parameter] public string? Id { get; set; }
+    private HotelResult hotel;
+
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            hotel = await ApiService.GetHotel(Id);
+            if (hotel == null) NavigationManager.NavigateTo("/");
+            else StateHasChanged();
+        }
+    }
+}

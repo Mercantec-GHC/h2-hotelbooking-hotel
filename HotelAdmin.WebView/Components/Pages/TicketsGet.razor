@@ -1,0 +1,142 @@
+﻿@page "/ticket/{Id}"
+@using HotelsCommons.Models
+@attribute [Authorize(Roles = "HotelWorker")]
+@inject ApiService ApiService
+@inject NavigationManager NavigationManager
+
+<PageTitle>Get Ticket</PageTitle>
+
+@if (ticket != null)
+{
+    <Card Class="shadow mb-3">
+        <CardHeader Class="py-0">
+            <div class="row justify-content-between">
+                <h1 class="col border-end pt-2 pb-3 m-0">
+                    @ticket.Topic
+                </h1>
+                <h1 class="col-auto border-end pt-2 pb-3 m-0">
+                    @ticket.Status
+                </h1>
+                <h1 class="col-auto pt-2 pb-3 m-0">
+                    @ticket.CreatedAt
+                </h1>
+            </div>
+        </CardHeader>
+        <CardBody Class="border-bottom">
+            <div class="row justify-content-between">
+                <div class="col-auto">
+                    <p>@ticket.Id</p>
+                </div>
+                <div class="col-auto">
+                    <div class="d-flex">
+                        <InputSelect @bind-Value="status" class="form-select fw-bold me-2">
+                            @foreach (KeyValuePair<string, bool> entry in ticket.GetStatusOptions())
+                            {
+                                <option value="@entry.Key" selected="@entry.Value">@entry.Key</option>
+                            }
+                        </InputSelect>
+                        <button @onclick="UpdateStatus" type="button" class="btn btn-secondary fw-bold text-nowrap">Update Status</button>
+                    </div>
+                </div>
+            </div>
+        </CardBody>
+        <CardBody Class="border-bottom">
+            <div class="my-3">
+                <div class="row row-cols-1 g-3">
+                    @foreach (var message in ticket.Messages)
+                    {
+                        <div class="col">
+                            <Card>
+                                <CardHeader Class="fw-bold py-0">
+                                    <div class="row justify-content-between">
+                                        <p class="col border-end py-2 m-0">
+                                            @message.UserName
+                                        </p>
+                                        <p class="col-auto py-2 m-0">
+                                            @message.CreatedAt
+                                        </p>
+                                    </div>
+                                </CardHeader>
+                                <CardBody>
+                                    <p class="m-0">@message.Message</p>
+                                </CardBody>
+                            </Card>
+                        </div>
+                    }
+                </div>
+            </div>
+        </CardBody>
+        <CardBody>
+            <label for="msgReplyFormControlTextarea" class="form-label fw-bold">Reply:</label>
+            <InputTextArea @bind-Value="message" class="form-control mb-3" id="msgReplyFormControlTextarea" rows="3"></InputTextArea>
+
+            <div class="row justify-content-end">
+                <div class="col-auto">
+                    <button @onclick="Reply" type="button" class="btn btn-secondary fw-bold">Reply</button>
+                </div>
+            </div>
+        </CardBody>
+    </Card>
+}
+else
+{
+    <div class="row justify-content-center mt-5">
+        <div class="col-auto fw-bold">
+            <span class="spinner-border" style="width: 3rem; height: 3rem;" aria-hidden="true"></span>
+            <span role="status" style="font-size: 3rem;">Loading...</span>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public string Id { get; set; }
+    private TicketResult ticket;
+    private string status;
+    private string message;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await FetchTicket();
+        }
+    }
+
+    private async Task FetchTicket()
+    {
+        ticket = await ApiService.GetTicket(Id);
+
+        if (ticket == null) NavigationManager.NavigateTo("/tickets");
+        else
+        {
+            status = ticket.Status;
+            StateHasChanged();
+        }
+    }
+
+    private async Task UpdateStatus()
+    {
+        if (ticket != null && ticket.GetStatusOptions().ContainsKey(status) && ticket.Status != status)
+        {
+            var response = await ApiService.UpdateStatus(Id, status);
+            if (response.IsSuccessStatusCode) ticket.Status = status;
+        }
+    }
+
+
+    private async Task Reply()
+    {
+        if (ticket != null && !string.IsNullOrWhiteSpace(message))
+        {
+            var trimmedMessage = message.Trim();
+            message = string.Empty;
+
+            var response = await ApiService.CreateMessage(Id, trimmedMessage);
+            if (response.IsSuccessStatusCode)
+            {
+                await FetchTicket();
+
+            }
+        }
+    }
+}

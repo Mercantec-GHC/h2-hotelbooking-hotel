@@ -89,6 +89,7 @@ namespace BackendAPI.Controllers
                         {
                             m.ID,
                             m.UserID,
+                            UserName = $"{m.User.FirstName} {m.User.LastName}",
                             m.Message,
                             m.CreatedAt
                         })
@@ -129,7 +130,7 @@ namespace BackendAPI.Controllers
                 ID = ticketID,
                 UserID = user.ID,
                 Topic = ticketCreateDTO.Topic,
-                Status = "open",
+                Status = "Open",
                 CreatedAt = DateTime.UtcNow.AddHours(1),
                 UpdatedAt = DateTime.UtcNow.AddHours(1)
             };

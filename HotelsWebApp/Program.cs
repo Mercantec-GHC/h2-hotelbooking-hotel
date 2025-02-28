@@ -1,7 +1,10 @@
 
+using HotelsWebApp.Auth;
 using HotelsWebApp.Components;
+using Microsoft.AspNetCore.Authentication;
 using System.Security.Cryptography.X509Certificates;
 using HotelsRazorLibrary.Services;
+using HotelsWebApp.Services;
 
 namespace HotelsWebApp
 {
@@ -27,11 +30,32 @@ namespace HotelsWebApp
                 });
             }
 
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = "jwt";
+                options.DefaultChallengeScheme = "jwt";
+            }).AddScheme<AuthenticationSchemeOptions, CustomAuthenticationHandler>("jwt", options => { });
+
             // Add services to the container.
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
-            builder.Services.AddHttpContextAccessor();           
+
+            builder.Services.AddHttpContextAccessor();  
+            
             builder.Services.AddHotelLibrary();
+
+            builder.Services.AddScoped<ApiService>();
+            builder.Services.AddHttpClient<ApiService>(client =>
+            {
+                client.BaseAddress = new Uri("https://10.135.71.51:5101");
+            })
+            .ConfigurePrimaryHttpMessageHandler(() =>
+            {
+                return new HttpClientHandler
+                {
+                    ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
+                };
+            });
 
             var app = builder.Build();
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -48,6 +72,9 @@ namespace HotelsWebApp
 
             app.UseStaticFiles();
             app.UseAntiforgery();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.MapRazorComponents<App>()
                 .AddInteractiveServerRenderMode();
