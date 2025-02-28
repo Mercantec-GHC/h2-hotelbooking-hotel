@@ -96,6 +96,7 @@ namespace BackendAPI.Controllers
             //Updates properties of the room
             booking.StartDate = BookingDTO.StartDate;
             booking.EndDate = BookingDTO.EndDate;
+            booking.Price = BookingDTO.Price;
             booking.UpdatedAt = BookingDTO.UpdatedAt;
 
             await _Context.SaveChangesAsync();

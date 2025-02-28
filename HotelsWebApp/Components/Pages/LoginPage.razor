@@ -4,16 +4,8 @@
 @inject HttpClient Http
 @inject AuthService AuthService
 
-
-
-
-
-<div class="">
-    <button class="btn btn-secondary">Back</button>
-</div>
-
 <center>
-    <div class=" p-3 align-content-end">
+    <div class="p-3 align-content-end">
         <h1 class="display-1">Login</h1>
     </div>     
 
@@ -29,16 +21,18 @@
                 <input type="password" class="form-control w-25" id="exampleInputPassword1" @bind="LoginDTO.Password" placeholder="Password">
             </div>
 
-            <button type="submit" class="btn btn-primary">Submit</button>
-            
+            <div class="mb-2">
+                <button type="submit" class="btn btn-primary">Login</button>
+            </div>
+            <NavLink href="/register">Don't have an account? Register for free!</NavLink>
+
             <p style="color: red">@errorMessage</p>
             
         </form>
     </div>
-
-
-
 </center>
+
+
 @code {
     private UserLoginDTO LoginDTO = new UserLoginDTO();
     private string errorMessage = "";

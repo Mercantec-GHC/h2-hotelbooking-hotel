@@ -1,0 +1,55 @@
+﻿@page "/editBooking"
+@using HotelsCommons.Models
+@inject NavigationManager Navigation
+@inject HttpClient Http
+@inject AuthService AuthService
+
+<center>
+    <div class="p-3 align-content-end">
+        <h1 class="display-1">Edit your booking</h1>
+    </div>
+
+    <div class="p-3 align-content-end">
+        <p1 class="h6">Current start date: @bookingDTO.StartDate</p1>
+    </div>
+    <div class="p-3 align-content-end">
+        <p1 class="h6">Current end date: @bookingDTO.EndDate</p1>
+    </div>
+
+    <form>
+        <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label">New start date</label>
+            <input type="text" class="form-control w-25" placeholder="Start date">
+        </div>
+        <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label">New end date</label>
+            <input type="text" class="form-control w-25" placeholder="End date">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Discount code</label>
+            <input type="text" class="form-control w-25" placeholder="Discount code">
+        </div>
+        <div class="p-3 align-content-end">
+            <p1 class="h6">New price: @newPrice</p1>
+        </div>
+        <div class="mb-2">
+            <button type="submit" class="btn btn-primary">Update</button>
+        </div>
+    </form>
+
+    <p style="color: red">@errorMessage</p>
+
+</center>
+
+
+@code {
+    public string errorMessage;
+    private BookingDTO bookingDTO = new BookingDTO();
+    public bool editing = false;
+    public float newPrice;
+
+    private void EnableEditing()
+    {
+        editing = true;
+    }
+}
