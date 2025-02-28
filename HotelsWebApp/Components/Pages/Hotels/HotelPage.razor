@@ -1,0 +1,30 @@
+﻿@page "/hotel/{Id}"
+
+@inject ApiService ApiService
+@inject NavigationManager NavigationManager
+
+
+@if(hotel != null)
+{
+    <PageTitle>@hotel.Name</PageTitle>
+
+    <h1>@hotel.Name</h1>
+    <a href="@($"hotel/{Id}/rooms")" class="btn btn-primary">Rooms</a>
+}
+
+
+@code {
+    [Parameter] public string? Id { get; set; }
+    private HotelResult hotel;
+
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            hotel = await ApiService.GetHotel(Id);
+            if (hotel == null) NavigationManager.NavigateTo("/");
+            else StateHasChanged();
+        }
+    }
+}

@@ -1,0 +1,60 @@
+﻿@page "/register"
+@using HotelsCommons.Models
+@inject NavigationManager Navigation
+@inject HttpClient Http
+@inject AuthService AuthService
+
+<center>
+    <div class="p-2 align-content-end">
+        <h1 class="display-1">Register</h1>
+    </div>
+
+    <div class="">
+        <form>
+            <div class="mb-3">
+                <label for="exampleInputPassword1" class="form-label">First name</label>
+                <input type="text" class="form-control w-25" id="exampleInputPassword1" @bind="userCreateDTO.FirstName" placeholder="First name">
+            </div>
+            <div class="mb-3">
+                <label for="exampleInputPassword1" class="form-label">Last name</label>
+                <input type="text" class="form-control w-25" id="exampleInputPassword1" @bind="userCreateDTO.LastName" placeholder="Last name">
+            </div>
+            <div class="mb-3">
+                <label for="exampleInputEmail1" class="form-label">Email address</label>
+                <input type="email" class="form-control w-25" id="exampleInputEmail1" @bind="userCreateDTO.Email" aria-describedby="emailHelp" placeholder="Email address">
+            </div>
+            <div class="mb-3">
+                <label for="exampleInputPassword1" class="form-label">Password</label>
+                <input type="password" class="form-control w-25" id="exampleInputPassword1" @bind="userCreateDTO.Password" placeholder="Password">
+            </div>
+            <div class="mb-3">
+                <label for="exampleInputPassword1" class="form-label">Confirm password</label>
+                <input type="password" class="form-control w-25" id="exampleInputPassword1" @bind="userCreateDTO.PasswordConfirm" placeholder="Confirm password">
+            </div>
+            <div class="mb-2">
+                <button type="submit" class="btn btn-primary">Register</button>
+            </div>
+            <NavLink href="/Login">Already have an account?</NavLink>
+
+            <p style="color: red">@errorMessage</p>
+
+        </form>
+    </div>
+</center>
+
+
+@code {
+    public string errorMessage;
+    private UserCreateDTO userCreateDTO = new UserCreateDTO();
+
+    private async Task HandleRegister()
+    {
+        var registerResult = await AuthService.Register(userCreateDTO);
+        if (registerResult.IsSuccessStatusCode)
+        {
+            Navigation.NavigateTo("/", true);
+        }
+    }
+
+    
+}

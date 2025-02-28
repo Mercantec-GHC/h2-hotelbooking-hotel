@@ -1,0 +1,27 @@
+﻿@page "/room/{Id}"
+
+@inject ApiService ApiService
+@inject NavigationManager NavigationManager
+
+
+@if(room != null)
+{
+    <PageTitle>@room.Id</PageTitle>
+    <h1>@room.Id</h1>
+}
+
+
+@code {
+    [Parameter] public string? Id { get; set; }
+    private HotelRoomResult room;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            room = await ApiService.GetRoom(Id);
+            if (room == null) NavigationManager.NavigateTo("/");
+            else StateHasChanged();
+        }
+    }
+}
