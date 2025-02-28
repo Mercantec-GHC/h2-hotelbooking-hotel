@@ -17,37 +17,69 @@
 
 <style>
     .hl-navbar-margin {
-        margin-left: 0 !important;
-        margin-right 0 !important;
+    margin-left: 0 !important;
+    margin-right 0 !important;
     }
 </style>
 
-<Card>
-    <CardHeader>
-        <h1>Login</h1>
-    </CardHeader>
-    <CardBody>
-        <EditForm Model="loginModel" OnValidSubmit="HandleLogin">
-            <DataAnnotationsValidator />
-            <ValidationSummary />
+<div class="row justify-content-center">
+    <div class="col col-sm-8 col-md-7 col-lg-6 col-xl-5">
 
-            <InputText id="email" @bind-Value="loginModel.Email" placeholder="Email" />
-            <InputText id="password" @bind-Value="loginModel.Password" type="password" placeholder="Password" />
-            <button type="submit">Login</button>
+        <EditForm Model="loginModel" OnValidSubmit="HandleLogin">
+            @* <DataAnnotationsValidator />
+            <ValidationSummary /> *@
+
+            <Card Class="shadow">
+                <CardHeader>
+                    <h1>Login</h1>
+                </CardHeader>
+                <CardBody>
+
+                    <div class="mb-3">
+                        <label for="loginInputEmail" class="form-label">Email address</label>
+                        <InputText type="email" @bind-Value="loginModel.Email" class="form-control" id="loginInputEmail" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="loginInputPassword" class="form-label">Password</label>
+                        <InputText @bind-Value="loginModel.Password" type="password" class="form-control" id="loginInputPassword" required />
+                    </div>
+
+                    @if (warningVisible)
+                    {
+                        <p class="text-danger m-0">Incorrect Email or Password!</p>
+                    }
+
+                </CardBody>
+                <CardFooter>
+                    <div class="d-flex justify-content-center">
+                        <button type="submit" class="btn btn-primary" style="width:160px;">
+                            <Spinner Size="SpinnerSize.Small" Visible="spinnerVisible"></Spinner>
+                            <span id="loginSpinner" class="spinner-border spinner-border-sm d-none" aria-hidden="true"></span>
+                            <span id="loginText" role="status">@loginText</span>
+                        </button>
+                    </div>
+                </CardFooter>
+            </Card>
         </EditForm>
-    </CardBody>
-    <CardFooter></CardFooter>
-</Card>
+
+    </div>
+</div>
 
 @code {
     private UserLoginDTO loginModel = new UserLoginDTO();
+    private bool spinnerVisible = false;
+    private bool warningVisible = false;
+    private string loginText { get { return spinnerVisible ? "Logging in" : "Log in"; } }
 
     private async Task HandleLogin()
     {
+        spinnerVisible = true;
         var loginResult = await AuthService.Login(loginModel);
         if (loginResult.IsSuccessStatusCode)
         {
             NavigationManager.NavigateTo("/", true);
         }
+        spinnerVisible = false;
+        warningVisible = true;
     }
 }
