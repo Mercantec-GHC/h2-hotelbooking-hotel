@@ -99,9 +99,9 @@ namespace BackendAPI.Controllers
                         StartDate = b.StartDate,
                         EndDate = b.EndDate,
                     }).ToList(),
-                    Images = r.Images.Select(r => new RoomImageResult
+                    Images = r.Images.Select(i => new RoomImageResult
                     {
-                        FileName = r.FileName
+                        FileName = i.FileName
                     }).ToList(),
                 }).ToListAsync();
 

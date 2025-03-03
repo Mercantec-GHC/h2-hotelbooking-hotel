@@ -39,15 +39,7 @@ namespace BackendAPI.Controllers
         [HttpGet("GetAllHotels")]
         public async Task<ActionResult<List<HotelDTO>>> GetHotels()
         {
-            var hoteler = await _context.Hotels
-                .Include(h => h.Rooms)
-                    .ThenInclude(r => r.Bookings)
-               
-                .Include(h => h.Rooms)
-                    
-                .ToListAsync();
-
-            var hotels = hoteler.Select(h => new HotelDTO
+            var hotels = _context.Hotels.Select(h => new HotelDTO
             {
                 ID = h.ID,
                 Name = h.Name,
@@ -59,13 +51,16 @@ namespace BackendAPI.Controllers
                 CreatedAt = h.CreatedAt,
                 UpdatedAt = h.UpdatedAt,
                
-                Rooms = h.Rooms.Select(r => new RoomDTO
+                Rooms = h.Rooms.Select(r => new RoomResult
                 {
-                    ID = r.ID,
-                    HotelID = r.HotelID,
+                    Id = r.ID,
+                    Name = r.Name,
+                    Description = r.Description,
                     DailyPrice = r.DailyPrice,
-                  
-
+                    Images = r.Images.Select(i => new RoomImageResult
+                    {
+                        FileName = i.FileName
+                    }).ToList()
                 }).ToList()
             }).ToList();
 
