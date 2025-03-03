@@ -6,8 +6,16 @@
 <PageTitle>Rooms</PageTitle>
 
 <Card>
+    <img class="rounded-top" src="images/hotelhero.jpg" alt="" />
     <CardHeader>
-        <h1>Room list</h1>
+        <ul class="nav nav-tabs card-header-tabs">
+            <li class="nav-item">
+                <a class="nav-link" href="@($"hotel/{Id}")">Hotel</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" href="@($"hotel/{Id}/rooms")">Rooms</a>
+            </li>
+        </ul>
     </CardHeader>
     <CardBody>
         <div class="row g-3">
