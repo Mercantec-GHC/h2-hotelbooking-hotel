@@ -1,4 +1,5 @@
 ﻿using Blazored.LocalStorage;
+using HotelsCommons.Models;
 using HotelsWebApp.Models;
 using System.Net.Http.Headers;
 using System.Text.Json;
@@ -20,13 +21,13 @@ namespace HotelsWebApp.Services
             return new List<AllHotelsResult>();
         }
 
-        public async Task<HotelResult> GetHotel(string id)
+        public async Task<HotelDTO> GetHotel(string id)
         {
             var response = await _httpClient.GetAsync($"api/Hotel/{id}");
 
             if (response.IsSuccessStatusCode)
             {
-                var result = JsonSerializer.Deserialize<HotelResult>(await response.Content.ReadAsStringAsync(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                var result = JsonSerializer.Deserialize<HotelDTO>(await response.Content.ReadAsStringAsync(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
                 return result;
             }
 
