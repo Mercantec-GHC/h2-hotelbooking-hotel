@@ -140,7 +140,7 @@ namespace BackendAPI
             {
                 return File.ReadAllText(secretPath).Trim();
             }
-            return null;
+            return secretPath;
         }
     }
 }

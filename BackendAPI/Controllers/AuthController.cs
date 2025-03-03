@@ -21,7 +21,7 @@ namespace BackendAPI.Controllers
         {
             if (userCreateDTO.Password != userCreateDTO.PasswordConfirm)
             {
-                BadRequest("Passwords dont match.");
+                return BadRequest("Passwords dont match.");
             }
 
             if (await _context.Users.AnyAsync(u => u.Email == userCreateDTO.Email))
