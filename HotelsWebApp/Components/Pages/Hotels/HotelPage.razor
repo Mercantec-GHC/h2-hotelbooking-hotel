@@ -60,7 +60,7 @@
                                 <Card>
                                     <img src="images/hotel.jpg" class="card-img-top" alt="">
                                     <CardBody>
-                                        <p>@room.Id</p>
+                                        <p>@room.Name</p>
                                     </CardBody>
                                     <a href="@($"room/{room.Id}")" class="stretched-link"></a>
                                 </Card>
@@ -75,7 +75,7 @@
 
 @code {
     [Parameter] public string? Id { get; set; }
-    private HotelResult hotel;
+    private HotelDTO hotel;
     private string page = "hotel";
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -85,11 +85,9 @@
             hotel = await ApiService.GetHotel(Id);
             if (hotel == null) NavigationManager.NavigateTo("/");
             else StateHasChanged();
+            foreach(var room in hotel.Rooms){
+                Console.WriteLine(room);
+            }
         }
-    }
-
-    private void ChangePage(string page)
-    {
-
     }
 }
