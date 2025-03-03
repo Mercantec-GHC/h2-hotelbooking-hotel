@@ -36,6 +36,18 @@ namespace HotelsCommons.Models
         public string Name { get; set; }
         public string Description { get; set; }
         public float DailyPrice { get; set; }
-        public List<string> Images { get; set; } = new List<string>();
+        public List<RoomBookinsResult> Bookings { get; set; } = new List<RoomBookinsResult>();
+        public List<RoomImageResult> Images { get; set; } = new List<RoomImageResult>();
+    }
+
+    public class RoomBookinsResult
+    {
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
+    }
+
+    public class RoomImageResult
+    {
+        public string FileName { get; set; }
     }
 }
