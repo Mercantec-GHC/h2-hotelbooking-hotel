@@ -62,6 +62,7 @@ namespace BackendAPI.Controllers
                 RoomID = booking.RoomID,
                 StartDate = booking.StartDate,
                 EndDate = booking.EndDate,
+                AllInclusive = booking.AllInclusive,
                 Price = finalPrice,
                 CreatedAt = DateTime.UtcNow.AddHours(1),
                 UpdatedAt = DateTime.UtcNow.AddHours(1),
@@ -104,6 +105,7 @@ namespace BackendAPI.Controllers
                     RoomID = b.RoomID,
                     UserID = b.UserID,
                     Price = b.Price,
+                    AllInclusive = b.AllInclusive,
                     StartDate = b.StartDate,
                     EndDate = b.EndDate
                 }).ToListAsync();
@@ -143,18 +145,10 @@ namespace BackendAPI.Controllers
                     RoomID = b.RoomID,
                     UserID = b.UserID,
                     Price = b.Price,
+                    AllInclusive = b.AllInclusive,
                     StartDate = b.StartDate,
                     EndDate = b.EndDate
                 }).FirstOrDefaultAsync();
-
-            //{
-            //    b.ID,
-            //    b.UserID,
-            //    b.RoomID,
-            //    b.Price,
-            //    b.StartDate,
-            //    b.EndDate
-            //}).FirstOrDefaultAsync();
 
             if (booking == null)
             {
