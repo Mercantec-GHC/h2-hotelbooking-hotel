@@ -1,0 +1,52 @@
+﻿@page "/hotels"
+
+@inject ApiService ApiService
+
+<PageTitle>Hotels</PageTitle>
+
+<Card>
+    <CardHeader>
+        <h1>Our hotels</h1>
+    </CardHeader>
+    <CardBody>
+        <div class="row g-3">
+            @if (hotels != null)
+            {
+                @foreach (var hotel in hotels)
+                {
+                    <div class="col-12 col-sm-6 col-lg-4 col-xxl-3 h-100">
+                        <Card>
+                            <img src="images/hotel.jpg" class="card-img-top" alt="">
+                            <CardHeader>
+                                <h1>@hotel.Name</h1>
+                            </CardHeader>
+                            <CardBody>
+                                <p class="m-0">@hotel.Description</p>
+                                <p class ="m-0">@hotel.Country</p>
+                                <p class="m-0">@hotel.Region</p>
+                                <p class="m-0">@hotel.City</p>
+                                <p class="m-0">@hotel.PostalCode</p>
+                            </CardBody>
+                            <a href="@($"hotel/{hotel.Id}")" class="stretched-link"></a>
+                        </Card>
+                    </div>
+                }
+            }
+        </div>
+    </CardBody>
+</Card>
+
+@code {
+    private List<AllHotelsResult> hotels;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            hotels = await ApiService.GetAllHotels();
+            StateHasChanged();
+        }
+    }
+}
+
+
