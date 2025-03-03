@@ -118,47 +118,34 @@ namespace BackendAPI.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Hotel>> GetHotelsById(string id)
+        public async Task<ActionResult<HotelDTO>> GetHotelById(string id)
         {
-           
-            var hoteler = await _context.Hotels
+            var hotel = _context.Hotels
                 .Where(h => h.ID == id)
-                .Include(h => h.Rooms)
-                .ThenInclude(r => r.Bookings).FirstOrDefaultAsync();
-
-            var hotel = new Hotel
-            {
-                ID = hoteler.ID,
-                Name = hoteler.Name,
-                Description = hoteler.Description,
-                Country = hoteler.Country,
-                City = hoteler.City,
-                Region = hoteler.Region,
-                PostalCode = hoteler.PostalCode,
-                CreatedAt = hoteler.CreatedAt,
-                UpdatedAt = hoteler.UpdatedAt,
-                Rooms = hoteler.Rooms
-                .Select(r => new Room
+                .Select(h => new HotelDTO
                 {
-                    DailyPrice = r.DailyPrice,
-                    ID = r.ID,
-                    HotelID = r.HotelID,
-                    CreatedAt = r.CreatedAt,
-                    UpdatedAt = r.UpdatedAt,
-                    Bookings = r.Bookings.Select(b => new Booking
+                    ID = h.ID,
+                    Name = h.Name,
+                    Description = h.Description,
+                    Country = h.Country,
+                    City = h.City,
+                    Region = h.Region,
+                    PostalCode = h.PostalCode,
+                    CreatedAt = h.CreatedAt,
+                    UpdatedAt = h.UpdatedAt,
+
+                    Rooms = h.Rooms.Select(r => new RoomResult
                     {
-                        ID = b.ID,
-                        RoomID = b.RoomID,
-                        UserID = b.UserID,
-                        CreatedAt = b.CreatedAt,
-                        UpdatedAt = b.UpdatedAt
+                        Id = r.ID,
+                        Name = r.Name,
+                        Description = r.Description,
+                        DailyPrice = r.DailyPrice,
+                        Images = r.Images.Select(i => new RoomImageResult
+                        {
+                            FileName = i.FileName
+                        }).ToList()
                     }).ToList()
-
-                }).ToList()
-            };
-                
-
-
+                }).FirstOrDefaultAsync();
 
             return Ok(hotel);
         }
