@@ -1,0 +1,67 @@
+﻿@page "/userSettings"
+@inject AuthService AuthService
+
+<div class="row justify-content-center">
+    <div class="col col-sm-8 col-md-7 col-lg-6 col-xl-5">
+        <EditForm Model="userUpdateDTO" OnValidSubmit="HandleEditing">
+            <Card Class="shadow">
+                <CardHeader>
+                    <h1>Settings</h1>
+                    @if (!editing)
+                    {
+                        <div class="mb-2">
+                            <button @onclick="EnableEditing" class="btn btn-primary">Edit</button>
+                        </div>
+                    }
+                </CardHeader>
+                <CardBody>
+                    <div class="mb-3">
+                        <label for="updateInputFirstName" class="form-label">First name</label>
+                        <TextInput @bind-Value="userUpdateDTO.FirstName" Placeholder="Enter your first name" 
+                            Id="updateInputFirstName" Disabled="@(!editing)"/>
+                        <ValidationMessage For="@(() => userUpdateDTO.FirstName)" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="updateInputLastName" class="form-label">Last name</label>
+                        <TextInput @bind-Value="userUpdateDTO.LastName" Placeholder="Enter your last name"
+                            Id="updateInputLastName" Disabled="@(!editing)" />
+                        <ValidationMessage For="@(() => userUpdateDTO.LastName)" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="updateInputEmail" class="form-label">Email address</label>
+                        <TextInput @bind-Value="userUpdateDTO.Email" Placeholder="Enter your email"
+                            Id="updateInputEmail" Disabled="@(!editing)" />
+                        <ValidationMessage For="@(() => userUpdateDTO.Email)" />
+                    </div>
+                </CardBody>
+                <CardFooter>
+                    <div class="d-flex justify-content-center">
+                        <Button Type="ButtonType.Submit"
+                                Color="spinnerVisible ? ButtonColor.Secondary : ButtonColor.Primary"
+                                Loading="spinnerVisible"
+                                Disabled="spinnerVisible"
+                                LoadingText="Updating"
+                                Style="width: 128px;">
+                            Update
+                        </Button>
+                    </div>
+                </CardFooter>
+            </Card>
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    private UserUpdateDTO userUpdateDTO = new UserUpdateDTO();
+    public bool editing = false;
+    private bool spinnerVisible = false;
+
+    private void EnableEditing(){
+        editing = true;
+    }
+
+    private async Task HandleEditing(){ 
+    }
+}
