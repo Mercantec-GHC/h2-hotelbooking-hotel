@@ -4,7 +4,7 @@
 
 <PageTitle>Hotels</PageTitle>
 
-<Card>
+<Card Class="shadow">
     <CardHeader>
         <h1>Our hotels</h1>
     </CardHeader>
@@ -15,9 +15,9 @@
                 @foreach (var hotel in hotels)
                 {
                     <div class="col-12 col-sm-6 col-lg-4 col-xxl-3 h-100">
-                        <Card>
+                        <Card Class="selectable">
                             <img src="images/hotel.jpg" class="card-img-top" alt="">
-                            <CardHeader>
+                            <CardHeader class="border-top">
                                 <h1>@hotel.Name</h1>
                             </CardHeader>
                             <CardBody>

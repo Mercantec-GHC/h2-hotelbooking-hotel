@@ -52,11 +52,11 @@
                         @foreach (var room in hotel.Rooms)
                         {
                             <div class="col-12 col-sm-6 col-lg-4 col-xxl-3 h-100">
-                                <Card>
-                                    <img src="images/hotel.jpg" class="card-img-top" alt="">
-                                    <CardBody>
-                                        <p>@room.Name</p>
-                                    </CardBody>
+                                <Card Class="selectable">
+                                    <img src="images/room.jpg" class="card-img-top" alt="">
+                                    <CardHeader class="border-top">
+                                        <h6>@room.Name</h6>
+                                    </CardHeader>
                                     <a href="@($"room/{room.Id}")" class="stretched-link"></a>
                                 </Card>
                             </div>
