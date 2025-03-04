@@ -65,11 +65,32 @@ namespace BackendAPI.Controllers
             return Ok(availableRooms);
         }
 
-
         [HttpGet("{id}")]
-        public async Task<ActionResult<Room>> GetSpecificRoom(string id)
+        public async Task<ActionResult<RoomResult>> IActionResult(string id)
         {
-            var room = await _context.Rooms.FindAsync(id);
+            var room = await _context.Rooms
+                .Where(r => r.ID == id)
+                .Select(r => new RoomResult
+                {
+                    Id = r.ID,
+                    Name = r.Name,
+                    Description = r.Description,
+                    DailyPrice = r.DailyPrice,
+                    Bookings = r.Bookings.Select(b => new RoomBookinsResult
+                    {
+                        StartDate = b.StartDate,
+                        EndDate = b.EndDate,
+                    }).ToList(),
+                    Images = r.Images.Select(i => new RoomImageResult
+                    {
+                        FileName = i.FileName
+                    }).ToList(),
+                }).FirstOrDefaultAsync();
+
+            if (room == null)
+            {
+                return NotFound($"Room of id, {id} was not found.");
+            }
 
             return Ok(room);
         }
@@ -204,9 +225,10 @@ namespace BackendAPI.Controllers
 
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                return BadRequest("Invalid image file.");
+                //return BadRequest("Invalid image file.");
+                return BadRequest(ex.Message);
             }
 
            

@@ -24,7 +24,7 @@ services:
       DATABASE_CONNECTION_STRING: /run/secrets/DATABASE_CONNECTION_STRING
     volumes:
       - certs:/https-certs:ro
-      - files:/images:ro
+      - files:/images:z
     secrets:
       - CertPassword
       - JWT_ISSUER

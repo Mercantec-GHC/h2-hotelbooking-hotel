@@ -1,56 +1,37 @@
 ﻿@page "/"
 
-@inject ApiService ApiService
-
 <PageTitle>Home</PageTitle>
 
-@* <LayoutData>
-    <NavMenuConcern />
-</LayoutData> *@
-
-<Card>
+<Card Class="shadow">
     <CardHeader>
-        <h1>Our hotels</h1>
+        <h1>Hotel – Comfort Everywhere You Go</h1>
     </CardHeader>
     <CardBody>
-        <div class="row g-3">
-            @if (hotels != null)
-            {
-                @foreach (var hotel in hotels)
-                {
-                    <div class="col-12 col-sm-6 col-lg-4 col-xxl-3 h-100">
-                        <Card>
-                            <img src="images/hotel.jpg" class="card-img-top" alt="">
-                            <CardHeader>
-                                <h1>@hotel.Name</h1>
-                            </CardHeader>
-                            <CardBody>
-                                <p class="m-0">@hotel.Description</p>
-                                <p class ="m-0">@hotel.Country</p>
-                                <p class="m-0">@hotel.Region</p>
-                                <p class="m-0">@hotel.City</p>
-                                <p class="m-0">@hotel.PostalCode</p>
-                            </CardBody>
-                            <a href="@($"hotel/{hotel.Id}")" class="stretched-link"></a>
-                        </Card>
-                    </div>
-                }
-            }
-        </div>
+        <h2 class="ms-3">Global Presence</h2>
+
+        <h4 class="ms-5">
+            We have hotels in locations all around the world,<br>
+            making it easy to find a comfortable place to stay wherever you travel.
+        </h4>
+
+        <h2 class="ms-3">Simple & Comfortable Rooms</h2>
+
+        <h4 class="ms-5">
+            Our rooms are designed to be clean, well-equipped,<br>
+            and perfect for a restful stay—whether you're traveling for business or leisure.
+        </h4>
+
+        <h2 class="ms-3">Reliable & Affordable</h2>
+
+        <h4 class="ms-5">
+            We offer a hassle-free experience with great service at an affordable price,<br>
+            ensuring comfort without complications.
+        </h4>
     </CardBody>
 </Card>
 
 @code {
-    private List<AllHotelsResult> hotels;
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            hotels = await ApiService.GetAllHotels();
-            StateHasChanged();
-        }
-    }
+    
 }
 
 
