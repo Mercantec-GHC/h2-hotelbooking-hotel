@@ -66,26 +66,8 @@ namespace BackendAPI.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> IActionResult(string id)
+        public async Task<ActionResult<RoomResult>> IActionResult(string id)
         {
-            //var room = await _context.Rooms
-            //    .Where(r => r.ID == id)
-            //    .Select(r => new
-            //    {
-            //        r.Name,
-            //        r.Description,
-            //        r.DailyPrice,
-            //        Bookings = r.Bookings.Select(b => new
-            //        {
-            //            b.StartDate,
-            //            b.EndDate
-            //        }),
-            //        Images = r.Images.Select(i => new
-            //        {
-            //            i.FileName
-            //        }).ToList()
-            //    }).ToListAsync();
-
             var room = await _context.Rooms
                 .Where(r => r.ID == id)
                 .Select(r => new RoomResult
@@ -103,7 +85,12 @@ namespace BackendAPI.Controllers
                     {
                         FileName = i.FileName
                     }).ToList(),
-                }).ToListAsync();
+                }).FirstOrDefaultAsync();
+
+            if (room == null)
+            {
+                return NotFound($"Room of id, {id} was not found.");
+            }
 
             return Ok(room);
         }
