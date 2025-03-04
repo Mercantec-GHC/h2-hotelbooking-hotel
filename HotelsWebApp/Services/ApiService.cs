@@ -34,13 +34,13 @@ namespace HotelsWebApp.Services
             return null;
         }
 
-        public async Task<HotelRoomResult> GetRoom(string id)
+        public async Task<RoomResult> GetRoom(string id)
         {
             var response = await _httpClient.GetAsync($"api/Room/{id}");
 
             if (response.IsSuccessStatusCode)
             {
-                var result = JsonSerializer.Deserialize<HotelRoomResult>(await response.Content.ReadAsStringAsync(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                var result = JsonSerializer.Deserialize<RoomResult>(await response.Content.ReadAsStringAsync(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
                 return result;
             }
 

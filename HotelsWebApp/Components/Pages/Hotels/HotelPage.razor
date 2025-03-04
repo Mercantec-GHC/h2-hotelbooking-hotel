@@ -7,19 +7,14 @@
 {
     <PageTitle>@hotel.Name</PageTitle>
 
-    @* <h1>@hotel.Name</h1>
-    <a href="@($"hotel/{Id}/rooms")" class="btn btn-primary">Rooms</a> *@
-
     <Card Class="shadow">
         <img class="rounded-top" src="images/hotelhero.jpg" alt="" />
         <CardHeader>
             <ul class="nav nav-tabs card-header-tabs">
                 <li class="nav-item">
-                    @* <a class="nav-link active" href="@($"hotel/{Id}")">Hotel</a> *@
                     <button Class="nav-link @(page == "hotel" ? "active" : "")" @onclick="@(() => page = "hotel")">Hotel</button>
                 </li>
                 <li class="nav-item">
-                    @* <a class="nav-link" href="@($"hotel/{Id}/rooms")">Rooms</a> *@
                     <button Class="nav-link @(page == "rooms" ? "active" : "")" @onclick="@(() => page = "rooms")">Rooms</button>
                 </li>
             </ul>
