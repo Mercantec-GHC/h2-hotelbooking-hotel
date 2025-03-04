@@ -11,27 +11,39 @@
     <Card Class="shadow">
         <CardBody>
             <div class="row">
-                <div class="col-8">
+                <div class="col col-sm-6 col-md-7 col-lg-8 col-xl-9">
                     <div class="row">
-                        <div class="col-6">
-                            <div class="ratio ratio-4x3">
+                        <div class="col col-lg-8">
+                            <div class="ratio ratio-4x3 card bg-secondary bg-opacity-25 mb-3">
                                 <img src="images/room.jpg" alt="" style="width: 100%; height: 100%; object-fit: contain;" />
                             </div>
                         </div>
                     </div>
                     <h1>@room.Name</h1>
+                    <p class="h4">
+                        @room.Description
+                    </p>
                 </div>
-                <div class="col-4">
-                    <Card>
+                <div class="col-12 col-sm-6 col-md-5 col-lg-4 col-xl-3">
+                    <div class="mb-3">
+                        <Calendar Bookings="room.Bookings" />
+                    </div>
+                    <Card Class="shadow">
                         <CardBody>
-                            <div class="d-flex justify-content-end">
-                                <button class="btn btn-primary">Book now</button>
+                            <div class="row">
+                                <div class="col">
+                                    <p class="h4">@($"Price per day: {room.DailyPrice}€")</p>
+                                </div>
+                                <div class="col-auto">
+                                    <div class="d-flex justify-content-end">
+                                        <button class="btn btn-primary">Book now</button>
+                                    </div>
+                                </div>
                             </div>
                         </CardBody>
                     </Card>
                 </div>
             </div>
-            <Calendar />
         </CardBody>
     </Card>
 }

@@ -1,8 +1,22 @@
 ﻿.calendar {
     /*width: 300px;*/
-    background-color: #fff;
+    /*background-color: #fff;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 01);
+    color: #000;*/
+
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    background: #fff;
+    border-radius: 10px;
     color: #000;
+
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+    -moz-user-select: none; /* Old versions of Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
 }
 
 .calendar-header {
@@ -24,7 +38,11 @@
     color: #000;
     width: 40px;
     height: 40px;
-    box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+}
+
+.calendar-header button:hover,
+.calendar-header button:focus {
+    background: #ddd;
 }
 
 .calendar-month {
@@ -39,13 +57,14 @@
 
 .day {
     text-align: center;
-    padding: 5px;
+    /*padding: 5px;*/
     color: #999fa6;
 }
 
 .calendar-weekdays div, .calendar-dates div {
     text-align: center;
-    padding: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
 
 /*.calendar-weekdays {
@@ -65,7 +84,27 @@
     background-color: #f1f1f1;
 }*/
 
-.date:hover, date.active {
+.date {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    /*padding: 10px;*/
+    margin: auto;
+    /*cursor: pointer;*/
+    font-weight: bold;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    transition: 0.2s;
+}
+
+/*.date:hover, .date.active {
+    background: #ff5869;
+    color: #fff;
+}*/
+
+.date.active {
     background: #ff5869;
     color: #fff;
 }
@@ -74,6 +113,6 @@
     color: #d2d2d2;
 }
 
-.date.inactive:hover {
+/*.date.inactive:hover {
     color: #fff;
-}
+}*/
