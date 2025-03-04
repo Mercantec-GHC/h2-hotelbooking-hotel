@@ -25,8 +25,6 @@
         public string City { get; set; }
         public string Region { get; set; }
         public string PostalCode { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
         public List<RoomResult> Rooms { get; set; }
     }
     public class CreateHotelDTO

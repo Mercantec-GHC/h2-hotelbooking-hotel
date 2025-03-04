@@ -48,20 +48,18 @@ namespace BackendAPI.Controllers
                 City = h.City,
                 Region = h.Region,
                 PostalCode = h.PostalCode,
-                CreatedAt = h.CreatedAt,
-                UpdatedAt = h.UpdatedAt,
                
-                Rooms = h.Rooms.Select(r => new RoomResult
-                {
-                    Id = r.ID,
-                    Name = r.Name,
-                    Description = r.Description,
-                    DailyPrice = r.DailyPrice,
-                    Images = r.Images.Select(i => new RoomImageResult
-                    {
-                        FileName = i.FileName
-                    }).ToList()
-                }).ToList()
+                //Rooms = h.Rooms.Select(r => new RoomResult
+                //{
+                //    Id = r.ID,
+                //    Name = r.Name,
+                //    Description = r.Description,
+                //    DailyPrice = r.DailyPrice,
+                //    Images = r.Images.Select(i => new RoomImageResult
+                //    {
+                //        FileName = i.FileName
+                //    }).ToList()
+                //}).ToList()
             }).ToList();
 
             return Ok(hotels);
@@ -108,9 +106,8 @@ namespace BackendAPI.Controllers
                         CreatedAt = b.CreatedAt,
                         UpdatedAt = b.UpdatedAt
                     }).ToList()
-
                 }).ToList()
-                }).ToList();
+            }).ToList();
 
 
 
@@ -131,9 +128,6 @@ namespace BackendAPI.Controllers
                     City = h.City,
                     Region = h.Region,
                     PostalCode = h.PostalCode,
-                    CreatedAt = h.CreatedAt,
-                    UpdatedAt = h.UpdatedAt,
-
                     Rooms = h.Rooms.Select(r => new RoomResult
                     {
                         Id = r.ID,
@@ -145,7 +139,39 @@ namespace BackendAPI.Controllers
                             FileName = i.FileName
                         }).ToList()
                     }).ToList()
-                }).FirstOrDefaultAsync();
+                })
+                .FirstOrDefault();
+
+            if (hotel == null)
+            {
+                return NotFound($"Hotel of id, {id} was not found.");
+            }
+
+            //var hotel = _context.Hotels
+            //    .Select(h => new HotelDTO
+            //    {
+            //        ID = h.ID,
+            //        Name = h.Name,
+            //        Description = h.Description,
+            //        Country = h.Country,
+            //        City = h.City,
+            //        Region = h.Region,
+            //        PostalCode = h.PostalCode,
+            //        CreatedAt = h.CreatedAt,
+            //        UpdatedAt = h.UpdatedAt,
+
+            //        Rooms = h.Rooms.Select(r => new RoomResult
+            //        {
+            //            Id = r.ID,
+            //            Name = r.Name,
+            //            Description = r.Description,
+            //            DailyPrice = r.DailyPrice,
+            //            Images = r.Images.Select(i => new RoomImageResult
+            //            {
+            //                FileName = i.FileName
+            //            }).ToList()
+            //        }).ToList()
+            //    }).FirstOrDefaultAsync(h => h.ID == id);
 
             return Ok(hotel);
         }
