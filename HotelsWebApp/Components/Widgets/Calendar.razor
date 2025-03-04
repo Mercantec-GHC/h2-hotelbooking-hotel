@@ -1,0 +1,78 @@
+﻿<div class="calendar">
+    <div class="calendar-header">
+        <button>‹</button>
+        <div class="calendar-month">@Month</div>
+        <button>›</button>
+    </div>
+    <div class="calendar-body">
+        <div class="calendar-weekdays">
+            <div class="day">Mon</div>
+            <div class="day">Tue</div>
+            <div class="day">Wed</div>
+            <div class="day">Thu</div>
+            <div class="day">Fri</div>
+            <div class="day">Sat</div>
+            <div class="day">Sun</div>
+        </div>
+        <div class="calendar-dates">
+            @* <div>@DaysInMonth</div> *@
+            @for(var i = 1; i < FirstDayOfMonth; i++)
+            {
+                var day = DaysInLastMonth - (FirstDayOfMonth - i - 1);
+
+                <div class="date inactive">@day</div>
+            }
+            @for(var i = 1; i <= DaysInMonth; i++)
+            {
+                <div class="date">
+                    @i
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    private string Month
+    {
+        get 
+        {
+            return $"{Months[SelectedMonth - 1]} {SelectedYear}";
+        }
+    }
+    private string[] Months = { 
+        "January", "February", "March", "April", 
+        "May", "June", "July", "August", 
+        "September", "October", "November", "December"
+    };
+    private int Year = DateTime.UtcNow.Year;
+    private int SelectedYear = DateTime.UtcNow.Year;
+    private int StartMonth = DateTime.UtcNow.Month;
+    private int SelectedMonth = DateTime.UtcNow.Month;
+    private int DaysInMonth 
+    {
+        get
+        {
+            return DateTime.DaysInMonth(SelectedYear, SelectedMonth);
+        }
+    }
+    private int DaysInLastMonth
+    {
+        get
+        {
+            var lastMonth = SelectedMonth - 1 < 1 ? 12 : SelectedMonth - 1;
+            var days = DateTime.DaysInMonth(SelectedYear, lastMonth);
+            return days;
+        }
+    }
+    private int FirstDayOfMonth
+    {
+        get
+        {
+            var firstDay = new DateTime(SelectedYear, SelectedMonth, 1);
+            // int firstDayAsInt = ((int)firstDay.DayOfWeek + 6) % 7 + 1;
+            return (int)firstDay.DayOfWeek;
+            // return firstDay.Day;
+        }
+    }
+}
