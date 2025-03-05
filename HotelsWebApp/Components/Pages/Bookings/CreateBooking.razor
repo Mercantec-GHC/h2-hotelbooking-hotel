@@ -118,8 +118,6 @@
             else 
             {
                 bookingModel.RoomID = room.Id;
-                // bookingModel.StartDate = DateTime.UtcNow;
-                // bookingModel.EndDate = DateTime.UtcNow.AddYears(1);
 
                 StateHasChanged();
             }
@@ -128,8 +126,8 @@
 
     private async Task HandleValidSubmit()
     {
-        var success = await ApiService.CreateBooking(bookingModel);
-        if (success) NavigationManager.NavigateTo("/");
+        var result = await ApiService.CreateBooking(bookingModel);
+        if (result != null) NavigationManager.NavigateTo($"/bookingconfirmed/{result.Id}");
     }
 
     private async Task StartDateChanged(DateTime? startDate)
