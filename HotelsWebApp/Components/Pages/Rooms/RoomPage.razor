@@ -3,7 +3,6 @@
 @inject ApiService ApiService
 @inject NavigationManager NavigationManager
 
-
 @if(room != null)
 {
     <PageTitle>@room.Name</PageTitle>
@@ -36,7 +35,7 @@
                                 </div>
                                 <div class="col-auto">
                                     <div class="d-flex justify-content-end">
-                                        <button class="btn btn-primary">Book now</button>
+                                        <button class="btn btn-primary" @onclick="OnBookClicked">Book now</button>
                                     </div>
                                 </div>
                             </div>
@@ -61,5 +60,10 @@
             if (room == null) NavigationManager.NavigateTo("/");
             else StateHasChanged();
         }
+    }
+
+    private async Task OnBookClicked()
+    {
+        NavigationManager.NavigateTo($"/room/{Id}/booknow");
     }
 }
