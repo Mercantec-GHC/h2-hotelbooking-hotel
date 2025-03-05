@@ -1,4 +1,6 @@
-﻿namespace HotelsCommons.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace HotelsCommons.Models
 {
     public class Booking : Common
     {
@@ -27,8 +29,17 @@
         public string RoomID { get; set; }
         public bool AllInclusive { get; set; }
         public string? DiscountCode {  get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
+
+        [Required(ErrorMessage = "Start Date required.")]
+        public DateTime? StartDate { get; set; }
+
+        [Required(ErrorMessage = "End Date required.")]
+        public DateTime? EndDate { get; set; }
+    }
+
+    public class CreateBookingResult
+    {
+        public string Id { get; set;
     }
 
     public class BookingResult

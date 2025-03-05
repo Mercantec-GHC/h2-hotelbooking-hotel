@@ -47,6 +47,20 @@ namespace HotelsWebApp.Services
             return null;
         }
 
+        public async Task<bool> CreateBooking(CreateBookingDTO bookingModel)
+        {
+            var savedToken = await _localStorage.GetItemAsync<string>("authToken");
+            if (!string.IsNullOrWhiteSpace(savedToken))
+            {
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", savedToken);
+
+                var response = await _httpClient.PostAsJsonAsync("api/booking/createbooking", bookingModel);
+
+                return true;
+            }
+            return false;
+        }
+
         private async Task<bool> IsAuthenticatedAsync()
         {
             var savedToken = await _localStorage.GetItemAsync<string>("authToken");
