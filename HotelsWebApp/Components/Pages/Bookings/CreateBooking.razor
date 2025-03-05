@@ -26,7 +26,7 @@
                     <p>@($"Price: {(price > 0 ? price : "-")} €")</p>
                     <p>User: @bookingModel.UserID</p>
                 </div>
-                <div class="col-12 col-sm-6">
+                <div class="col-12 col-sm-8">
                     <EditForm Model="bookingModel" OnValidSubmit="HandleValidSubmit" novalidate>
                         <DataAnnotationsValidator />
 
@@ -65,6 +65,13 @@
                             <div class="col-md-10">
                                 @* <Switch Class="mt-2" @bind-Value="allIncusive" /> *@
                                 <Switch Class="mt-3" Value="bookingModel.AllInclusive" ValueExpression="() => bookingModel.AllInclusive" ValueChanged="AllIncusiveChanged" />
+                            </div>
+                        </div>
+
+                        <div class="form-group row mb-3">
+                            <label class="col-md-2 col-form-label">Discount Code: <span class="text-danger">*</span></label>
+                            <div class="col-md-10">
+                                <TextInput @bind-Value="@bookingModel.DiscountCode" Placeholder="Enter Discount Code" />
                             </div>
                         </div>
 
@@ -142,27 +149,12 @@
         }
 
         bookingModel.StartDate = startDate;
-        // bookingModel.EndDate = null;
 
         ValidateDays();
 
         disableEndDate = false;
 
-        // foreach (var booking in room.Bookings)
-        // {
-        //     if (startDate >= booking.StartDate && startDate <= booking.EndDate)
-        //     {
-        //         // bookingModel.StartDate = null;
-        //         // disableEndDate = true;
-        //         dateValid = false;
-        //         break;
-        //     }
-        //     dateValid = true;
-        //     disableEndDate = false;
-        // }
         StateHasChanged();
-
-        // Console.WriteLine($"Is Date Valid - {dateValid}");
     }
 
     private async Task EndDateChanged(DateTime? endDate)

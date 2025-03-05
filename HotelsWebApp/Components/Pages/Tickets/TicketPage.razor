@@ -1,8 +1,8 @@
-﻿@page "/ticket/{Id}"
-@using HotelsCommons.Models
-@attribute [Authorize(Roles = "HotelWorker")]
+﻿@page "/tickets/{Id}"
+
 @inject ApiService ApiService
 @inject NavigationManager NavigationManager
+@attribute [Authorize]
 
 <PageTitle>Get Ticket</PageTitle>
 
@@ -26,17 +26,6 @@
             <div class="row justify-content-between">
                 <div class="col-auto">
                     <p>@ticket.Id</p>
-                </div>
-                <div class="col-auto">
-                    <div class="d-flex">
-                        <InputSelect @bind-Value="status" class="form-select fw-bold me-2">
-                            @foreach (KeyValuePair<string, bool> entry in ticket.GetStatusOptions())
-                            {
-                                <option value="@entry.Key" selected="@entry.Value">@entry.Key</option>
-                            }
-                        </InputSelect>
-                        <button @onclick="UpdateStatus" type="button" class="btn btn-secondary fw-bold text-nowrap">Update Status</button>
-                    </div>
                 </div>
             </div>
         </CardBody>
@@ -111,15 +100,6 @@ else
         {
             status = ticket.Status;
             StateHasChanged();
-        }
-    }
-
-    private async Task UpdateStatus()
-    {
-        if (ticket != null && ticket.GetStatusOptions().ContainsKey(status) && ticket.Status != status)
-        {
-            var response = await ApiService.UpdateStatus(Id, status);
-            if (response.IsSuccessStatusCode) ticket.Status = status;
         }
     }
 
