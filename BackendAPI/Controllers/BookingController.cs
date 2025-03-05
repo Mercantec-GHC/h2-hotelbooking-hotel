@@ -44,8 +44,8 @@ namespace BackendAPI.Controllers
                 .FirstOrDefaultAsync(dc => dc.Code == bookingDTO.DiscountCode);
 
             float finalPrice;
-            var DaysBetween = ((DateTime)bookingDTO.EndDate - (DateTime)bookingDTO.StartDate).Days;
-            var NewPrice = (DaysBetween * room.DailyPrice) + (bookingDTO.AllInclusive ? 50 * DaysBetween : 0) + 1;
+            var DaysBetween = (((DateTime)bookingDTO.EndDate - (DateTime)bookingDTO.StartDate).Days) + 1;
+            var NewPrice = (DaysBetween * room.DailyPrice) + (bookingDTO.AllInclusive ? 50 * DaysBetween : 0);
             if (discountCode != null)
             {
                 var DiscountedPrice = NewPrice / 100 * discountCode.Percentage;
