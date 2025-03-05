@@ -81,6 +81,30 @@ namespace HotelsRazorLibrary.Services
             return response;
         }
 
+        public async Task<bool> UpdateUserInfo(string id, UserUpdateDTO userUpdateDTO)
+        {
+            var savedToken = await _localStorage.GetItemAsync<string>("authToken");
+            if (!string.IsNullOrWhiteSpace(savedToken))
+            {
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", savedToken);
+                var response = await _httpClient.PatchAsJsonAsync($"api/auth/ChangeUserInfo?userId={id}", userUpdateDTO);
+                return response.IsSuccessStatusCode;
+            }
+            return false;
+        }
+
+        public async Task<bool> UpdateUserPassword(PasswordDTO passwordDTO)
+        {
+            var savedToken = await _localStorage.GetItemAsync<string>("authToken");
+            if (!string.IsNullOrWhiteSpace(savedToken))
+            {
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", savedToken);
+                var response = await _httpClient.PatchAsJsonAsync($"api/auth/changePassword", passwordDTO);
+                return response.IsSuccessStatusCode;
+            }
+            return false;
+        }
+
         public async Task Logout()
         {
             await _localStorage.RemoveItemAsync("authToken");

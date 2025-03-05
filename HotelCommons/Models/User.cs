@@ -57,12 +57,15 @@ namespace HotelsCommons.Models
 
     public class UserUpdateDTO
     {
+        [Required(ErrorMessage = "First name is required.")]
         [JsonPropertyName("firstName")]
         public string FirstName { get; set; }
 
+        [Required(ErrorMessage = "Last name is required.")]
         [JsonPropertyName("lastName")]
         public string LastName { get; set; }
 
+        [Required(ErrorMessage = "Email is required.")]
         [JsonPropertyName("email")]
         public string Email { get; set; }
     }
@@ -80,9 +83,14 @@ namespace HotelsCommons.Models
 
     public class PasswordDTO
     {
+        [Required(ErrorMessage = "Password is required.")]
+        [StringLength(64, ErrorMessage = "Password must be at least 8 characters.", MinimumLength = 8)]
+        [RegularExpression("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[\\W_]).{8,}$", ErrorMessage = "Must contain at least one upper case letter, one lower case letter, one special character and one number.")]
         [JsonPropertyName("password")]
         public string Password { get; set; }
 
+        [Required(ErrorMessage = "Password is required.")]
+        [Compare("Password", ErrorMessage = "Passwords do not match.")]
         [JsonPropertyName("passwordConfirm")]
         public string PasswordConfirm { get; set; }
     }
