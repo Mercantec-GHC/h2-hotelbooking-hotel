@@ -86,7 +86,7 @@ namespace HotelsWebApp.Services
         {
             if (await IsAuthenticatedAsync())
             {
-                var response = await _httpClient.GetAsync("api/Ticket/listTickets");
+                var response = await _httpClient.GetAsync("api/Ticket/MyTickets");
 
                 if (response.IsSuccessStatusCode)
                 {
