@@ -1,0 +1,165 @@
+﻿@page "/usersettings"
+@inject NavigationManager Navigation
+@inject AuthService AuthService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@attribute [Authorize]
+
+<Card Class="shadow">
+    <CardHeader class="text-center">
+        <h1>Settings</h1>
+    </CardHeader>
+
+    <div class="row justify-content-center">
+        <div class="col col-6">
+            <EditForm Model="userUpdateDTO" OnValidSubmit="HandleEditing">
+                <Card>
+                    <CardBody>
+                        <div class="mb-3">
+                            <label for="updateInputFirstName" class="form-label">First name</label>
+                            <TextInput @bind-Value="userUpdateDTO.FirstName" Placeholder="Enter your new first name" 
+                                Id="updateInputFirstName" Disabled="@(!editingInfo)"/>
+                            <ValidationMessage For="@(() => userUpdateDTO.FirstName)" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="updateInputLastName" class="form-label">Last name</label>
+                            <TextInput @bind-Value="userUpdateDTO.LastName" Placeholder="Enter your new last name"
+                                Id="updateInputLastName" Disabled="@(!editingInfo)" />
+                            <ValidationMessage For="@(() => userUpdateDTO.LastName)" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="updateInputEmail" class="form-label">Email address</label>
+                            <TextInput @bind-Value="userUpdateDTO.Email" Placeholder="Enter your new email"
+                                Id="updateInputEmail" Disabled="@(!editingInfo)" />
+                            <ValidationMessage For="@(() => userUpdateDTO.Email)" />
+                        </div>
+                        @if (warningVisibleInfo)
+                        {
+                            <div class="validation-message">Failed to update settings!</div>
+                        }
+                    </CardBody>
+                    <CardFooter>
+                        <div class="d-flex justify-content-center">
+                            <Button Type="ButtonTypeInfo"
+                            Color="spinnerVisibleInfo ? ButtonColor.Secondary : ButtonColor.Primary"
+                            Loading="spinnerVisibleInfo"
+                            Disabled="spinnerVisibleInfo"
+                            LoadingText="Updating"
+                            Style="width: 128px;" @onclick="EnableEditingInfo">
+                                @ButtonTextInfo
+                            </Button>
+                        </div>
+                    </CardFooter>
+                </Card>
+            </EditForm>
+        </div>
+        <div class="col col-6">
+            <EditForm Model="passwordUpdateDTO" OnValidSubmit="HandlePasswordUpdate">
+                <Card>
+                    <CardBody>
+                        <div class="mb-3">
+                            <label for="updateInputPassword" class="form-label">Password</label>
+                            <PasswordInput @bind-Value="passwordUpdateDTO.Password" Placeholder="Enter your new password"
+                                Id="updateInputPassword" Disabled="@(!editingPassword)" />
+                            <ValidationMessage For="@(() => passwordUpdateDTO.Password)" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="updateInputConfirmPassword" class="form-label">Confirm password</label>
+                            <PasswordInput @bind-Value="passwordUpdateDTO.PasswordConfirm" Placeholder="Confirm your new password"
+                                Id="updateInputConfirmPassword" Disabled="@(!editingPassword)" />
+                            <ValidationMessage For="@(() => passwordUpdateDTO.PasswordConfirm)" />
+                        </div>
+                    </CardBody>
+                    <CardFooter>
+                        <div class="d-flex justify-content-center">
+                            <Button Type="ButtonTypePassword"
+                            Color="spinnerVisiblePassword? ButtonColor.Secondary : ButtonColor.Primary"
+                            Loading="spinnerVisiblePassword"
+                            Disabled="spinnerVisiblePassword"
+                            LoadingText="Updating"
+                            Style="width: 128px;" @onclick="EnableEditingPassword">
+                                @ButtonTextPassword
+                            </Button>
+                        </div>
+                    </CardFooter>
+                </Card>
+            </EditForm>
+        </div>
+    </div>
+</Card>
+
+@code {
+    private UserUpdateDTO userUpdateDTO = new UserUpdateDTO();
+    private PasswordDTO passwordUpdateDTO = new PasswordDTO();
+    private string UserID;
+    public bool editingInfo = false;
+    public bool editingPassword = false;
+    public bool warningVisibleInfo = false;
+    public bool warningVisiblePassword = false;
+    private bool spinnerVisibleInfo = false;
+    private string ButtonTextInfo = "Edit";
+    private bool spinnerVisiblePassword = false;
+    private string ButtonTextPassword = "Edit";
+    private ButtonType ButtonTypeInfo = ButtonType.Button;
+    private ButtonType ButtonTypePassword = ButtonType.Button;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            var userIdClaim = user.Claims.FirstOrDefault(c => c.Type == "UserID");
+            var firstNameClaim = user.Claims.FirstOrDefault(c => c.Type == "FirstName");
+            var lastNameClaim = user.Claims.FirstOrDefault(c => c.Type == "LastName");
+            var emailClaim = user.Claims.FirstOrDefault(c => c.Type == "sub");
+            UserID = userIdClaim?.Value ?? null;
+            userUpdateDTO.FirstName = firstNameClaim?.Value ?? null;
+            userUpdateDTO.LastName = lastNameClaim?.Value ?? null;
+            userUpdateDTO.Email = emailClaim?.Value ?? null;
+        }
+    }
+
+    private void EnableEditingInfo(){
+        editingInfo = true;
+        ButtonTypeInfo = ButtonType.Submit;
+        ButtonTextInfo = "Save changes";
+    }
+    private void EnableEditingPassword()
+    {
+        editingPassword= true;
+        ButtonTypePassword = ButtonType.Submit;
+        ButtonTextPassword= "Save changes";
+    }
+
+    private async Task HandleEditing(){
+        spinnerVisibleInfo = true;
+        var loginResult = await AuthService.UpdateUserInfo(UserID, userUpdateDTO);
+        if (loginResult == true)
+        {
+            Navigation.NavigateTo("/logout", true);
+        }
+        else
+        {
+            warningVisibleInfo = true;
+        }
+        spinnerVisibleInfo = false;
+    }
+
+    private async Task HandlePasswordUpdate(){
+        spinnerVisiblePassword = true;
+        var loginResult = await AuthService.UpdateUserPassword(passwordUpdateDTO);
+        if (loginResult == true)
+        {
+            Navigation.NavigateTo("/logout", true);
+        }
+        else
+        {
+            warningVisiblePassword = true;
+        }
+        spinnerVisiblePassword = false;
+    }
+}
