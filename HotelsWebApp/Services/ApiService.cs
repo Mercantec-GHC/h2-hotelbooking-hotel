@@ -47,7 +47,25 @@ namespace HotelsWebApp.Services
             return null;
         }
 
-        public async Task<bool> CreateBooking(CreateBookingDTO bookingModel)
+        public async Task<BookingResult> GetBooking(string id)
+        {
+            var savedToken = await _localStorage.GetItemAsync<string>("authToken");
+            if (!string.IsNullOrWhiteSpace(savedToken))
+            {
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", savedToken);
+
+                var response = await _httpClient.GetAsync($"api/Booking/{id}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = JsonSerializer.Deserialize<BookingResult>(await response.Content.ReadAsStringAsync(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    return result;
+                }
+            }
+            return null;
+        }
+
+        public async Task<CreateBookingResult> CreateBooking(CreateBookingDTO bookingModel)
         {
             var savedToken = await _localStorage.GetItemAsync<string>("authToken");
             if (!string.IsNullOrWhiteSpace(savedToken))
@@ -56,9 +74,11 @@ namespace HotelsWebApp.Services
 
                 var response = await _httpClient.PostAsJsonAsync("api/booking/createbooking", bookingModel);
 
-                return true;
+                var result = JsonSerializer.Deserialize<CreateBookingResult>(await response.Content.ReadAsStringAsync(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                return result;
             }
-            return false;
+            return null;
         }
 
         private async Task<bool> IsAuthenticatedAsync()
