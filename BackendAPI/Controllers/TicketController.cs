@@ -53,6 +53,40 @@ namespace BackendAPI.Controllers
         }
 
         [Authorize]
+        [HttpGet("MyTickets")]
+        public async Task<IActionResult> GetMyTickets()
+        {
+            var userId = User.FindFirstValue(_userID);
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized();
+            }
+
+            var user = await _context.Users
+                .Where(u => u.ID == userId)
+                .FirstOrDefaultAsync();
+
+            if (user == null)
+            {
+                return StatusCode(500);
+            }
+
+            var tickets = await _context.Tickets
+                .Where(t => t.UserID == userId)
+                .Select(t => new
+                {
+                    t.ID,
+                    t.Topic,
+                    t.Status,
+                    t.CreatedAt
+                })
+                .ToListAsync();
+
+            return Ok(tickets);
+        }
+
+        [Authorize]
         [HttpGet("getTicket")]
         public async Task<IActionResult> GetTicket([FromQuery] string ticketId)
         {
@@ -222,7 +256,7 @@ namespace BackendAPI.Controllers
                 return NotFound(messageCreateDTO.TicketId);
             }
 
-            if (ticket.ID != userId && !User.IsInRole(_hotelWorkerRole))
+            if (ticket.UserID != userId && !User.IsInRole(_hotelWorkerRole))
             {
                 return Forbid();
             }
