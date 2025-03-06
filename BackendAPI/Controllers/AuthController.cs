@@ -181,6 +181,53 @@ namespace BackendAPI.Controllers
             return Ok(users);
         }
 
+
+
+        [Authorize]
+        [HttpGet("GetUser")]
+        public async Task<ActionResult> GetUser([FromQuery] string id)
+        {
+            var userId = User.FindFirstValue("UserID");
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized();
+            }
+
+            var currentUser = await _context.Users
+                .Where(u => u.ID == userId)
+                .Select(u => new
+                {
+                    RoleHierarchy = u.UserRoles.Any() ? u.UserRoles.Max(ur => ur.Role.Hierarki) : 0
+                })
+                .FirstOrDefaultAsync();
+
+            if (currentUser == null)
+            {
+                return StatusCode(500);
+            }
+
+            var user = await _context.Users
+                .Select(u => new
+                {
+                    u.ID,
+                    u.FirstName,
+                    u.LastName,
+                    u.Email,
+                    RoleHierarchy = u.UserRoles.Any() ? u.UserRoles.Max(ur => ur.Role.Hierarki) : 0,
+                    Roles = u.UserRoles.Select(ur => ur.Role.Name)
+                })
+                .Where(u => u.RoleHierarchy < currentUser.RoleHierarchy && u.ID == id)
+                .FirstOrDefaultAsync();
+
+            if (user == null)
+            {
+                return NotFound($"User of id: {id} was not found.");
+            }
+
+            return Ok(user);
+        }
+
         [Authorize]
         [HttpPatch("ChangeUserInfo")]
         public async Task<IActionResult> ChangeUserInfo([FromQuery] string? userId, [FromBody] UserUpdateDTO userUpdateDTO)
