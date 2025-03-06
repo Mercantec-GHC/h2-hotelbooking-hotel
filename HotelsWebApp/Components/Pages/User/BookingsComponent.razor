@@ -1,0 +1,50 @@
+﻿@inject ApiService ApiService
+@inject NavigationManager Navigation
+
+@if (bookings != null)
+{
+    <div class="row justify-content-center">
+        <div class="col col-md-10 col-lg-8">
+            <div class="row row-cols-1 g-3">
+                @foreach(var booking in bookings)
+                {                    
+                    <div class="col">
+                        <Card>
+                            <CardBody>
+                                <div class="row">
+
+                                    <div class="col">
+                                        <div class="ratio ratio-16x9 overflow-hidden card bg-secondary bg-opacity-25">
+                                            <img src="images/room.jpg" alt="" style="width: 100%; height: 100%; object-fit: contain;" />
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <h5 class="card-title">@(booking.RoomName != null ? booking.RoomName : "NULL")</h5>
+                                        <p class="card-text">All Inclusive: @booking.AllInclusive</p>
+                                        <p class="card-text">Price: @booking.Price</p>
+                                        <p class="card-text">Start Date: @booking.StartDate.ToString("dd-MM-yyyy")</p>
+                                        <p class="card-text">End Date: @booking.EndDate.ToString("dd-MM-yyyy")</p>
+                                    </div>
+                                </div>
+                            </CardBody>
+                        </Card>
+                    </div>                                          
+                }
+            </div>
+        </div>
+    </div>
+}
+ 
+@code {
+    private List<BookingResult> bookings;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {                   
+            bookings = await ApiService.GetMyBookings();
+            Console.WriteLine($"Loaded {bookings.Count} bookings with room details.");
+            StateHasChanged();
+        }
+    }   
+}
