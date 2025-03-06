@@ -47,6 +47,7 @@ namespace HotelsCommons.Models
         public string Id { get; set; }
         public string UserID { get; set; }
         public string RoomID { get; set; }
+        public string RoomName { get; set; }
         public float Price { get; set; }
         public bool AllInclusive { get; set; }
         public DateTime StartDate { get; set; }

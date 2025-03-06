@@ -47,7 +47,6 @@ namespace HotelsWebApp.Services
 
             return null;
         }
-
         public async Task<BookingResult> GetBooking(string id)
         {
             var savedToken = await _localStorage.GetItemAsync<string>("authToken");
@@ -82,6 +81,22 @@ namespace HotelsWebApp.Services
             return null;
         }
 
+        public async Task<List<BookingResult>> GetMyBookings()
+        {
+            if (await IsAuthenticatedAsync())
+            {
+                var response = await _httpClient.GetAsync($"api/Booking/GetMyBookings");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = JsonSerializer.Deserialize<List<BookingResult>>(await response.Content.ReadAsStringAsync(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    return result;
+                }
+            }
+
+            return new List<BookingResult>();
+        }
+
         public async Task<List<AllTicketsResult>> GetAllTickets()
         {
             if (await IsAuthenticatedAsync())
@@ -95,7 +110,7 @@ namespace HotelsWebApp.Services
                 }
             }
 
-            return new List<AllTicketsResult>();
+            return null;
         }
 
         public async Task<TicketResult> GetTicket(string id)
@@ -134,12 +149,13 @@ namespace HotelsWebApp.Services
         private async Task<bool> IsAuthenticatedAsync()
         {
             var savedToken = await _localStorage.GetItemAsync<string>("authToken");
+
             if (!string.IsNullOrWhiteSpace(savedToken))
             {
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", savedToken);
                 return true;
             }
             return false;
-        }
+        }               
     }
 }
