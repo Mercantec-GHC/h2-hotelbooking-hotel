@@ -1,0 +1,36 @@
+﻿@page "/hotel/{Id}"
+@attribute [Authorize(Roles = "HotelAdmin")]
+
+<PageTitle>Get Hotel</PageTitle>
+
+<Card>
+    <CardHeader>
+        <h1>Get Hotel - @Id</h1>
+    </CardHeader>
+    <CardBody Class="border-bottom pb-2">
+        <ul class="nav nav-tabs card-header-tabs">
+            <li class="nav-item">
+                <button Class="nav-link @(page == "info" ? "active" : "")" @onclick="@(() => page = "info")">Hotel</button>
+            </li>
+            <li class="nav-item">
+                <button Class="nav-link @(page == "rooms" ? "active" : "")" @onclick="@(() => page = "rooms")">Rooms</button>
+            </li>
+        </ul>
+    </CardBody>
+    <CardBody>
+        @if (page == "info")
+        {
+
+        }
+        else if (page == "rooms")
+        {
+            <RoomsComponent HotelId="@Id" />
+        }
+    </CardBody>
+    <CardFooter></CardFooter>
+</Card>
+
+@code {
+    [Parameter] public string? Id { get; set; }
+    private string page = "info";
+}

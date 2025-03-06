@@ -1,0 +1,64 @@
+﻿@page "/hotels"
+@attribute [Authorize(Roles = "HotelWorker")]
+@inject ApiService ApiService
+
+<PageTitle>All Hotels</PageTitle>
+
+<Card Class="shadow">
+    <CardHeader>
+        <h1>All Hotels</h1>
+    </CardHeader>
+    <CardBody>
+        <p>All Hotels</p>
+
+        <div class="list-group">
+            @if (hotels != null)
+            {
+                @foreach (var hotel in hotels)
+                {
+                    <a href="/hotel/@hotel.ID" class="list-group-item list-group-item-action fw-bold py-0">
+                        <div class="row justify-content-between">
+                            <div class="col-3 border-end py-2">
+                                @hotel.Name
+                            </div>
+                            <div class="col-2 border-end py-2">
+                                @hotel.Country
+                            </div>
+							<div class="col border-end py-2">
+                                @hotel.City
+                            </div>
+                            <div class="col-4 py-2">
+                                @hotel.ID
+                            </div>
+                        </div>
+                    </a>
+                }
+            }
+            else
+            {
+                <div class="list-group-item list-group-item-action fw-bold py-0">
+                    <div class="row justify-content-between">
+                        <div class="col py-2">
+                            <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                            <span role="status">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </CardBody>
+    <CardFooter></CardFooter>
+</Card>
+
+@code {
+    private List<HotelDTO> hotels;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            hotels = await ApiService.GetAllHotels();
+            StateHasChanged();
+        }
+    }
+}
