@@ -61,9 +61,13 @@
                         <Dropdown Class="d-none d-sm-block">
                             <DropdownToggleButton Class="nav-item nav-link">@GetUserName(context)</DropdownToggleButton>
                             <DropdownMenu Position="DropdownMenuPosition.End">
-                                <DropdownItem To="account" Type="DropdownItemType.Link">Profile</DropdownItem>
+                                <DropdownItem To="account" Type="DropdownItemType.Link">
+                                    <Icon Name="IconName.PersonCircle" /> Profile
+                                </DropdownItem>
                                 <DropdownDivider />
-                                <DropdownItem To="logout" Type="DropdownItemType.Link">Log out</DropdownItem>
+                                <DropdownItem To="logout" Type="DropdownItemType.Link">
+                                    <Icon Name="IconName.BoxArrowRight" /> Log out
+                                </DropdownItem>
                             </DropdownMenu>
                         </Dropdown>
 
