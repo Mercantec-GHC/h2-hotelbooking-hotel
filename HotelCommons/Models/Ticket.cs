@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -18,9 +19,11 @@ namespace HotelsCommons.Models
 
     public class TicketCreateDTO
     {
+        [Required(ErrorMessage = "Topic is required.", AllowEmptyStrings = false)]
         [JsonPropertyName("topic")]
         public string Topic { get; set; }
 
+        [Required(ErrorMessage = "Message is required.", AllowEmptyStrings = false)]
         [JsonPropertyName("message")]
         public string Message { get; set; }
     }
