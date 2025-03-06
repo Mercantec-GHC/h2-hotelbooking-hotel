@@ -134,12 +134,13 @@ namespace HotelsWebApp.Services
         private async Task<bool> IsAuthenticatedAsync()
         {
             var savedToken = await _localStorage.GetItemAsync<string>("authToken");
+
             if (!string.IsNullOrWhiteSpace(savedToken))
             {
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", savedToken);
                 return true;
             }
             return false;
-        }
+        }               
     }
 }
