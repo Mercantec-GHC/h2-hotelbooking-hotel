@@ -1,11 +1,11 @@
-﻿@page "/hotel/{Id}"
+@page "/room/{Id}"
 @attribute [Authorize(Roles = "HotelAdmin")]
 
-<PageTitle>Get Hotel</PageTitle>
+<PageTitle>Get Room</PageTitle>
 
 <Card>
     <CardHeader>
-        <h1>Get Hotel</h1>
+        <h1>Get Room</h1>
     </CardHeader>
     <CardBody>
         <p>@Id</p>
