@@ -6,16 +6,25 @@
 
 @if (booking != null)
 {
-    <PageTitle>Create Booking</PageTitle>
+    <PageTitle>Booking Confirmed</PageTitle>
 
-    <Card Class="shadow">
-        <CardHeader>
-            <h1>Booking: @booking.Id - @booking.Price - @booking.AllInclusive</h1>
-        </CardHeader>
-        <CardBody>
-            <p>Booking: @booking.Id - @booking.Price - @booking.AllInclusive</p>
-        </CardBody>
-    </Card>
+    <div class="row justify-content-center">
+        <div class="col col-sm-10 col-md-8 col-lg-7 col-xl-6">
+            <Card Class="shadow">
+                <CardHeader>
+                    <h1 class="card-title">Congratulations, your booking has been confirmed</h1>
+                </CardHeader>
+                <CardBody>
+                    <p class="card-tex fw-bold mb-1">@(booking.RoomName != null ? booking.RoomName : "NULL")</p>
+                    <p class="card-text mb-1">All Inclusive: @booking.AllInclusive</p>
+                    <p class="card-text mb-1">Price: @booking.Price</p>
+                    <p class="card-text mb-1">Start Date: @booking.StartDate.ToString("dd-MM-yyyy")</p>
+                    <p class="card-text mb-1">End Date: @booking.EndDate.ToString("dd-MM-yyyy")</p>
+                    <p class="card-text text-secondary fst-italic">Booking Id: @booking.Id</p>
+                </CardBody>
+            </Card>
+        </div>
+    </div>
 }
 
 @code {
