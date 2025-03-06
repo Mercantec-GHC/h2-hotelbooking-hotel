@@ -1,4 +1,6 @@
-﻿namespace HotelsCommons.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace HotelsCommons.Models
 {
     public class Hotel : Common
     {
@@ -29,11 +31,22 @@
     }
     public class CreateHotelDTO
     {
+        [Required(ErrorMessage = "Name is required.")]
         public string Name { get; set; }
+
+        [Required(ErrorMessage = "Description is required.")]
         public string Description { get; set; }
+
+        [Required(ErrorMessage = "Country is required.")]
         public string Country { get; set; }
+
+        [Required(ErrorMessage = "Region is required.")]
         public string Region { get; set; }
+
+        [Required(ErrorMessage = "City is required.")]
         public string City { get; set; }
+
+        [Required(ErrorMessage = "PostalCode is required.")]
         public string PostalCode { get; set; }
        
     }

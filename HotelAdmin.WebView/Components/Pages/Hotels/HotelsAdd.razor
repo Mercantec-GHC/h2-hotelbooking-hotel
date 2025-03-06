@@ -9,6 +9,30 @@
     </CardHeader>
     <CardBody>
         <p>Add Hotel</p>
+
+        <div class="row">
+            <div class="col col-md-6">
+                <div class="mb-3">
+                    <label for="nameInput" class="form-label fw-bold">Name:</label>
+                    <TextInput @bind-Value="@hotelDTO.Name" Id="nameInput" Placeholder="Enter Hotel Name" />
+                </div>
+                <div>
+                    <label for="descriptionInput" class="form-label fw-bold">Description:</label>
+                    <TextAreaInput @bind-Value="hotelDTO.Description" class="form-control mb-3" Placeholder="Enter Hotel Name" Id="descriptionInput" rows="3"></TextAreaInput>
+                </div>
+            </div>
+            <div class="col col-md-6">
+                <div class="mb-3">
+                    <label for="countryInput" class="form-label fw-bold">Country:</label>
+                    <TextInput @bind-Value="@hotelDTO.Country" Id="countryInput" Placeholder="Enter Hotel Country" />
+                </div>
+            </div>
+        </div>
+
     </CardBody>
     <CardFooter></CardFooter>
 </Card>
+
+@code {
+    private CreateHotelDTO hotelDTO = new CreateHotelDTO();
+}

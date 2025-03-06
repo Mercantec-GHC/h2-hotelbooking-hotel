@@ -51,8 +51,6 @@ namespace HotelAdmin.WebView.Services
 
         public async Task<List<RoomResult>> GetRooms(string id)
         {
-            Console.WriteLine(id);
-
             if (await IsAuthenticatedAsync())
             {
                 var response = await _httpClient.GetAsync($"api/Hotel/{id}");
@@ -65,6 +63,22 @@ namespace HotelAdmin.WebView.Services
             }
 
             return new List<RoomResult>();
+        }
+
+        public async Task<RoomResult> GetRoom(string id)
+        {
+            if (await IsAuthenticatedAsync())
+            {
+                var response = await _httpClient.GetAsync($"api/Room/{id}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = JsonSerializer.Deserialize<RoomResult>(await response.Content.ReadAsStringAsync(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    return result;
+                }
+            }
+
+            return null;
         }
 
         public async Task<List<BookingResult>> GetAllBookings()

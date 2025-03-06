@@ -1,18 +1,36 @@
 @page "/room/{Id}"
 @attribute [Authorize(Roles = "HotelAdmin")]
+@inject ApiService ApiService
 
 <PageTitle>Get Room</PageTitle>
 
-<Card>
-    <CardHeader>
-        <h1>Get Room</h1>
-    </CardHeader>
-    <CardBody>
-        <p>@Id</p>
-    </CardBody>
-    <CardFooter></CardFooter>
-</Card>
+@if (room != null)
+{
+    <Card>
+        <CardHeader>
+            <h1>Get Room</h1>
+        </CardHeader>
+        <CardBody>
+            <p>@room.Id</p>
+            <p>@room.Name</p>
+            <p>@room.Description</p>
+            <p>@room.DailyPrice</p>
+        </CardBody>
+        <CardFooter></CardFooter>
+    </Card>
+}
 
 @code {
     [Parameter] public string? Id { get; set; }
+
+    private RoomResult room;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            room = await ApiService.GetRoom(Id);
+            StateHasChanged();
+        }
+    }
 }
