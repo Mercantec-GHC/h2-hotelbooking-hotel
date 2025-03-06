@@ -53,8 +53,10 @@
                         {
                             <div class="col-12 col-sm-6 col-lg-4 col-xxl-3 h-100">
                                 <Card Class="selectable">
-                                    <img src="images/room.jpg" class="card-img-top" alt="">
-                                    <CardHeader class="border-top">
+                                    <div class="ratio ratio-16x9 overflow-hidden">
+                                        <img src="images/room.jpg" class="card-img-top" alt="" />
+                                    </div>
+                                    <CardHeader class="border-top border-bottom-0">
                                         <h6>@room.Name</h6>
                                     </CardHeader>
                                     <a href="@($"room/{room.Id}")" class="stretched-link"></a>
@@ -79,9 +81,13 @@
         {
             hotel = await ApiService.GetHotel(Id);
             if (hotel == null) NavigationManager.NavigateTo("/");
-            else StateHasChanged();
-            foreach(var room in hotel.Rooms){
-                Console.WriteLine(room);
+            else
+            {
+                StateHasChanged();
+                foreach (var room in hotel.Rooms)
+                {
+                    Console.WriteLine(room);
+                }
             }
         }
     }
