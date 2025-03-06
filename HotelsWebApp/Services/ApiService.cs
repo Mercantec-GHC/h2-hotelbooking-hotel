@@ -1,6 +1,7 @@
 ﻿using Blazored.LocalStorage;
 using HotelsCommons.Models;
 using HotelsWebApp.Models;
+using Microsoft.AspNetCore.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
@@ -135,15 +136,28 @@ namespace HotelsWebApp.Services
 
             Console.WriteLine(_httpClient.DefaultRequestHeaders.Authorization);
 
-            MessageCreateDTO statusModel = new MessageCreateDTO
+            MessageCreateDTO messageModel = new MessageCreateDTO
             {
                 TicketId = id,
                 Message = message
             };
-            var json = JsonSerializer.Serialize(statusModel);
+            var json = JsonSerializer.Serialize(messageModel);
             var response = await _httpClient.PostAsync("api/ticket/createmessage", new StringContent(json, Encoding.UTF8, "application/json"));
 
             return response;
+        }
+
+        public async Task<bool> CreateTicket(TicketCreateDTO ticketModel)
+        {
+            if (await IsAuthenticatedAsync())
+            {
+                var json = JsonSerializer.Serialize(ticketModel);
+                var response = await _httpClient.PostAsync("api/ticket/createticket", new StringContent(json, Encoding.UTF8, "application/json"));
+
+                return response.IsSuccessStatusCode;
+            }
+
+            return false;
         }
 
         private async Task<bool> IsAuthenticatedAsync()

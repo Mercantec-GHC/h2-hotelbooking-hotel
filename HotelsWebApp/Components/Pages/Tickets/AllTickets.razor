@@ -12,7 +12,7 @@
     </CardHeader>
     <CardBody>
         <p>Tickets</p>
-        <div class="list-group">
+        <div class="list-group mb-3">
             @if (tickets != null)
             {
                 @foreach (var ticket in tickets)
@@ -43,6 +43,11 @@
                     </div>
                 </div>
             }
+        </div>
+        <div class="row justify-content-end">
+            <div class="col-auto">
+                <a href="newtickets" class="btn btn-secondary fw-bold">Create new ticket</a>
+            </div>
         </div>
     </CardBody>
 </Card>

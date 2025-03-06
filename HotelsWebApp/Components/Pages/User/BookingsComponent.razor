@@ -19,11 +19,12 @@
                                         </div>
                                     </div>
                                     <div class="col">
-                                        <h5 class="card-title">@(booking.RoomName != null ? booking.RoomName : "NULL")</h5>
-                                        <p class="card-text">All Inclusive: @booking.AllInclusive</p>
-                                        <p class="card-text">Price: @booking.Price</p>
-                                        <p class="card-text">Start Date: @booking.StartDate.ToString("dd-MM-yyyy")</p>
-                                        <p class="card-text">End Date: @booking.EndDate.ToString("dd-MM-yyyy")</p>
+                                        <h5 class="card-title mb-1">@(booking.RoomName != null ? booking.RoomName : "NULL")</h5>
+                                        <p class="card-text mb-1">All Inclusive: @booking.AllInclusive</p>
+                                        <p class="card-text mb-1">Price: @booking.Price</p>
+                                        <p class="card-text mb-1">Start Date: @booking.StartDate.ToString("dd-MM-yyyy")</p>
+                                        <p class="card-text mb-1">End Date: @booking.EndDate.ToString("dd-MM-yyyy")</p>
+                                        <p class="card-text text-secondary fst-italic position-absolute bottom-0 mb-3">Booking Id: @booking.Id</p>
                                     </div>
                                 </div>
                             </CardBody>
