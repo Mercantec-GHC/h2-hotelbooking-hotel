@@ -47,25 +47,41 @@ namespace HotelsWebApp.Services
             return null;
         }
 
-        public async Task<List<BookingResult>> GetMyBookings()
+       
+        public async Task<List<BookingResult>> GetMyBookingsWithRooms()
         {
+            var bookingsWithRooms = new List<BookingResult>();
             var savedToken = await _localStorage.GetItemAsync<string>("authToken");
 
             if (!string.IsNullOrWhiteSpace(savedToken))
             {
-                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", savedToken);
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", savedToken);
                 var response = await _httpClient.GetAsync($"api/Booking/GetMyBookings");
 
                 if (response.IsSuccessStatusCode)
                 {
-                    var result = JsonSerializer.Deserialize<List<BookingResult>>(await response.Content.ReadAsStringAsync(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-                    return result;
+                    var bookings = JsonSerializer.Deserialize<List<BookingResult>>(await response.Content.ReadAsStringAsync(),
+                        new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                    foreach (var booking in bookings)
+                    {
+                        var roomResponse = await _httpClient.GetAsync($"api/Room/{booking.RoomID}");
+                        if (roomResponse.IsSuccessStatusCode)
+                        {
+                            var room = JsonSerializer.Deserialize<RoomResult>(await roomResponse.Content.ReadAsStringAsync(),
+                                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                            booking.RoomName = room.Name;
+                        }
+
+                        bookingsWithRooms.Add(booking);
+                    }
                 }
             }
 
-
-            return new List<BookingResult>();
+            return bookingsWithRooms;
         }
+
 
         private async Task<bool> IsAuthenticatedAsync()
         {

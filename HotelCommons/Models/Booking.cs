@@ -40,5 +40,6 @@
         public bool AllInclusive { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
+        public string RoomName { get; set; }
     }
 }
