@@ -20,13 +20,13 @@ namespace BackendAPI.Controllers
         }
 
         [HttpPost("CreateBooking")]
-        public async Task<ActionResult> CreateBooking([FromBody] CreateBookingDTO booking)
+        public async Task<ActionResult<CreateBookingResult>> CreateBooking([FromBody] CreateBookingDTO bookingDTO)
         {
             var isRoomBooked = await _Context.Bookings.AnyAsync(b =>
-             b.RoomID == booking.RoomID &&
-             ((booking.StartDate >= b.StartDate && booking.StartDate < b.EndDate) ||
-              (booking.EndDate > b.StartDate && booking.EndDate <= b.EndDate) ||
-              (booking.StartDate <= b.StartDate && booking.EndDate >= b.EndDate))
+             b.RoomID == bookingDTO.RoomID &&
+             ((bookingDTO.StartDate >= b.StartDate && bookingDTO.StartDate < b.EndDate) ||
+              (bookingDTO.EndDate > b.StartDate && bookingDTO.EndDate <= b.EndDate) ||
+              (bookingDTO.StartDate <= b.StartDate && bookingDTO.EndDate >= b.EndDate))
             );
 
             if (isRoomBooked)
@@ -35,17 +35,17 @@ namespace BackendAPI.Controllers
             }
 
             var room = await _Context.Rooms
-                .FirstOrDefaultAsync(r => r.ID == booking.RoomID);
+                .FirstOrDefaultAsync(r => r.ID == bookingDTO.RoomID);
             if (room == null)
             {
-                throw new Exception($"Room with ID {booking.RoomID} not found.");
+                throw new Exception($"Room with ID {bookingDTO.RoomID} not found.");
             }
             var discountCode = await _Context.DiscountCodes
-                .FirstOrDefaultAsync(dc => dc.Code == booking.DiscountCode);
+                .FirstOrDefaultAsync(dc => dc.Code == bookingDTO.DiscountCode);
 
             float finalPrice;
-            var DaysBetween = (booking.EndDate - booking.StartDate).Days;
-            var NewPrice = DaysBetween * room.DailyPrice;
+            var DaysBetween = (((DateTime)bookingDTO.EndDate - (DateTime)bookingDTO.StartDate).Days) + 1;
+            var NewPrice = (DaysBetween * room.DailyPrice) + (bookingDTO.AllInclusive ? 50 * DaysBetween : 0);
             if (discountCode != null)
             {
                 var DiscountedPrice = NewPrice / 100 * discountCode.Percentage;
@@ -55,23 +55,23 @@ namespace BackendAPI.Controllers
                 finalPrice = NewPrice;
             }
 
-            var bookings = new Booking()
+            var booking = new Booking()
             {
                 ID = Guid.NewGuid().ToString(),
-                UserID = booking.UserID,
-                RoomID = booking.RoomID,
-                StartDate = booking.StartDate,
-                EndDate = booking.EndDate,
-                AllInclusive = booking.AllInclusive,
+                UserID = bookingDTO.UserID,
+                RoomID = bookingDTO.RoomID,
+                StartDate = (DateTime)bookingDTO.StartDate,
+                EndDate = (DateTime)bookingDTO.EndDate,
+                AllInclusive = bookingDTO.AllInclusive,
                 Price = finalPrice,
                 CreatedAt = DateTime.UtcNow.AddHours(1),
                 UpdatedAt = DateTime.UtcNow.AddHours(1),
             };
-            _Context.Bookings.Add(bookings);
+            _Context.Bookings.Add(booking);
             await _Context.SaveChangesAsync();
 
-            //return Ok(booking);
-            return Ok("Booking created.");
+            //return Ok("Booking created.");
+            return Ok(new CreateBookingResult { Id = booking.ID});
         }
 
         [HttpGet("GetAllBookings")]
@@ -99,6 +99,39 @@ namespace BackendAPI.Controllers
 
             var bookings = await _Context.Bookings
                 .Where(b => b.UserID == userId || user.IsWorker)
+                .Select(b => new BookingResult
+                {
+                    Id = b.ID,
+                    RoomID = b.RoomID,
+                    UserID = b.UserID,
+                    Price = b.Price,
+                    AllInclusive = b.AllInclusive,
+                    StartDate = b.StartDate,
+                    EndDate = b.EndDate
+                }).ToListAsync();
+
+            return Ok(bookings);
+        }
+
+        [HttpGet("GetMyBookings")]
+        public async Task<IActionResult> MyBookings()
+        {
+            var userId = User.FindFirstValue("UserID");
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized();
+            }
+
+            var user = await _Context.Users.Where(u => u.ID == userId).FirstOrDefaultAsync();
+
+            if (user == null)
+            {
+                return NotFound("User not found.");
+            }
+
+            var bookings = await _Context.Bookings
+                .Where(b => b.UserID == userId)
                 .Select(b => new BookingResult
                 {
                     Id = b.ID,

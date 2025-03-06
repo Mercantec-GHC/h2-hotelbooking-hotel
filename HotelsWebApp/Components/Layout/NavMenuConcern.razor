@@ -24,9 +24,18 @@
                     <Authorized>
 
                         <div class="d-sm-none">
-                            <div class="nav-item text-white-50">
+                            <hr class="nav-item my-2 text-white-50">
+
+                            <div class="nav-item text-white-50 py-2">
                                 @GetUserName(context)
                             </div>
+
+                            <hr class="nav-item my-2 text-white-50">
+
+                            <NavLink class="nav-item nav-link" href="tickets">
+                                <Icon Name="IconName.EnvelopeFill" /> Tickets
+                            </NavLink>
+
                             <hr class="nav-item my-2 text-white-50">
 
                             <NavLink class="nav-item nav-link" href="account">
@@ -44,6 +53,10 @@
             <div class="navbar-nav">
                 <AuthorizeView>
                     <Authorized>
+
+                        <NavLink class="nav-item nav-link d-none d-sm-block" href="tickets">
+                            <Icon Name="IconName.EnvelopeFill" />
+                        </NavLink>
 
                         <Dropdown Class="d-none d-sm-block">
                             <DropdownToggleButton Class="nav-item nav-link">@GetUserName(context)</DropdownToggleButton>
