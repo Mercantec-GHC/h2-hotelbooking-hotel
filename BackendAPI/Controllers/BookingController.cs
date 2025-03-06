@@ -137,6 +137,7 @@ namespace BackendAPI.Controllers
                     Id = b.ID,
                     RoomID = b.RoomID,
                     UserID = b.UserID,
+                    RoomName = b.Room.Name,
                     Price = b.Price,
                     AllInclusive = b.AllInclusive,
                     StartDate = b.StartDate,
