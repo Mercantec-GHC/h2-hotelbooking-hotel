@@ -17,6 +17,88 @@ namespace HotelAdmin.WebView.Services
             _localStorage = localStorage;
         }
 
+        public async Task<List<UserResultDTO>> GetAllUsers()
+        {
+            if (await IsAuthenticatedAsync())
+            {
+                var response = await _httpClient.GetAsync("api/Auth/ListOtherUsers");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = JsonSerializer.Deserialize<List<UserResultDTO>>(await response.Content.ReadAsStringAsync(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    return result;
+                }
+            }
+
+            return new List<UserResultDTO>();
+        }
+
+        public async Task<List<HotelDTO>> GetAllHotels()
+        {
+            if (await IsAuthenticatedAsync())
+            {
+                var response = await _httpClient.GetAsync("api/Hotel/GetAllHotels");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = JsonSerializer.Deserialize<List<HotelDTO>>(await response.Content.ReadAsStringAsync(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    return result;
+                }
+            }
+
+            return new List<HotelDTO>();
+        }
+
+        public async Task<List<RoomResult>> GetRooms(string id)
+        {
+            Console.WriteLine(id);
+
+            if (await IsAuthenticatedAsync())
+            {
+                var response = await _httpClient.GetAsync($"api/Hotel/{id}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = JsonSerializer.Deserialize<HotelDTO>(await response.Content.ReadAsStringAsync(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    return result.Rooms;
+                }
+            }
+
+            return new List<RoomResult>();
+        }
+
+        public async Task<List<BookingResult>> GetAllBookings()
+        {
+            if (await IsAuthenticatedAsync())
+            {
+                var response = await _httpClient.GetAsync($"api/Booking/GetAllBookings");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = JsonSerializer.Deserialize<List<BookingResult>>(await response.Content.ReadAsStringAsync(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    return result;
+                }
+            }
+
+            return new List<BookingResult>();
+        }
+
+        public async Task<BookingResult> GetBooking(string id)
+        {
+            if (await IsAuthenticatedAsync())
+            {
+                var response = await _httpClient.GetAsync($"api/Booking/{id}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = JsonSerializer.Deserialize<BookingResult>(await response.Content.ReadAsStringAsync(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    return result;
+                }
+            }
+
+            return null;
+        }
+
         public async Task<List<AllTicketsResult>> GetAllTickets()
         {
             if (await IsAuthenticatedAsync())
