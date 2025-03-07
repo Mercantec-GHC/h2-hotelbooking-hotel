@@ -73,6 +73,7 @@ namespace BackendAPI.Controllers
                 .Select(r => new RoomResult
                 {
                     Id = r.ID,
+                    HotelId = r.HotelID,
                     Name = r.Name,
                     Description = r.Description,
                     DailyPrice = r.DailyPrice,
