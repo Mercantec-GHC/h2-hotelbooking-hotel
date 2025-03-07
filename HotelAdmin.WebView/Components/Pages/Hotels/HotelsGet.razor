@@ -1,43 +1,94 @@
 ﻿@page "/hotel/{Id}"
-@attribute [Authorize(Roles = "HotelAdmin")]
+@attribute [Authorize(Roles = "HotelWorker")]
+@inject NavigationManager NavigationManager
+@inject ApiService ApiService
 
-<PageTitle>Get Hotel</PageTitle>
+@if (hotel != null)
+{
+    <PageTitle>@hotel.Name</PageTitle>
 
-<Card>
-    <CardHeader>
-        <h1>Get Hotel - @Id</h1>
-    </CardHeader>
-    <CardBody Class="border-bottom pb-2">
-        <ul class="nav nav-tabs card-header-tabs">
-            <li class="nav-item">
-                <button Class="nav-link @(page == "info" ? "active" : "")" @onclick="@(() => page = "info")">Hotel</button>
-            </li>
-            <li class="nav-item">
-                <button Class="nav-link @(page == "rooms" ? "active" : "")" @onclick="@(() => page = "rooms")">Rooms</button>
-            </li>
-            <li class="nav-item">
-                <button Class="nav-link @(page == "users" ? "active" : "")" @onclick="@(() => page = "users")">Workers</button>
-            </li>
-        </ul>
-    </CardBody>
-    <CardBody>
-        @if (page == "info")
-        {
-
-        }
-        else if (page == "rooms")
-        {
-            <RoomsComponent HotelId="@Id" />
-        }
-        else if (page == "users")
-        {
-            <UsersComponent HotelId="@Id" />
-        }
-    </CardBody>
-    <CardFooter></CardFooter>
-</Card>
+    <Card>
+        <CardHeader>
+            <h1>@hotel.Name</h1>
+        </CardHeader>
+        <CardBody Class="border-bottom pb-2">
+            <ul class="nav nav-tabs card-header-tabs">
+                <li class="nav-item">
+                    <button Class="nav-link @(page == "info" ? "active" : "")" @onclick="@(() => page = "info")">Hotel</button>
+                </li>
+                <li class="nav-item">
+                    <button Class="nav-link @(page == "rooms" ? "active" : "")" @onclick="@(() => page = "rooms")">Rooms</button>
+                </li>
+                <li class="nav-item">
+                    <button Class="nav-link @(page == "users" ? "active" : "")" @onclick="@(() => page = "users")">Workers</button>
+                </li>
+            </ul>
+        </CardBody>
+        <CardBody>
+            @if (page == "info")
+            {
+                <Card>
+                    <CardBody>
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <p class="fw-bold m-0">Description:</p>
+                                <div class="px-3">
+                                    @hotel.Description
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <p class="fw-bold m-0">Country:</p>
+                                <div class="px-3">
+                                    @hotel.Country
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <p class="fw-bold m-0">Region:</p>
+                                <div class="px-3">
+                                    @hotel.Region
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <p class="fw-bold m-0">City:</p>
+                                <div class="px-3">
+                                    @hotel.City
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <p class="fw-bold m-0">Postal Code:</p>
+                                <div class="px-3">
+                                    @hotel.PostalCode
+                                </div>
+                            </div>
+                        </div>
+                    </CardBody>
+                </Card>
+            }
+            else if (page == "rooms")
+            {
+                <RoomsComponent HotelId="@Id" />
+            }
+            else if (page == "users")
+            {
+                <UsersComponent HotelId="@Id" />
+            }
+        </CardBody>
+        <CardFooter></CardFooter>
+    </Card>
+}
 
 @code {
     [Parameter] public string? Id { get; set; }
+    private HotelDTO hotel;
     private string page = "info";
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            hotel = await ApiService.GetHotel(Id);
+            if (hotel == null) NavigationManager.NavigateTo("/hotels");
+            else StateHasChanged();
+        }
+    }
 }

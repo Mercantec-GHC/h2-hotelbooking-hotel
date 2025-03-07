@@ -6,14 +6,14 @@
 <PageTitle>Add Hotel</PageTitle>
 
 <Card>
-    <CardHeader>
-        <h1>Add Hotel</h1>
-    </CardHeader>
-    <CardBody>
-        <p>Add Hotel</p>
+    <EditForm Model="hotelDTO" OnValidSubmit="OnShowModalClick" novalidate>
+        <DataAnnotationsValidator />
 
-        <EditForm Model="hotelDTO" OnValidSubmit="OnShowModalClick" novalidate>
-            <DataAnnotationsValidator />
+        <CardHeader>
+            <h1>Add Hotel</h1>
+        </CardHeader>
+        <CardBody>
+            <p>Add Hotel</p>
 
             <div class="row g-3">
                 <div class="col-12 col-md-6">
@@ -50,9 +50,6 @@
                         <ValidationMessage For="@(() => hotelDTO.PostalCode)" />
                     </div>
                 </div>
-                <div class="col-12 d-flex justify-content-end">
-                    <Button Type="ButtonType.Submit" Color="ButtonColor.Primary">Add Hotel</Button>
-                </div>
             </div>
 
             <Modal @ref="modal" Title="Confirm" IsVerticallyCentered="true">
@@ -70,10 +67,13 @@
                 </FooterTemplate>
             </Modal>
 
-        </EditForm>
-
-    </CardBody>
-    <CardFooter></CardFooter>
+        </CardBody>
+        <CardFooter>
+            <div class="d-flex justify-content-end">
+                <Button Type="ButtonType.Submit" Color="ButtonColor.Primary">Add Hotel</Button>
+            </div>
+        </CardFooter>
+    </EditForm>
 </Card>
 
 @code {
@@ -93,7 +93,8 @@
 
     private async Task HandleValidSubmit()
     {
-        if (await ApiService.CreateHotel(hotelDTO)) NavigationManager.NavigateTo("/hotels");
+        var result = await ApiService.CreateHotel(hotelDTO);
+        if (result != null) NavigationManager.NavigateTo($"/hotel/{result.Id}");
         else await modal.HideAsync();
     }
 }

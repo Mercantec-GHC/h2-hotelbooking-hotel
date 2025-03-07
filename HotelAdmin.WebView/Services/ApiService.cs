@@ -34,6 +34,22 @@ namespace HotelAdmin.WebView.Services
             return new List<UserResultDTO>();
         }
 
+        public async Task<UserResultDTO> GetUser(string id)
+        {
+            if (await IsAuthenticatedAsync())
+            {
+                var response = await _httpClient.GetAsync($"api/Auth/GetUser?id={id}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = JsonSerializer.Deserialize<UserResultDTO>(await response.Content.ReadAsStringAsync(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    return result;
+                }
+            }
+
+            return null;
+        }
+
         public async Task<List<HotelDTO>> GetAllHotels()
         {
             if (await IsAuthenticatedAsync())
@@ -50,7 +66,20 @@ namespace HotelAdmin.WebView.Services
             return new List<HotelDTO>();
         }
 
-        public async Task<bool> CreateHotel(CreateHotelDTO hotelDTO)
+        public async Task<HotelDTO> GetHotel(string id)
+        {
+            var response = await _httpClient.GetAsync($"api/Hotel/{id}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                var result = JsonSerializer.Deserialize<HotelDTO>(await response.Content.ReadAsStringAsync(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                return result;
+            }
+
+            return null;
+        }
+
+        public async Task<CreateHotelResult> CreateHotel(CreateHotelDTO hotelDTO)
         {
             if (await IsAuthenticatedAsync())
             {
@@ -58,10 +87,14 @@ namespace HotelAdmin.WebView.Services
                 var json = JsonSerializer.Serialize(hotelDTO);
                 var response = await _httpClient.PostAsync("api/hotel/createhotel", new StringContent(json, Encoding.UTF8, "application/json"));
 
-                return response.IsSuccessStatusCode;
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = JsonSerializer.Deserialize<CreateHotelResult>(await response.Content.ReadAsStringAsync(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    return result;
+                }
             }
 
-            return false;
+            return null;
         }
 
         public async Task<List<RoomResult>> GetRooms(string id)
@@ -94,6 +127,19 @@ namespace HotelAdmin.WebView.Services
             }
 
             return null;
+        }
+
+        public async Task<bool> CreateRoom(CreateRoomDTO roomDTO)
+        {
+            if (await IsAuthenticatedAsync())
+            {
+                var json = JsonSerializer.Serialize(roomDTO);
+                var response = await _httpClient.PostAsync("api/Room/CreateRoom", new StringContent(json, Encoding.UTF8, "application/json"));
+
+                return response.IsSuccessStatusCode;
+            }
+
+            return false;
         }
 
         public async Task<List<BookingResult>> GetAllBookings()

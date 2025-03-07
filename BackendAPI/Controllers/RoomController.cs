@@ -98,7 +98,7 @@ namespace BackendAPI.Controllers
 
         [Authorize(Roles = "HotelAdmin")]
         [HttpPost("CreateRoom")]
-        public async Task<IActionResult> CreateRoom([FromForm] CreateRoomDTO roomDto)
+        public async Task<IActionResult> CreateRoom([FromBody] CreateRoomDTO roomDto)
         {
             var room = new Room()
             {
@@ -110,8 +110,6 @@ namespace BackendAPI.Controllers
                 CreatedAt = DateTime.UtcNow.AddHours(1),
                 UpdatedAt = DateTime.UtcNow.AddHours(1),
             };
-
-           
 
             _context.Rooms.Add(room);
             await _context.SaveChangesAsync();
