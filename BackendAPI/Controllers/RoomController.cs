@@ -73,6 +73,7 @@ namespace BackendAPI.Controllers
                 .Select(r => new RoomResult
                 {
                     Id = r.ID,
+                    HotelId = r.HotelID,
                     Name = r.Name,
                     Description = r.Description,
                     DailyPrice = r.DailyPrice,
@@ -104,7 +105,9 @@ namespace BackendAPI.Controllers
                 ID = Guid.NewGuid().ToString(),
                 HotelID = roomDto.HotelID,
                 DailyPrice = roomDto.DailyPrice,
-                CreatedAt = DateTime.UtcNow.AddHours(1),    
+                Name = roomDto.Name,
+                Description = roomDto.Description,
+                CreatedAt = DateTime.UtcNow.AddHours(1),
                 UpdatedAt = DateTime.UtcNow.AddHours(1),
             };
 
@@ -304,11 +307,16 @@ namespace BackendAPI.Controllers
         {
             var room = await _context.Rooms.FindAsync(id);
 
+            if (room == null)
+            {
+                return NotFound($"Room with ID: {id} not found.");
+            }
+
             _context.Rooms.Remove(room);
 
             await _context.SaveChangesAsync();
 
-            return StatusCode(200,$"Room deleted succesfully {room}");
+            return StatusCode(200,$"Room deleted succesfully");
         }
       
 

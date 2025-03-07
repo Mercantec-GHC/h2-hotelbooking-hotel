@@ -128,6 +128,20 @@ namespace HotelAdmin.WebView.Services
             return null;
         }
 
+        public async Task<bool> DeleteBooking(string id)
+        {
+            if (await IsAuthenticatedAsync())
+            {
+                var response = await _httpClient.DeleteAsync($"api/Booking/{id}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         public async Task<List<AllTicketsResult>> GetAllTickets()
         {
             if (await IsAuthenticatedAsync())

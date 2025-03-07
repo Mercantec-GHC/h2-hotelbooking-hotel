@@ -214,13 +214,17 @@ namespace BackendAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBooking(string id)
         {
-            var booking = await _Context.Rooms.FindAsync(id);
+            var booking = await _Context.Bookings.FindAsync(id);
 
-            _Context.Rooms.Remove(booking);
+            if(booking == null)
+            {
+                return NotFound($"Booking with ID: {id} not found.");
+            }
+            _Context.Bookings.Remove(booking);
 
             await _Context.SaveChangesAsync();
 
-            return StatusCode(200, $"Booking deleted succesfully {booking}");
+            return StatusCode(200, $"Booking deleted succesfully!");
         }
 
     }

@@ -24,15 +24,16 @@ namespace HotelsCommons.Models
 
     public class CreateRoomDTO
     {
+        public string Name { get; set; }
+        public string Description { get; set; }
         public string HotelID { get; set; }
         public float DailyPrice { get; set; }
-        
-
     }
 
     public class RoomResult
     {
         public string Id { get; set; }
+        public string HotelId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public float DailyPrice { get; set; }
