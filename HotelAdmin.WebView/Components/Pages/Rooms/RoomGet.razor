@@ -1,5 +1,6 @@
 @page "/room/{Id}"
 @attribute [Authorize(Roles = "HotelAdmin")]
+@inject NavigationManager NavigationManager
 @inject ApiService ApiService
 @inject NavigationManager NavigationManager
 
@@ -61,8 +62,8 @@ else
         if (firstRender)
         {
             room = await ApiService.GetRoom(Id);
-            if (room == null) NavigationManager.NavigateTo($"/hotel/{Id}");
-            else StateHasChanged();
+            if (room == null) NavigationManager.NavigateTo("/hotels");
+            StateHasChanged();
         }
     }
 

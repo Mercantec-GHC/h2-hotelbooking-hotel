@@ -124,7 +124,8 @@ namespace BackendAPI.Controllers
                     u.LastName,
                     u.Email,
                     RoleHierarchy = u.UserRoles.Any() ? u.UserRoles.Max(ur => ur.Role.Hierarki) : 0,
-                    Roles = u.UserRoles.Select(ur => ur.Role.Name)
+                    Roles = u.UserRoles.Select(ur => ur.Role.Name),
+                    Hotels = u.UserHotels.Select(uh => uh.Hotel.ID)
                 })
                 .FirstOrDefaultAsync();
 
@@ -173,7 +174,8 @@ namespace BackendAPI.Controllers
                     u.LastName,
                     u.Email,
                     RoleHierarchy = u.UserRoles.Any() ? u.UserRoles.Max(ur => ur.Role.Hierarki) : 0,
-                    Roles = u.UserRoles.Select(ur => ur.Role.Name)
+                    Roles = u.UserRoles.Select(ur => ur.Role.Name),
+                    Hotels = u.UserHotels.Select(uh => uh.Hotel.ID)
                 })
                 .Where(u => u.RoleHierarchy < currentUser.RoleHierarchy)
                 .ToListAsync();
@@ -215,7 +217,8 @@ namespace BackendAPI.Controllers
                     u.LastName,
                     u.Email,
                     RoleHierarchy = u.UserRoles.Any() ? u.UserRoles.Max(ur => ur.Role.Hierarki) : 0,
-                    Roles = u.UserRoles.Select(ur => ur.Role.Name)
+                    Roles = u.UserRoles.Select(ur => ur.Role.Name),
+                    Hotels = u.UserHotels.Select(uh => uh.Hotel.ID)
                 })
                 .Where(u => u.RoleHierarchy < currentUser.RoleHierarchy && u.ID == id)
                 .FirstOrDefaultAsync();

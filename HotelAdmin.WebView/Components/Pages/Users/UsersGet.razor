@@ -1,5 +1,7 @@
 ﻿@page "/user/{Id}"
 @attribute [Authorize(Roles = "HotelAdmin")]
+@inject NavigationManager NavigationManager
+@inject ApiService ApiService
 
 <PageTitle>Get User</PageTitle>
 
@@ -15,4 +17,15 @@
 
 @code {
     [Parameter] public string? Id { get; set; }
+    private UserResultDTO user;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            user = await ApiService.GetUser(Id);
+            if (user == null) NavigationManager.NavigateTo("/users");
+            else StateHasChanged();
+        }
+    }
 }
