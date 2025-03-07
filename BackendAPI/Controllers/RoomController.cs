@@ -114,7 +114,7 @@ namespace BackendAPI.Controllers
             _context.Rooms.Add(room);
             await _context.SaveChangesAsync();
 
-            return Ok(room);
+            return Ok(new CreateRoomResult { Id = room.ID });
         }
 
         [Authorize(Roles = "HotelAdmin")]
