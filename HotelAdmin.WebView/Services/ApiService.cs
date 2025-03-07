@@ -115,6 +115,8 @@ namespace HotelAdmin.WebView.Services
 
         public async Task<RoomResult> GetRoom(string id)
         {
+            Console.WriteLine(id);
+
             if (await IsAuthenticatedAsync())
             {
                 var response = await _httpClient.GetAsync($"api/Room/{id}");
@@ -138,7 +140,17 @@ namespace HotelAdmin.WebView.Services
 
                 return response.IsSuccessStatusCode;
             }
+            return false;
+        }
+      
+        public async Task<bool> DeleteRoom(string id)
+        {
+            if (await IsAuthenticatedAsync())
+            {
+                var response = await _httpClient.DeleteAsync($"api/Room/{id}");
 
+                return response.IsSuccessStatusCode;
+            }
             return false;
         }
 
