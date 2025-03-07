@@ -1,0 +1,79 @@
+@page "/creatediscountcode"
+@attribute [Authorize(Roles = "GlobalAdmin")]
+@inject ApiService ApiService
+@inject NavigationManager NavigationManager
+
+<PageTitle>Create DC</PageTitle>
+
+
+<div class="row justify-content-center">
+    <div class="col col-sm-8 col-md-7 col-lg-6 col-xl-5">
+        <EditForm Model="CreateDTO" OnValidSubmit="HandleCreation">
+            <DataAnnotationsValidator />
+
+            <Card Class="shadow">
+                <CardHeader>
+                    <h1>Create discount code</h1>
+                </CardHeader>
+                <CardBody>
+                    <div class="mb-3">
+                        <label for="createInputCode" class="form-label">Code</label>
+                        <TextInput @bind-Value="CreateDTO.Code" Placeholder="Enter your Code" Id="createInputCode" />
+                        <ValidationMessage For="@(() => CreateDTO.Code)" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="loginInputPassword" class="form-label">Percentage</label>
+                        <NumberInput @bind-Value="CreateDTO.Percentage" Placeholder="Enter your Percentage" Id="loginInputPassword" />
+                        <ValidationMessage For="@(() => CreateDTO.Percentage)" />
+                    </div>
+                    @if (warningVisible)
+                    {
+                        <div class="validation-message">@warningMessage</div>
+                    }
+                </CardBody>
+                <CardFooter>
+                    <div class="d-flex justify-content-center">
+                        <Button Type="ButtonType.Submit"
+                        Color="spinnerVisible ? ButtonColor.Secondary : ButtonColor.Primary"
+                        Loading="spinnerVisible"
+                        Disabled="spinnerVisible"
+                        LoadingText="Creating in"
+                        Style="width: 128px;">
+                            Create
+                        </Button>
+                    </div>
+                </CardFooter>
+            </Card>
+        </EditForm>
+    </div>
+</div>
+
+
+@code {
+    private CreateDCDTO CreateDTO = new CreateDCDTO();
+    private bool warningVisible = false;
+    private bool spinnerVisible = false;
+    private string warningMessage = "Incorrect Email or Password!";
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            StateHasChanged();
+        }
+    }
+
+    private async Task HandleCreation()
+    {
+        var createResult = await ApiService.CreateDiscountCode(CreateDTO);
+        spinnerVisible = true;
+        if (createResult.IsSuccessStatusCode)
+        {
+            NavigationManager.NavigateTo("/discountcodes", true);
+        }
+        spinnerVisible = false;
+        }
+    }
+}
+
+

@@ -18,6 +18,7 @@ namespace HotelAdmin.Blazor.Auth
         {
             var claims = new[] {
                 new Claim(ClaimTypes.Role, "ConcernAdmin"),
+                new Claim(ClaimTypes.Role, "GlobalAdmin"),
                 new Claim(ClaimTypes.Role, "HotelAdmin"),
                 new Claim(ClaimTypes.Role, "HotelWorker")
             };

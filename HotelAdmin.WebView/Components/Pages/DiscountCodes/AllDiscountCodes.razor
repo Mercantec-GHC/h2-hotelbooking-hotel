@@ -1,0 +1,117 @@
+@page "/discountcodes"
+@attribute [Authorize(Roles = "GlobalAdmin")]
+@inject ApiService ApiService
+@inject NavigationManager NavigationManager
+
+<PageTitle>All discount codes</PageTitle>
+
+<Card Class="shadow">
+    <CardHeader>
+        <h1>All discount codes</h1>
+    </CardHeader>
+    <CardBody>
+        <p>All discount codes</p>
+
+        <div class="list-group">
+            @if (discountCodes != null)
+            {
+                @foreach (var discountCode in discountCodes)
+                {
+                    <div class="list-group-item fw-bold py-0">
+                        <div class="row justify-content-between">
+                            <div class="col-3 border-end py-2">
+                                @discountCode.ID
+                            </div>
+                            <div class="col-3 border-end py-2">
+                                @discountCode.Code
+                            </div>
+                            <div class="col-3 border-end py-2">
+                                @discountCode.Percentage
+                            </div>
+                            <div class="col-3 border-end d-flex justify-content-end py-2">
+                                <AuthorizeView Roles="GlobalAdmin">
+                                    <Authorized>
+                                        <Button Type="ButtonType.Button"
+                                        Class="delete-button ms-3"
+                                        Color="ButtonColor.Danger"
+                                        @onclick="() => DeleteConfirmModalShow(discountCode.ID)">
+                                            Delete
+                                        </Button>
+                                    </Authorized>
+                                </AuthorizeView>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="list-group-item list-group-item-action fw-bold py-0">
+                    <div class="row justify-content-between">
+                        <div class="col py-2">
+                            <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                            <span role="status">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </CardBody>
+    <CardFooter></CardFooter>
+</Card>
+<Modal @ref="deleteConfirmModal" Title="Please confirm">
+    <BodyTemplate>
+        Are you sure you want to delete this discount code?
+        @if (warningVisible)
+        {
+            <div class="validation-message">Failed to delete discount code!</div>
+        }
+    </BodyTemplate>
+    <FooterTemplate>
+        <Button Color="ButtonColor.Secondary" @onclick="DeleteConfirmModalHide">Close</Button>
+        <Button Color="ButtonColor.Danger" @onclick="HandleDeletion">Delete</Button>
+    </FooterTemplate>
+</Modal>
+
+@code {
+    private List<DiscountCode> discountCodes;
+    public string DeletionID;
+    private Modal deleteConfirmModal;
+    private bool warningVisible = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            discountCodes = await ApiService.GetAllDiscountCodes();
+            StateHasChanged();
+        }
+    }
+
+    private async Task HandleDeletion()
+    {
+        var response = await ApiService.DeleteDiscountCode(DeletionID);
+
+        if (response == true)
+        {
+            DeleteConfirmModalHide();
+            discountCodes = await ApiService.GetAllDiscountCodes();
+            StateHasChanged();
+        }
+        else
+        {
+            warningVisible = true;
+        }
+    }
+
+    private async Task DeleteConfirmModalShow(string id)
+    {
+        await deleteConfirmModal?.ShowAsync();
+        DeletionID = id;
+    }
+
+    private async Task DeleteConfirmModalHide()
+    {
+        await deleteConfirmModal?.HideAsync();
+    }
+}

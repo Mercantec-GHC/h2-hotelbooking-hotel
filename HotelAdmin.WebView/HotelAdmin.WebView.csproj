@@ -27,4 +27,8 @@
     <ProjectReference Include="..\HotelsRazorLibrary\HotelsRazorLibrary.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Components\Pages\DiscountCodes\" />
+  </ItemGroup>
+
 </Project>
