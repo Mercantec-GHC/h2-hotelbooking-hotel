@@ -15,6 +15,9 @@
             <li class="nav-item">
                 <button Class="nav-link @(page == "rooms" ? "active" : "")" @onclick="@(() => page = "rooms")">Rooms</button>
             </li>
+            <li class="nav-item">
+                <button Class="nav-link @(page == "users" ? "active" : "")" @onclick="@(() => page = "users")">Workers</button>
+            </li>
         </ul>
     </CardBody>
     <CardBody>
@@ -25,6 +28,10 @@
         else if (page == "rooms")
         {
             <RoomsComponent HotelId="@Id" />
+        }
+        else if (page == "users")
+        {
+            <UsersComponent HotelId="@Id" />
         }
     </CardBody>
     <CardFooter></CardFooter>
