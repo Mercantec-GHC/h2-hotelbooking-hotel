@@ -1,43 +1,60 @@
 ﻿@inject ApiService ApiService
 
-<p>All Users</p>
+<Card>
+    <CardBody>
+        <p class="fw-bold">All Users</p>
 
-<div class="list-group">
-    @if (hotelUsers != null)
-    {
-        @foreach (var user in hotelUsers)
-        {
-            <a href="/user/@user.Id" class="list-group-item list-group-item-action fw-bold py-0">
-                <div class="row justify-content-between">
-                    <div class="col-3 border-end py-2">
-                        @user.FirstName
+        <div class="list-group">
+            @if (hotelUsers != null)
+            {
+                @if (hotelUsers.Any())
+                {
+                    @foreach (var user in hotelUsers)
+                    {
+                        <a href="/user/@user.Id" class="list-group-item list-group-item-action fw-bold py-0">
+                            <div class="row justify-content-between">
+                                <div class="col-3 border-end py-2">
+                                    @user.FirstName
+                                </div>
+                                <div class="col border-end py-2">
+                                    @user.LastName
+                                </div>
+                                <div class="col-4 py-2">
+                                    @user.Email
+                                </div>
+                            </div>
+                        </a>
+                    }
+                }
+                else
+                {
+                    <div class="list-group-item list-group-item-action fw-bold py-0">
+                        <div class="row justify-content-between">
+                            <div class="col py-2">
+                                No users found
+                            </div>
+                        </div>
                     </div>
-                    <div class="col border-end py-2">
-                        @user.LastName
-                    </div>
-                    <div class="col-4 py-2">
-                        @user.Email
+                }
+            }
+            else
+            {
+                <div class="list-group-item list-group-item-action fw-bold py-0">
+                    <div class="row justify-content-between">
+                        <div class="col py-2">
+                            <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                            <span role="status">Loading...</span>
+                        </div>
                     </div>
                 </div>
-            </a>
-        }
-    }
-    else
-    {
-        <div class="list-group-item list-group-item-action fw-bold py-0">
-            <div class="row justify-content-between">
-                <div class="col py-2">
-                    <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
-                    <span role="status">Loading...</span>
-                </div>
-            </div>
+            }
         </div>
-    }
-</div>
+    </CardBody>
+</Card>
 
 @code {
     [Parameter] public string HotelId { get; set; }
-    private List<UserResultDTO> hotelUsers = new();
+    private List<UserResultDTO> hotelUsers;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {

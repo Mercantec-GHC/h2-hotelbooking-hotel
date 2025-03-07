@@ -1,36 +1,57 @@
 @inject ApiService ApiService
 
-<p>All Hotels</p>
+<Card Class="mb-3">
+    <CardBody>
+        <p class="fw-bold">All Hotels</p>
 
-<div class="list-group">
-    @if (rooms != null)
-    {
-        @foreach (var room in rooms)
-        {
-            <a href="/room/@room.Id" class="list-group-item list-group-item-action fw-bold py-0">
-                <div class="row justify-content-between">
-                    <div class="col-3 border-end py-2">
-                        @room.Name
+        <div class="list-group">
+            @if (rooms != null)
+            {
+                @if (rooms.Any())
+                {
+                    @foreach (var room in rooms)
+                    {
+                        <a href="/room/@room.Id" class="list-group-item list-group-item-action fw-bold py-0">
+                            <div class="row justify-content-between">
+                                <div class="col-3 border-end py-2">
+                                    @room.Name
+                                </div>
+                                <div class="col border-end py-2"></div>
+                                <div class="col-4 py-2">
+                                    @room.Id
+                                </div>
+                            </div>
+                        </a>
+                    }
+                }
+                else
+                {
+                    <div class="list-group-item list-group-item-action fw-bold py-0">
+                        <div class="row justify-content-between">
+                            <div class="col py-2">
+                                No rooms found
+                            </div>
+                        </div>
                     </div>
-                    <div class="col border-end py-2"></div>
-                    <div class="col-4 py-2">
-                        @room.Id
+                }
+            }
+            else
+            {
+                <div class="list-group-item list-group-item-action fw-bold py-0">
+                    <div class="row justify-content-between">
+                        <div class="col py-2">
+                            <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                            <span role="status">Loading...</span>
+                        </div>
                     </div>
                 </div>
-            </a>
-        }
-    }
-    else
-    {
-        <div class="list-group-item list-group-item-action fw-bold py-0">
-            <div class="row justify-content-between">
-                <div class="col py-2">
-                    <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
-                    <span role="status">Loading...</span>
-                </div>
-            </div>
+            }
         </div>
-    }
+    </CardBody>
+</Card>
+
+<div class="d-flex justify-content-end">
+    <a href="@($"/rooms/add/{HotelId}")" class="btn btn-primary">Add Room</a>
 </div>
 
 @code {
