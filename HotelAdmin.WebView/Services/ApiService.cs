@@ -67,6 +67,38 @@ namespace HotelAdmin.WebView.Services
             return new List<RoomResult>();
         }
 
+        public async Task<RoomResult> GetRoom(string id)
+        {
+            Console.WriteLine(id);
+
+            if (await IsAuthenticatedAsync())
+            {
+                var response = await _httpClient.GetAsync($"api/Room/{id}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = JsonSerializer.Deserialize<RoomResult>(await response.Content.ReadAsStringAsync(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    return result;
+                }
+            }
+
+            return null;
+        }
+
+        public async Task<bool> DeleteRoom(string id)
+        {
+            if (await IsAuthenticatedAsync())
+            {
+                var response = await _httpClient.DeleteAsync($"api/Room/{id}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         public async Task<List<BookingResult>> GetAllBookings()
         {
             if (await IsAuthenticatedAsync())
