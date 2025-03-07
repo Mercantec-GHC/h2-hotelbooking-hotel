@@ -18,7 +18,7 @@ namespace BackendAPI.Controllers
         public async Task<ActionResult> CreateHotel([FromBody]CreateHotelDTO hotelDto)
         {
             var hotel = new Hotel()
-                {
+            {
                 ID = Guid.NewGuid().ToString(),
                 Name = hotelDto.Name,
                 Description = hotelDto.Description,
@@ -33,7 +33,7 @@ namespace BackendAPI.Controllers
             _context.Hotels.Add(hotel);
             await _context.SaveChangesAsync();
 
-            return Ok(hotelDto);
+            return Ok(new CreateHotelResult { Id = hotel.ID });
         }
 
         [HttpGet("GetAllHotels")]

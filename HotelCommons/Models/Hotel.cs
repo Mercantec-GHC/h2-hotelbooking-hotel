@@ -50,4 +50,9 @@ namespace HotelsCommons.Models
         public string PostalCode { get; set; }
        
     }
+
+    public class CreateHotelResult
+    {
+        public string Id { get; set; }
+    }
 }
