@@ -68,12 +68,15 @@ namespace HotelAdmin.WebView.Services
 
         public async Task<HotelDTO> GetHotel(string id)
         {
-            var response = await _httpClient.GetAsync($"api/Hotel/{id}");
-
-            if (response.IsSuccessStatusCode)
+            if (await IsAuthenticatedAsync())
             {
-                var result = JsonSerializer.Deserialize<HotelDTO>(await response.Content.ReadAsStringAsync(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-                return result;
+                var response = await _httpClient.GetAsync($"api/Hotel/{id}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = JsonSerializer.Deserialize<HotelDTO>(await response.Content.ReadAsStringAsync(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    return result;
+                }
             }
 
             return null;
@@ -95,6 +98,20 @@ namespace HotelAdmin.WebView.Services
             }
 
             return null;
+        }
+
+        public async Task<bool> DeleteHotel(string id)
+        {
+            if (await IsAuthenticatedAsync())
+            {
+                var response = await _httpClient.DeleteAsync($"api/Hotel/{id}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         public async Task<List<RoomResult>> GetRooms(string id)
