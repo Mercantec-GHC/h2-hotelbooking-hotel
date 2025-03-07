@@ -59,4 +59,9 @@ namespace HotelsCommons.Models
     {
         public string FileName { get; set; }
     }
+
+    public class CreateRoomResult
+    {
+        public string Id { get; set; }
+    }
 }
