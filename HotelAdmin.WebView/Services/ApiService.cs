@@ -1,5 +1,6 @@
 ﻿using Blazored.LocalStorage;
 using HotelsCommons.Models;
+using Microsoft.AspNetCore.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
@@ -49,10 +50,22 @@ namespace HotelAdmin.WebView.Services
             return new List<HotelDTO>();
         }
 
+        public async Task<bool> CreateHotel(CreateHotelDTO hotelDTO)
+        {
+            if (await IsAuthenticatedAsync())
+            {
+
+                var json = JsonSerializer.Serialize(hotelDTO);
+                var response = await _httpClient.PostAsync("api/hotel/createhotel", new StringContent(json, Encoding.UTF8, "application/json"));
+
+                return response.IsSuccessStatusCode;
+            }
+
+            return false;
+        }
+
         public async Task<List<RoomResult>> GetRooms(string id)
         {
-            Console.WriteLine(id);
-
             if (await IsAuthenticatedAsync())
             {
                 var response = await _httpClient.GetAsync($"api/Hotel/{id}");

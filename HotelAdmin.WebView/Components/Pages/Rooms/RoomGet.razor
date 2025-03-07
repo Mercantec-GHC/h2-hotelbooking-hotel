@@ -12,7 +12,10 @@
             <h1>Get Room</h1>
         </CardHeader>
         <CardBody>
-            <p>@Id</p>
+            <p>@room.Id</p>
+            <p>@room.Name</p>
+            <p>@room.Description</p>
+            <p>@room.DailyPrice</p>
         </CardBody>
         <CardFooter>
             <Button Type="ButtonType.Button"
@@ -58,7 +61,6 @@ else
         if (firstRender)
         {
             room = await ApiService.GetRoom(Id);
-
             if (room == null) NavigationManager.NavigateTo($"/hotel/{Id}");
             else StateHasChanged();
         }
