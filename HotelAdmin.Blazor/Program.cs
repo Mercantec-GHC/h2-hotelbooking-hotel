@@ -3,6 +3,7 @@ using HotelAdmin.Blazor.Components;
 using HotelAdmin.WebView.Components;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Security.Cryptography.X509Certificates;
 
 namespace HotelAdmin.Blazor
 {
@@ -11,6 +12,22 @@ namespace HotelAdmin.Blazor
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            string? certPasswordFile = Environment.GetEnvironmentVariable("CERT_PASSWORD");
+
+            if (!string.IsNullOrEmpty(certPasswordFile) && File.Exists(certPasswordFile))
+            {
+                string certPassword = File.ReadAllText(certPasswordFile).Trim();
+
+                builder.WebHost.ConfigureKestrel(serverOptions =>
+                {
+                    serverOptions.ConfigureHttpsDefaults(httpsOptions =>
+                    {
+                        string? certPath = Environment.GetEnvironmentVariable("CERT_PATH");
+                        httpsOptions.ServerCertificate = new X509Certificate2(certPath, certPassword);
+                    });
+                });
+            }
 
             //builder.Services.AddAuthentication();
 
