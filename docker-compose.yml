@@ -54,6 +54,25 @@ services:
     secrets:
       - CertPassword
 
+  hoteladmin:
+    image: hoteladmin
+    build:
+      context: .
+      dockerfile: HotelAdmin.Blazor/Dockerfile
+    ports:
+      - "5000:80"
+      - "5001:443"
+    environment:
+      ASPNETCORE_URLS: "https://+;http://+"
+      ASPNETCORE_HTTPS_PORT: "5001"
+      ASPNETCORE_ENVIRONMENT: "Release"
+      CERT_PATH: "/https-certs/your_cert.pfx"
+      CERT_PASSWORD: /run/secrets/CertPassword
+    volumes:
+      - certs:/https-certs:ro
+    secrets:
+      - CertPassword
+
 volumes:
   certs:
     external: true
