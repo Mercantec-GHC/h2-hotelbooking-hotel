@@ -1,0 +1,100 @@
+﻿<div class="header">
+    <img src="images/hero.png" alt="" class="w-100">
+</div>
+
+<nav class="navbar navbar-dark sticky-top navbar-expand-sm bg-dark border-bottom shadow">
+    <div class="container">
+        <a class="navbar-brand p-0" href="">
+            <img src="images/logo.png" height="40" alt="Logo">
+        </a>
+        <div>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+        <div class="collapse navbar-collapse" id="navbarMain">
+            <div class="navbar-nav me-auto">
+                <div class="nav-item py-2 py-sm-1 col-12 col-sm-auto">
+                    <hr class="d-sm-none my-0 text-white-50">
+                </div>
+                <NavLink class="nav-item nav-link" href="hotels">
+                    <Icon Name="IconName.BuildingFill" /> Hotels
+                </NavLink>
+                <AuthorizeView>
+                    <Authorized>
+
+                        <div class="d-sm-none">
+                            <hr class="nav-item my-2 text-white-50">
+
+                            <div class="nav-item text-white-50 py-2">
+                                @GetUserName(context)
+                            </div>
+
+                            <hr class="nav-item my-2 text-white-50">
+
+                            <NavLink class="nav-item nav-link" href="tickets">
+                                <Icon Name="IconName.EnvelopeFill" /> Tickets
+                            </NavLink>
+
+                            <hr class="nav-item my-2 text-white-50">
+
+                            <NavLink class="nav-item nav-link" href="account">
+                                <Icon Name="IconName.PersonCircle" /> Account
+                            </NavLink>
+
+                            <NavLink class="nav-item nav-link" href="logout">
+                                <Icon Name="IconName.BoxArrowRight" /> Log out
+                            </NavLink>
+                        </div>
+
+                    </Authorized>
+                </AuthorizeView>
+            </div>
+            <div class="navbar-nav">
+                <AuthorizeView>
+                    <Authorized>
+
+                        <NavLink class="nav-item nav-link d-none d-sm-block" href="tickets">
+                            <Icon Name="IconName.EnvelopeFill" />
+                        </NavLink>
+
+                        <Dropdown Class="d-none d-sm-block">
+                            <DropdownToggleButton Class="nav-item nav-link">@GetUserName(context)</DropdownToggleButton>
+                            <DropdownMenu Position="DropdownMenuPosition.End">
+                                <DropdownItem To="account" Type="DropdownItemType.Link">
+                                    <Icon Name="IconName.PersonCircle" /> Profile
+                                </DropdownItem>
+                                <DropdownDivider />
+                                <DropdownItem To="logout" Type="DropdownItemType.Link">
+                                    <Icon Name="IconName.BoxArrowRight" /> Log out
+                                </DropdownItem>
+                            </DropdownMenu>
+                        </Dropdown>
+
+                    </Authorized>
+                    <NotAuthorized>
+
+                        <NavLink class="nav-item nav-link" href="register">
+                            <Icon Name="IconName.PersonPlusFill" /> Register
+                        </NavLink>
+                        <NavLink class="nav-item nav-link" href="login">
+                            <Icon Name="IconName.PersonCircle" /> Login
+                        </NavLink>
+
+                    </NotAuthorized>
+                </AuthorizeView>
+            </div>
+        </div>
+    </div>
+</nav>
+
+@code {
+    private string GetUserName(AuthenticationState context)
+    {
+        var firstNameClaim = context.User.Claims.FirstOrDefault(c => c.Type == "FirstName");
+        var lastNameClaim = context.User.Claims.FirstOrDefault(c => c.Type == "LastName");
+        var firstName = firstNameClaim != null ? firstNameClaim.Value : string.Empty;
+        var lastName = lastNameClaim != null ? lastNameClaim.Value : string.Empty;
+        return $"{firstName} {lastName}";
+    }
+}

@@ -1,0 +1,127 @@
+﻿<div class="calendar">
+    <div class="calendar-header">
+        <button @onclick="OnBackClicked">‹</button>
+        <div class="calendar-month">@Month</div>
+        <button @onclick="OnNextClicked">›</button>
+    </div>
+    <div class="calendar-body">
+        <div class="calendar-weekdays">
+            <div class="day">Mon</div>
+            <div class="day">Tue</div>
+            <div class="day">Wed</div>
+            <div class="day">Thu</div>
+            <div class="day">Fri</div>
+            <div class="day">Sat</div>
+            <div class="day">Sun</div>
+        </div>
+        <div class="calendar-dates">
+            @for(var i = 1; i < FirstDayOfMonth; i++)
+            {
+                var day = DaysInLastMonth - (FirstDayOfMonth - i - 1);
+
+                <div class="date inactive">@day</div>
+            }
+            @for(var i = 1; i <= DaysInMonth; i++)
+            {
+                var now = DateTime.UtcNow;
+                var isCurrentDay = SelectedYear == now.Year && SelectedMonth == now.Month && i == now.Day;
+                var currentDayClass = isCurrentDay ? "active" : "";
+                var style = "";
+
+                if (Bookings != null)
+                {
+                    var day = new DateTime(SelectedYear, SelectedMonth, i);
+
+                    foreach(var bookin in Bookings)
+                    {
+                        if (bookin.StartDate.Date <= day.Date && bookin.EndDate.Date >= day.Date)
+                        {
+                            style += "color: #ff0000;";
+                            if (isCurrentDay)
+                            {
+                                style += "text-shadow: -1px -1px 3px #000, 1px -1px 3px #000, -1px 1px 3px #000, 1px 1px 3px #000;";
+                            }
+                        }
+                    }
+                }
+
+                <div class="date @currentDayClass" style="@style">@i</div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public List<RoomBookinsResult>? Bookings { get; set; }
+
+    private string Month
+    {
+        get 
+        {
+            return $"{Months[SelectedMonth - 1]} {SelectedYear}";
+        }
+    }
+    private string[] Months = { 
+        "January", "February", "March", "April", 
+        "May", "June", "July", "August", 
+        "September", "October", "November", "December"
+    };
+    private int StartYear = DateTime.UtcNow.Year;
+    private int SelectedYear = DateTime.UtcNow.Year;
+    private int StartMonth = DateTime.UtcNow.Month;
+    private int SelectedMonth = DateTime.UtcNow.Month;
+    private int DaysInMonth 
+    {
+        get
+        {
+            return DateTime.DaysInMonth(SelectedYear, SelectedMonth);
+        }
+    }
+    private int DaysInLastMonth
+    {
+        get
+        {
+            var lastMonth = SelectedMonth - 1 < 1 ? 12 : SelectedMonth - 1;
+            var days = DateTime.DaysInMonth(SelectedYear, lastMonth);
+            return days;
+        }
+    }
+    private int FirstDayOfMonth
+    {
+        get
+        {
+            var firstDay = new DateTime(SelectedYear, SelectedMonth, 1);
+            return (int)firstDay.DayOfWeek;
+        }
+    }
+
+    private async Task OnNextClicked(){
+        SelectedMonth++;
+        if (SelectedMonth > 12)
+        {
+            SelectedMonth = 1;
+            SelectedYear++;
+        }
+    }
+
+    private async Task OnBackClicked()
+    {
+        if (SelectedYear > StartYear)
+        {
+            SelectedMonth--;
+            if (SelectedMonth < 1)
+            {
+                SelectedMonth = 12;
+                SelectedYear--;
+            }
+        }
+        else if (SelectedMonth > StartMonth)
+        {
+            SelectedMonth--;
+            if (SelectedMonth < 1)
+            {
+                SelectedMonth = 12;
+            }
+        }
+    }
+}
