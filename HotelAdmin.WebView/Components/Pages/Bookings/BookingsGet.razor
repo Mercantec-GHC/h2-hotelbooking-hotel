@@ -1,0 +1,107 @@
+@page "/booking/{Id}"
+@attribute [Authorize(Roles = "HotelWorker")]
+@inject ApiService ApiService
+@inject NavigationManager NavigationManager
+
+<PageTitle>Get booking</PageTitle>
+
+@if (booking != null)
+{
+    <Card Class="shadow mb-3">
+        <CardHeader Class="py-0">
+            <div class="row justify-content-between">
+                @* <h1 class="col border-end pt-2 pb-3 m-0">
+                    @ticket.Topic
+                </h1>
+                <h1 class="col-auto border-end pt-2 pb-3 m-0">
+                    @ticket.Status
+                </h1>
+                <h1 class="col-auto pt-2 pb-3 m-0">
+                    @ticket.CreatedAt
+                </h1> *@
+            </div>
+        </CardHeader>
+        <CardBody Class="border-bottom">
+            <div class="row justify-content-between">
+                <div class="col-auto">
+                    <p>@booking.Id</p>
+                </div>
+                <div class="col-auto">
+                </div>
+            </div>
+        </CardBody>
+        <CardFooter>
+            <Button Type="ButtonType.Button"
+            Class="ms-3"
+            Color="ButtonColor.Danger"
+            @onclick="DeleteConfirmModalShow">
+                Delete
+            </Button>
+        </CardFooter>
+    </Card>
+
+    <Modal @ref="deleteConfirmModal" Title="Please confirm">
+        <BodyTemplate>
+            Are you sure you want to delete this booking?
+            @if (warningVisible)
+            {
+                <div class="validation-message">Failed to delete booking!</div>
+            }
+        </BodyTemplate>
+        <FooterTemplate>
+            <Button Color="ButtonColor.Secondary" @onclick="DeleteConfirmModalHide">Close</Button>
+            <Button Color="ButtonColor.Danger" @onclick="HandleDeletion">Delete</Button>
+        </FooterTemplate>
+    </Modal>
+}
+else
+{
+    <div class="row justify-content-center mt-5">
+        <div class="col-auto fw-bold">
+            <span class="spinner-border" style="width: 3rem; height: 3rem;" aria-hidden="true"></span>
+            <span role="status" style="font-size: 3rem;">Loading...</span>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public string Id { get; set; }
+    private BookingResult booking;
+    private Modal deleteConfirmModal;
+    private bool warningVisible = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            booking = await ApiService.GetBooking(Id);
+
+            if (booking == null) NavigationManager.NavigateTo("/bookings");
+            else StateHasChanged();
+        }
+    }
+
+    private async Task HandleDeletion()
+    {
+        var response = await ApiService.DeleteBooking(Id);
+
+        if (response == true)
+        {
+            NavigationManager.NavigateTo("/bookings", true);
+        }
+        else
+        {
+            warningVisible = true;
+        }
+    }
+
+    private async Task DeleteConfirmModalShow()
+    {
+        await deleteConfirmModal?.ShowAsync();
+    }
+
+    private async Task DeleteConfirmModalHide()
+    {
+        await deleteConfirmModal?.HideAsync();
+    }
+}

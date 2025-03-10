@@ -1,0 +1,74 @@
+﻿@page "/users"
+@attribute [Authorize(Roles = "HotelWorker")]
+@inject ApiService ApiService
+
+<PageTitle>All Users</PageTitle>
+
+<Card Class="shadow">
+    <CardHeader>
+        <h1>All Users</h1>
+    </CardHeader>
+    <CardBody>
+        <p class="fw-bold">All Users</p>
+
+        <div class="list-group">
+            @if (users != null)
+            {
+                @if (users.Any())
+                {
+                    @foreach (var user in users)
+                    {
+                        <a href="/user/@user.Id" class="list-group-item list-group-item-action fw-bold py-0">
+                            <div class="row justify-content-between">
+                                <div class="col-3 border-end py-2">
+                                    @user.FirstName
+                                </div>
+                                <div class="col border-end py-2">
+                                    @user.LastName
+                                </div>
+                                <div class="col-4 py-2">
+                                    @user.Email
+                                </div>
+                            </div>
+                        </a>
+                    }
+                }
+                else
+                {
+                    <div class="list-group-item list-group-item-action fw-bold py-0">
+                        <div class="row justify-content-between">
+                            <div class="col py-2">
+                                No users found
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="list-group-item list-group-item-action fw-bold py-0">
+                    <div class="row justify-content-between">
+                        <div class="col py-2">
+                            <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                            <span role="status">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </CardBody>
+    <CardFooter></CardFooter>
+</Card>
+
+@code {
+    private List<UserResultDTO> users;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            users = await ApiService.GetAllUsers();
+            StateHasChanged();
+        }
+    }
+}

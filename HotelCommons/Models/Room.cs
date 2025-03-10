@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using System.ComponentModel.DataAnnotations;
 
 namespace HotelsCommons.Models
 {
@@ -24,15 +25,23 @@ namespace HotelsCommons.Models
 
     public class CreateRoomDTO
     {
-        public string HotelID { get; set; }
-        public float DailyPrice { get; set; }
-        
+        [Required(ErrorMessage = "Name is required.")]
+        public string Name { get; set; }
 
+        [Required(ErrorMessage = "Description is required.")]
+        public string Description { get; set; }
+
+        public string HotelID { get; set; }
+
+        [Required(ErrorMessage = "Daily Price is required.")]
+        [Range(50.0, 1000000.0, ErrorMessage = "Daily Price must be between 50 and 1000000.")]
+        public float DailyPrice { get; set; }
     }
 
     public class RoomResult
     {
         public string Id { get; set; }
+        public string HotelId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public float DailyPrice { get; set; }
@@ -49,5 +58,10 @@ namespace HotelsCommons.Models
     public class RoomImageResult
     {
         public string FileName { get; set; }
+    }
+
+    public class CreateRoomResult
+    {
+        public string Id { get; set; }
     }
 }

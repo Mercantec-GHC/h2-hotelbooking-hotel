@@ -1,0 +1,64 @@
+@page "/bookings"
+@attribute [Authorize(Roles = "HotelWorker")]
+@inject ApiService ApiService
+
+<PageTitle>All Bookings</PageTitle>
+
+<Card Class="shadow">
+    <CardHeader>
+        <h1>All Bookings</h1>
+    </CardHeader>
+    <CardBody>
+        <p>All Bookings</p>
+
+        <div class="list-group">
+            @if (bookings != null)
+            {
+                @foreach (var booking in bookings)
+                {
+                    <a href="/booking/@booking.Id" class="list-group-item list-group-item-action fw-bold py-0">
+                        <div class="row justify-content-between">
+                            <div class="col-4 border-end py-2">
+                                @booking.Id
+                            </div>
+                            <div class="col border-end py-2">
+                                @booking.RoomName
+                            </div>
+                            <div class="col-2 border-end py-2">
+                                @booking.StartDate.ToLongDateString()
+                            </div>
+                            <div class="col-2 py-2">
+                                @booking.EndDate.ToLongDateString()
+                            </div>
+                        </div>
+                    </a>
+                }
+            }
+            else
+            {
+                <div class="list-group-item list-group-item-action fw-bold py-0">
+                    <div class="row justify-content-between">
+                        <div class="col py-2">
+                            <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                            <span role="status">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </CardBody>
+    <CardFooter></CardFooter>
+</Card>
+
+@code {
+    private List<BookingResult> bookings;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            bookings = await ApiService.GetAllBookings();
+            StateHasChanged();
+        }
+    }
+}

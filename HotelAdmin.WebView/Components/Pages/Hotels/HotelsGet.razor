@@ -1,0 +1,119 @@
+@page "/hotel/{Id}"
+@attribute [Authorize(Roles = "HotelWorker")]
+@inject NavigationManager NavigationManager
+@inject ApiService ApiService
+
+@if (hotel != null)
+{
+    <PageTitle>@hotel.Name</PageTitle>
+
+    <Card>
+        <CardHeader>
+            <h1>Get Hotel - @Id</h1>
+        </CardHeader>
+        <CardBody Class="border-bottom pb-2">
+            <ul class="nav nav-tabs card-header-tabs">
+                <li class="nav-item">
+                    <button Class="nav-link @(page == "info" ? "active" : "")" @onclick="@(() => page = "info")">Hotel</button>
+                </li>
+                <li class="nav-item">
+                    <button Class="nav-link @(page == "rooms" ? "active" : "")" @onclick="@(() => page = "rooms")">Rooms</button>
+                </li>
+                <li class="nav-item">
+                    <button Class="nav-link @(page == "users" ? "active" : "")" @onclick="@(() => page = "users")">Workers</button>
+                </li>
+            </ul>
+        </CardBody>
+        <CardBody>
+            @if (page == "info")
+            {
+
+            }
+            else if (page == "rooms")
+            {
+                <RoomsComponent HotelId="@Id" />
+            }
+            else if (page == "users")
+            {
+                <UsersComponent HotelId="@Id" />
+            }
+        </CardBody>
+        <CardFooter>
+            <AuthorizeView Roles="GlobalAdmin">
+                <Authorized>
+                    <Button Type="ButtonType.Button"
+                            Class="ms-3"
+                            Color="ButtonColor.Danger"
+                            @onclick="DeleteConfirmModalShow">
+                        Delete
+                    </Button>
+                </Authorized>
+            </AuthorizeView>
+        </CardFooter>
+    </Card>
+    <Modal @ref="deleteConfirmModal" Title="Please confirm">
+        <BodyTemplate>
+            Are you sure you want to delete this hotel?
+            @if (warningVisible)
+            {
+                <div class="validation-message">Failed to delete hotel!</div>
+            }
+        </BodyTemplate>
+        <FooterTemplate>
+            <Button Color="ButtonColor.Secondary" @onclick="DeleteConfirmModalHide">Close</Button>
+            <Button Color="ButtonColor.Danger" @onclick="HandleDeletion">Delete</Button>
+        </FooterTemplate>
+    </Modal>
+}
+else
+{
+    <div class="row justify-content-center mt-5">
+        <div class="col-auto fw-bold">
+            <span class="spinner-border" style="width: 3rem; height: 3rem;" aria-hidden="true"></span>
+            <span role="status" style="font-size: 3rem;">Loading...</span>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public string? Id { get; set; }
+    private HotelDTO hotel;
+    private string page = "info";
+    private Modal deleteConfirmModal;
+    private bool warningVisible = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            hotel = await ApiService.GetHotel(Id);
+            if (hotel == null) NavigationManager.NavigateTo($"/hotels");
+            else StateHasChanged();
+        }
+    }
+
+
+    private async Task HandleDeletion()
+    {
+        var response = await ApiService.DeleteHotel(Id);
+
+        if (response == true)
+        {
+            NavigationManager.NavigateTo($"/hotels", true);
+        }
+        else
+        {
+            warningVisible = true;
+        }
+    }
+
+    private async Task DeleteConfirmModalShow()
+    {
+        await deleteConfirmModal?.ShowAsync();
+    }
+
+    private async Task DeleteConfirmModalHide()
+    {
+        await deleteConfirmModal?.HideAsync();
+    }
+}
