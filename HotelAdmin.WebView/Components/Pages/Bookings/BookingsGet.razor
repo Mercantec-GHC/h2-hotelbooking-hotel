@@ -31,16 +31,17 @@
             </div>
         </CardBody>
         <CardFooter>
-            <Button Type="ButtonType.Button"
-            Class="ms-3"
-            Color="ButtonColor.Danger"
-            @onclick="DeleteConfirmModalShow">
-                Delete
-            </Button>
+            <div class="d-flex justify-content-end">
+                <Button Type="ButtonType.Button"
+                        Color="ButtonColor.Danger"
+                        @onclick="DeleteConfirmModalShow">
+                    Delete
+                </Button>
+            </div>
         </CardFooter>
     </Card>
 
-    <Modal @ref="deleteConfirmModal" Title="Please confirm">
+    <Modal @ref="deleteConfirmModal" Title="Please confirm" IsVerticallyCentered="true">
         <BodyTemplate>
             Are you sure you want to delete this booking?
             @if (warningVisible)

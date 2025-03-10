@@ -1,14 +1,162 @@
 ﻿@page "/users/add"
 @attribute [Authorize(Roles = "HotelAdmin")]
+@inject NavigationManager NavigationManager
+@inject ApiService ApiService
+@inject AuthService AuthService
 
 <PageTitle>Add User</PageTitle>
 
-<Card>
-    <CardHeader>
-        <h1>Add User</h1>
-    </CardHeader>
-    <CardBody>
-        <p>Add User</p>
-    </CardBody>
-    <CardFooter></CardFooter>
+<Card Class="shadow">
+    <EditForm Model="userDTO" OnValidSubmit="OnShowModalClick" novalidate>
+        <DataAnnotationsValidator />
+
+        <CardHeader>
+            <h1>Add User</h1>
+        </CardHeader>
+        <CardBody>
+            <div class="row gy-3 gx-5">
+                <div class="col-12 col-md-6">
+                    <div class="mb-3">
+                        <label for="emailInput" class="form-label fw-bold">Email Address:</label>
+                        <TextInput @bind-Value="@userDTO.Email" Id="emailInput" Placeholder="Enter Email Address" />
+                        <ValidationMessage For="@(() => userDTO.Email)" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="firstNameInput" class="form-label fw-bold">Name:</label>
+                        <TextInput @bind-Value="@userDTO.FirstName" Id="firstNameInput" Placeholder="Enter First Name" />
+                        <ValidationMessage For="@(() => userDTO.FirstName)" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="lastNameInput" class="form-label fw-bold">Name:</label>
+                        <TextInput @bind-Value="@userDTO.LastName" Id="lastNameInput" Placeholder="Enter Last Name" />
+                        <ValidationMessage For="@(() => userDTO.LastName)" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="passwordInput" class="form-label fw-bold">Password:</label>
+                        <PasswordInput @bind-Value="@userDTO.Password" Id="passwordInput" Placeholder="Enter a Password" />
+                        <ValidationMessage For="@(() => userDTO.Password)" />
+                    </div>
+                    <div class="mb-3">
+                        <PasswordInput @bind-Value="@userDTO.PasswordConfirm" Placeholder="Confirm Password" />
+                        <ValidationMessage For="@(() => userDTO.PasswordConfirm)" />
+                    </div>
+                </div>
+                @if (availableRoles.Any())
+                {
+                    <div class="col-12 col-md-6">
+                        <label class="form-label fw-bold">Roles:</label>
+                        @foreach (var role in availableRoles)
+                        {
+                            <CheckboxInput Label="@role.Name" Value="@role.Selected" ValueExpression="() => role.Selected" ValueChanged="(value) => CheckboxValueChanged(role, value)" />
+                        }
+                    </div>
+                }
+                @if (errorMessage != null)
+                {
+                    <div class="col-12">
+                        <p class="text-danger m-0">@errorMessage</p>
+                    </div>
+                }
+            </div>
+
+            <Modal @ref="modal" Title="Confirm" IsVerticallyCentered="true">
+                <BodyTemplate>
+                    <p class="m-0"><b>Email:</b> @userDTO.Email</p>
+                    <p class="m-0"><b>First Name:</b> @userDTO.FirstName</p>
+                    <p class="m-0"><b>Last Name:</b> @userDTO.LastName</p>
+                    <p class="m-0"><b>Roles:</b></p>
+                    @if (availableRoles.Any())
+                    {
+                        var any = false;
+                        @foreach (var role in availableRoles)
+                        {
+                            @if (role.Selected)
+                            {
+                                any = true;
+                                <p class="fst-italic mb-0 ms-3">@role.Name</p>
+                            }
+                        }
+                        @if (!any)
+                        {
+                            <p class="fst-italic mb-0 ms-3 ">None</p>
+                        }
+                    }
+                </BodyTemplate>
+                <FooterTemplate>
+                    <Button Type="ButtonType.Button" Color="ButtonColor.Secondary" @onclick="OnHideModalClick">Close</Button>
+                    <Button Type="ButtonType.Button" Color="ButtonColor.Primary" @onclick="HandleValidSubmit">Confirm</Button>
+                </FooterTemplate>
+            </Modal>
+
+        </CardBody>
+        <CardFooter>
+            <div class="d-flex justify-content-end">
+                <Button Type="ButtonType.Submit" Color="ButtonColor.Primary">Add User</Button>
+            </div>
+        </CardFooter>
+    </EditForm>
 </Card>
+
+@code {
+    private UserCreateDTO userDTO = new UserCreateDTO();
+    private List<RoleResult> availableRoles = new List<RoleResult>();
+    private string errorMessage;
+
+    private Modal modal = default!;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            availableRoles = await ApiService.GetAvailableRoles();
+            StateHasChanged();
+        }
+    }
+
+    private async Task OnShowModalClick()
+    {
+        await modal.ShowAsync();
+    }
+
+    private async Task OnHideModalClick()
+    {
+        await modal.HideAsync();
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        var response = await AuthService.Register(userDTO);
+        if (response.IsSuccessStatusCode)
+        {
+            NavigationManager.NavigateTo($"/users");
+        }
+        else
+        {
+            errorMessage = await response.Content.ReadAsStringAsync();
+            await modal.HideAsync();
+        }
+    }
+
+    private void CheckboxValueChanged(RoleResult selectedRole, bool value)
+    {
+        selectedRole.Selected = value;
+        foreach (var role in availableRoles)
+        {
+            if (value)
+            {
+                if (role.Hierarki < selectedRole.Hierarki)
+                {
+                    role.Selected = true;
+                }
+            }
+            else
+            {
+                if (role.Hierarki > selectedRole.Hierarki)
+                {
+                    role.Selected = false;
+                }
+            }
+            StateHasChanged();
+        }
+    }
+}

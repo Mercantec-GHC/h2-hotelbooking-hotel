@@ -2,7 +2,7 @@
 
 <Card>
     <CardBody>
-        <p class="fw-bold">All Users</p>
+        <p class="fw-bold">All Workers in this hotel</p>
 
         <div class="list-group">
             @if (hotelUsers != null)
@@ -60,7 +60,16 @@
     {
         if (firstRender)
         {
-            hotelUsers = await ApiService.GetAllUsers();
+            var users = await ApiService.GetAllUsers();
+            hotelUsers = new List<UserResultDTO>();
+
+            foreach (var user in users)
+            {
+                if (user.Hotels.Contains(HotelId))
+                {
+                    hotelUsers.Add(user);
+                }
+            }
             StateHasChanged();
         }
     }
