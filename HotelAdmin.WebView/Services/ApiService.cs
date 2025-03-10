@@ -291,6 +291,45 @@ namespace HotelAdmin.WebView.Services
             return response;
         }
 
+        public async Task<HttpResponseMessage> CreateDiscountCode(CreateDCDTO statusModel)
+        {
+            await IsAuthenticatedAsync();
+            var json = JsonSerializer.Serialize(statusModel);
+            var response = await _httpClient.PostAsync("api/DiscountCode/CreateDiscountCode", new StringContent(json, Encoding.UTF8, "application/json"));
+
+            return response;
+        }
+
+        public async Task<List<DiscountCode>> GetAllDiscountCodes()
+        {
+            if (await IsAuthenticatedAsync())
+            {
+                var response = await _httpClient.GetAsync("api/DiscountCode/GetAllDiscountCodes");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = JsonSerializer.Deserialize<List<DiscountCode>>(await response.Content.ReadAsStringAsync(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    return result;
+                }
+            }
+
+            return new List<DiscountCode>();
+        }
+
+        public async Task<bool> DeleteDiscountCode(string id)
+        {
+            if (await IsAuthenticatedAsync())
+            {
+                var response = await _httpClient.DeleteAsync($"api/DiscountCode/{id}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         private async Task<bool> IsAuthenticatedAsync()
         {
             var savedToken = await _localStorage.GetItemAsync<string>("authToken");
