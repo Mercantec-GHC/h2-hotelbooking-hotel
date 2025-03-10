@@ -1,0 +1,223 @@
+﻿@page "/room/{Id}/booknow"
+
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject ApiService ApiService
+@inject NavigationManager NavigationManager
+@attribute [Authorize]
+
+@if (room != null)
+{
+    <PageTitle>Create Booking</PageTitle>
+
+    <Card Class="shadow">
+        <CardHeader>
+            <h1>Booking: @room.Name - @dateValid</h1>
+        </CardHeader>
+        <CardBody>
+            <div class="row g-3 justify-content-center">
+                <div class="col-12 col-sm-4">
+                    <div class="ratio ratio-4x3 card overflow-hidden bg-secondary bg-opacity-25 mb-3">
+                        <img src="images/room.jpg" alt="" style="width: 100%; height: 100%; object-fit: contain;" />
+                    </div>
+                </div>
+                <div class="col-12 col-sm-8">
+                    <p>StartDate: @bookingModel.StartDate</p>
+                    <p>EndDate: @bookingModel.EndDate</p>
+                    <p>@($"Price: {(price > 0 ? price : "-")} €")</p>
+                    <p>User: @bookingModel.UserID</p>
+                </div>
+                <div class="col-12 col-sm-8">
+                    <EditForm Model="bookingModel" OnValidSubmit="HandleValidSubmit" novalidate>
+                        <DataAnnotationsValidator />
+
+                        <div class="form-group row mb-3">
+                            <label class="col-md-2 col-form-label">Start Date: <span class="text-danger">*</span></label>
+                            <div class="col-md-10">
+
+                                <div class="mb-3">
+                                    <DateInput TValue="DateTime?"
+                                    EnableMinMax="true"
+                                    Min="courseMinDate"
+                                    Max="courseMaxDate"
+                                    Value="bookingModel.StartDate"
+                                    ValueExpression="() => bookingModel.StartDate"
+                                    ValueChanged="(value) => StartDateChanged(value)" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row mb-3">
+                            <label class="col-md-2 col-form-label">End Date: <span class="text-danger">*</span></label>
+                            <div class="col-md-10">
+                                <DateInput @ref="endDateInput" TValue="DateTime?"
+                                EnableMinMax="true"
+                                Min="bookingModel.StartDate"
+                                Max="courseMaxDate"
+                                Disabled="@disableEndDate"
+                                ValueExpression="() => bookingModel.EndDate"
+                                ValueChanged="(value) => EndDateChanged(value)" />
+                                <ValidationMessage For="@(() => bookingModel.EndDate)" />
+                            </div>
+                        </div>
+
+                        <div class="form-group row mb-3">
+                            <label class="col-md-2 col-form-label">All Incusive:</label>
+                            <div class="col-md-10">
+                                @* <Switch Class="mt-2" @bind-Value="allIncusive" /> *@
+                                <Switch Class="mt-3" Value="bookingModel.AllInclusive" ValueExpression="() => bookingModel.AllInclusive" ValueChanged="AllIncusiveChanged" />
+                            </div>
+                        </div>
+
+                        <div class="form-group row mb-3">
+                            <label class="col-md-2 col-form-label">Discount Code: <span class="text-danger">*</span></label>
+                            <div class="col-md-10">
+                                <TextInput @bind-Value="@bookingModel.DiscountCode" Placeholder="Enter Discount Code" />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12 d-flex justify-content-center">
+                                <Button Disabled="!dateValid" Type="ButtonType.Submit" Color="@(dateValid == true ? ButtonColor.Primary : ButtonColor.Secondary)" Class="float-end me-2">Book now</Button>
+                            </div>
+                        </div>
+
+                    </EditForm>
+                </div>
+            </div>
+
+        </CardBody>
+    </Card>
+}
+
+@code {
+    [Parameter] public string? Id { get; set; }
+
+    private RoomResult room;
+    private CreateBookingDTO bookingModel = new CreateBookingDTO();
+
+    DateInput<DateTime?> endDateInput = default!;
+    private bool disableEndDate = true;
+
+    private DateTime courseMinDate = DateTime.UtcNow;
+    private DateTime courseMaxDate = DateTime.UtcNow.AddYears(1);
+    private bool dateValid = false;
+
+    private float price = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            var userIdClaim = user.Claims.FirstOrDefault(c => c.Type == "UserID");
+            bookingModel.UserID = userIdClaim?.Value ?? null;
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            room = await ApiService.GetRoom(Id);
+            if (room == null) NavigationManager.NavigateTo("/");
+            else 
+            {
+                bookingModel.RoomID = room.Id;
+
+                StateHasChanged();
+            }
+        }
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        var result = await ApiService.CreateBooking(bookingModel);
+        if (result != null) NavigationManager.NavigateTo($"/bookingconfirmed/{result.Id}");
+    }
+
+    private async Task StartDateChanged(DateTime? startDate)
+    {
+        if (startDate is null || !startDate.HasValue)
+        {
+            bookingModel.StartDate = null;
+            bookingModel.EndDate = null;
+            disableEndDate = true;
+
+            return;
+        }
+
+        bookingModel.StartDate = startDate;
+
+        ValidateDays();
+
+        disableEndDate = false;
+
+        StateHasChanged();
+    }
+
+    private async Task EndDateChanged(DateTime? endDate)
+    {
+        if (endDate is null || !endDate.HasValue)
+        {
+            bookingModel.EndDate = null;
+            dateValid = false;
+            disableEndDate = true;
+
+            return;
+        }
+
+        bookingModel.EndDate = endDate;
+        ValidateDays();
+        StateHasChanged();
+    }
+
+    private async Task AllIncusiveChanged(bool value)
+    {
+        bookingModel.AllInclusive = value;
+        ValidateDays();
+        StateHasChanged();
+    }
+
+    private void ValidateDays()
+    {
+        if (bookingModel.StartDate == null || bookingModel.EndDate == null)
+        {
+            dateValid = false;
+            disableEndDate = true;
+            return;
+        }
+
+        DateTime start = ((DateTime)bookingModel.StartDate).Date;
+        DateTime end = ((DateTime)bookingModel.EndDate).Date;
+
+        if (start > end)
+        {
+            dateValid = false;
+            bookingModel.EndDate = null;
+            disableEndDate = true;
+            endDateInput.Value = null;
+            return;
+        }
+
+        TimeSpan difference = end - start;
+        int days = difference.Days + 1;
+
+        for (var i = 0; i < days; i++)
+        {
+            DateTime day = start.AddDays(i);
+            foreach (var booking in room.Bookings)
+            {
+                if (day >= booking.StartDate && day <= booking.EndDate)
+                {
+                    dateValid = false;
+                    return;
+                }
+            }
+        }
+
+        dateValid = true;
+        price = (room.DailyPrice * days) + (bookingModel.AllInclusive ? 50 * days : 0);
+    }
+}

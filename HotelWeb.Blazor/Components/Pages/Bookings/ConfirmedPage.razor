@@ -1,0 +1,43 @@
+﻿@page "/bookingconfirmed/{Id}"
+
+@inject ApiService ApiService
+@inject NavigationManager NavigationManager
+@attribute [Authorize]
+
+@if (booking != null)
+{
+    <PageTitle>Booking Confirmed</PageTitle>
+
+    <div class="row justify-content-center">
+        <div class="col col-sm-10 col-md-8 col-lg-7 col-xl-6">
+            <Card Class="shadow">
+                <CardHeader>
+                    <h1 class="card-title">Congratulations, your booking has been confirmed</h1>
+                </CardHeader>
+                <CardBody>
+                    <p class="card-tex fw-bold mb-1">@(booking.RoomName != null ? booking.RoomName : "NULL")</p>
+                    <p class="card-text mb-1">All Inclusive: @booking.AllInclusive</p>
+                    <p class="card-text mb-1">Price: @booking.Price</p>
+                    <p class="card-text mb-1">Start Date: @booking.StartDate.ToString("dd-MM-yyyy")</p>
+                    <p class="card-text mb-1">End Date: @booking.EndDate.ToString("dd-MM-yyyy")</p>
+                    <p class="card-text text-secondary fst-italic">Booking Id: @booking.Id</p>
+                </CardBody>
+            </Card>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public string? Id { get; set; }
+    private BookingResult booking;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            booking = await ApiService.GetBooking(Id);
+            if (booking == null) NavigationManager.NavigateTo("/");
+            else StateHasChanged();
+        }
+    }
+}

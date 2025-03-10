@@ -16,6 +16,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HotelAdmin.WebView", "Hotel
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HotelAdmin.WebView.Maui", "HotelAdmin.WebView.Maui\HotelAdmin.WebView.Maui.csproj", "{A59FE28D-D545-4BDF-9380-2430E013E8F7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HotelWeb.Blazor", "HotelWeb.Blazor\HotelWeb.Blazor.csproj", "{FFC1AAF7-D10F-407D-A256-D3205EB5EC65}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -82,6 +84,14 @@ Global
 		{A59FE28D-D545-4BDF-9380-2430E013E8F7}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A59FE28D-D545-4BDF-9380-2430E013E8F7}.Release|x64.ActiveCfg = Release|x64
 		{A59FE28D-D545-4BDF-9380-2430E013E8F7}.Release|x64.Build.0 = Release|x64
+		{FFC1AAF7-D10F-407D-A256-D3205EB5EC65}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FFC1AAF7-D10F-407D-A256-D3205EB5EC65}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FFC1AAF7-D10F-407D-A256-D3205EB5EC65}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{FFC1AAF7-D10F-407D-A256-D3205EB5EC65}.Debug|x64.Build.0 = Debug|Any CPU
+		{FFC1AAF7-D10F-407D-A256-D3205EB5EC65}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FFC1AAF7-D10F-407D-A256-D3205EB5EC65}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FFC1AAF7-D10F-407D-A256-D3205EB5EC65}.Release|x64.ActiveCfg = Release|Any CPU
+		{FFC1AAF7-D10F-407D-A256-D3205EB5EC65}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
