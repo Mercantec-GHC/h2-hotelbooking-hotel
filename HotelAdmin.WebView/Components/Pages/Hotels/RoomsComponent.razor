@@ -2,7 +2,7 @@
 
 <Card Class="mb-3">
     <CardBody>
-        <p class="fw-bold">All Hotels</p>
+        <p class="fw-bold">All Rooms in this hotel</p>
 
         <div class="list-group">
             @if (rooms != null)
@@ -50,9 +50,13 @@
     </CardBody>
 </Card>
 
-<div class="d-flex justify-content-end">
-    <a href="@($"/rooms/add/{HotelId}")" class="btn btn-primary">Add Room</a>
-</div>
+<AuthorizeView Roles="HotelAdmin">
+    <Authorized>
+        <div class="d-flex justify-content-end">
+            <a href="@($"/rooms/add/{HotelId}")" class="btn btn-primary">Add Room</a>
+        </div>
+    </Authorized>
+</AuthorizeView>
 
 @code {
     [Parameter] public string HotelId { get; set; }

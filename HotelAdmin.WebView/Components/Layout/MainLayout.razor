@@ -14,20 +14,33 @@
 
             <LeftNavDropdown Name="Hotels">
                 <LeftNavItem Name="All hotels" Href="/hotels" Margin="30px"></LeftNavItem>
-                <LeftNavItem Name="Add hotel" Href="/hotels/add" Margin="30px"></LeftNavItem>
+
+                <AuthorizeView Roles="ConcernAdmin">
+                    <Authorized>
+                        <LeftNavItem Name="Add hotel" Href="/hotels/add" Margin="30px"></LeftNavItem>
+                    </Authorized>
+                </AuthorizeView>
+
             </LeftNavDropdown>
 
             <LeftNavDropdown Name="Users">
                 <LeftNavItem Name="All users" Href="/users" Margin="30px"></LeftNavItem>
-                <LeftNavItem Name="Add user" Href="/users/add" Margin="30px"></LeftNavItem>
+
+                <AuthorizeView Roles="HotelAdmin">
+                    <Authorized>
+                        <LeftNavItem Name="Add user" Href="/users/add" Margin="30px"></LeftNavItem>
+                    </Authorized>
+                </AuthorizeView>
+
             </LeftNavDropdown>
-            <LeftNavItem Name="Bookings" Href="/bookings"></LeftNavItem>
-            <LeftNavItem Name="Tickets" Href="/tickets"></LeftNavItem>
 
             <LeftNavDropdown Name="Discount codes">
-                <LeftNavItem Name="Discount codes" Href="/discountcodes"></LeftNavItem>
-                <LeftNavItem Name="Create code" Href="/creatediscountcode"></LeftNavItem>
+                <LeftNavItem Name="All codes" Href="/discountcodes"></LeftNavItem>
+                <LeftNavItem Name="Add code" Href="/creatediscountcode"></LeftNavItem>
             </LeftNavDropdown>
+
+            <LeftNavItem Name="Bookings" Href="/bookings"></LeftNavItem>
+            <LeftNavItem Name="Tickets" Href="/tickets"></LeftNavItem>
             
             <hr class="m-0">
 

@@ -50,6 +50,22 @@ namespace HotelAdmin.WebView.Services
             return null;
         }
 
+        public async Task<List<RoleResult>> GetAvailableRoles()
+        {
+            if (await IsAuthenticatedAsync())
+            {
+                var response = await _httpClient.GetAsync("api/UserRole/GetAvailableRoles");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = JsonSerializer.Deserialize<List<RoleResult>>(await response.Content.ReadAsStringAsync(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    return result;
+                }
+            }
+
+            return new List<RoleResult>();
+        }
+
         public async Task<List<HotelDTO>> GetAllHotels()
         {
             if (await IsAuthenticatedAsync())

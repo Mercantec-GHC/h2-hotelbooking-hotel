@@ -5,7 +5,7 @@
 
 <PageTitle>Add Room</PageTitle>
 
-<Card>
+<Card Class="shadow">
     <EditForm Model="roomDTO" OnValidSubmit="OnShowModalClick" novalidate>
         <DataAnnotationsValidator />
 
@@ -15,7 +15,7 @@
         <CardBody>
             <p>Add Hotel</p>
 
-            <div class="row g-3">
+            <div class="row gy-3 gx-5">
                 <div class="col-12 col-md-6">
                     <div class="mb-3">
                         <label for="nameInput" class="form-label fw-bold">Name:</label>
@@ -30,7 +30,7 @@
                 </div>
                 <div class="col-12 col-md-6">
                     <div class="mb-3">
-                        <label for="countryPrice" class="form-label fw-bold">Country:</label>
+                        <label for="countryPrice" class="form-label fw-bold">Daily Price:</label>
                         <CurrencyInput TValue="float" @bind-Value="@roomDTO.DailyPrice" Locale="de-DE" EnableMinMax="true" Min="50" Max="1000000" Id="countryPrice" Placeholder="Enter Daily Price" />
                         <ValidationMessage For="@(() => roomDTO.DailyPrice)" />
                     </div>
@@ -41,7 +41,7 @@
                 <BodyTemplate>
                     <p class="m-0"><b>Name:</b> @roomDTO.Name</p>
                     <p class="m-0"><b>Description:</b> @roomDTO.Description</p>
-                    <p class="m-0"><b>Postal Code:</b> @roomDTO.DailyPrice €</p>
+                    <p class="m-0"><b>Daily Price:</b> @roomDTO.DailyPrice €</p>
                 </BodyTemplate>
                 <FooterTemplate>
                     <Button Type="ButtonType.Button" Color="ButtonColor.Secondary" @onclick="OnHideModalClick">Close</Button>
@@ -91,7 +91,7 @@
     private async Task HandleValidSubmit()
     {
         var result = await ApiService.CreateRoom(roomDTO);
-        if (result != null) NavigationManager.NavigateTo($"/hotel/{result.Id}");
+        if (result != null) NavigationManager.NavigateTo($"/room/{result.Id}");
         else await modal.HideAsync();
     }
 }
