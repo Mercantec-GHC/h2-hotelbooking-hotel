@@ -6,10 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Jpeg;
-using SixLabors.ImageSharp.Processing;
-using System.IO;
 using System.Security.Claims;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace BackendAPI.Controllers
 {

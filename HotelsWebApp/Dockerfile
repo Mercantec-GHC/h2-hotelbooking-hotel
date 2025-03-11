@@ -13,6 +13,8 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["HotelsWebApp/HotelsWebApp.csproj", "HotelsWebApp/"]
+COPY ["HotelCommons/HotelsCommons.csproj", "HotelCommons/"]
+COPY ["HotelsRazorLibrary/HotelsRazorLibrary.csproj", "HotelsRazorLibrary/"]
 RUN dotnet restore "./HotelsWebApp/HotelsWebApp.csproj"
 COPY . .
 WORKDIR "/src/HotelsWebApp"

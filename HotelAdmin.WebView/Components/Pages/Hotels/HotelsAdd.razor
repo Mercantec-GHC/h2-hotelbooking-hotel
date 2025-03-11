@@ -5,7 +5,7 @@
 
 <PageTitle>Add Hotel</PageTitle>
 
-<Card>
+<Card Class="shadow">
     <EditForm Model="hotelDTO" OnValidSubmit="OnShowModalClick" novalidate>
         <DataAnnotationsValidator />
 
@@ -13,9 +13,7 @@
             <h1>Add Hotel</h1>
         </CardHeader>
         <CardBody>
-            <p>Add Hotel</p>
-
-            <div class="row g-3">
+            <div class="row gy-3 gx-5">
                 <div class="col-12 col-md-6">
                     <div class="mb-3">
                         <label for="nameInput" class="form-label fw-bold">Name:</label>
@@ -24,7 +22,7 @@
                     </div>
                     <div>
                         <label for="descriptionInput" class="form-label fw-bold">Description:</label>
-                        <TextAreaInput @bind-Value="hotelDTO.Description" class="form-control mb-3" Placeholder="Enter Hotel Name" Id="descriptionInput" rows="3"></TextAreaInput>
+                        <TextAreaInput @bind-Value="hotelDTO.Description" Class="form-control mb-3" Placeholder="Enter Hotel Name" Id="descriptionInput" Rows="3"></TextAreaInput>
                         <ValidationMessage For="@(() => hotelDTO.Description)" />
                     </div>
                 </div>

@@ -1,0 +1,94 @@
+﻿@page "/hotel/{Id}"
+
+@inject ApiService ApiService
+@inject NavigationManager NavigationManager
+
+@if(hotel != null)
+{
+    <PageTitle>@hotel.Name</PageTitle>
+
+    <Card Class="shadow">
+        <img class="rounded-top" src="images/hotelhero.jpg" alt="" />
+        <CardHeader>
+            <ul class="nav nav-tabs card-header-tabs">
+                <li class="nav-item">
+                    <button Class="nav-link @(page == "hotel" ? "active" : "")" @onclick="@(() => page = "hotel")">Hotel</button>
+                </li>
+                <li class="nav-item">
+                    <button Class="nav-link @(page == "rooms" ? "active" : "")" @onclick="@(() => page = "rooms")">Rooms</button>
+                </li>
+            </ul>
+        </CardHeader>
+
+        @if(page == "hotel") 
+        {
+            <CardBody Class="border-bottom">
+                <h1>@hotel.Name</h1>
+            </CardBody>
+            <CardBody>
+                <div class="row">
+                    <div class="col">
+                        <h2>@hotel.Description</h2>
+                    </div>
+                    <div class="col">
+                        <Card>
+                            <CardBody>
+                                <h2>@hotel.Country</h2>
+                                <h2>@hotel.Region</h2>
+                                <h2>@hotel.City</h2>
+                                <h2>@hotel.PostalCode</h2>
+                            </CardBody>
+                        </Card>
+                    </div>
+                </div>
+            </CardBody>
+        }
+        else
+        {
+            <CardBody>
+                <div class="row g-3">
+                    @if (hotel != null)
+                    {
+                        @foreach (var room in hotel.Rooms)
+                        {
+                            <div class="col-12 col-sm-6 col-lg-4 col-xxl-3">
+                                <Card Class="selectable h-100">
+                                    <div class="ratio ratio-16x9 overflow-hidden">
+                                        <img src="images/room.jpg" class="card-img-top" alt="" />
+                                    </div>
+                                    <CardHeader class="border-top border-bottom-0">
+                                        <h6>@room.Name</h6>
+                                    </CardHeader>
+                                    <a href="@($"room/{room.Id}")" class="stretched-link"></a>
+                                </Card>
+                            </div>
+                        }
+                    }
+                </div>
+            </CardBody>
+        }
+    </Card>
+}
+
+@code {
+    [Parameter] public string? Id { get; set; }
+    private HotelDTO hotel;
+    private string page = "hotel";
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            hotel = await ApiService.GetHotel(Id);
+            if (hotel == null) NavigationManager.NavigateTo("/");
+            else
+            {
+                StateHasChanged();
+                foreach (var room in hotel.Rooms)
+                {
+                    Console.WriteLine(room);
+                }
+            }
+        }
+    }
+}

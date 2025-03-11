@@ -1,0 +1,56 @@
+﻿@page "/account"
+
+@attribute [Authorize]
+
+@if (page == UserPageEnum.Settings)
+{
+    <PageTitle>User page</PageTitle>
+}
+else if (page == UserPageEnum.Bookings)
+{
+    <PageTitle>My bookings</PageTitle>
+}
+
+
+<Card Class="shadow">
+    <CardHeader>
+        <ul class="nav nav-tabs card-header-tabs">
+            <li class="nav-item">
+                <button Class="nav-link @(page == UserPageEnum.Settings ? "active" : "")" @onclick="@(() => page = UserPageEnum.Settings)">Info</button>
+            </li>
+            <li class="nav-item">
+                <button Class="nav-link @(page == UserPageEnum.Bookings ? "active" : "")" @onclick="@(() => page = UserPageEnum.Bookings)">Bookings</button>
+            </li>
+        </ul>
+    </CardHeader>
+
+    @if (page == UserPageEnum.Settings)
+    {
+        <CardBody Class="border-bottom">
+            <h1>Information</h1>
+        </CardBody>
+        <CardBody>
+            <SettingsComponent />
+        </CardBody>
+    }
+    else if (page == UserPageEnum.Bookings)
+    {
+        <CardBody Class="border-bottom">
+            <h1>Bookings</h1>
+        </CardBody>
+        <CardBody>
+            <BookingsComponent />
+        </CardBody>
+    }
+</Card>
+
+@code {
+    private UserPageEnum page = UserPageEnum.Settings;
+
+    public enum UserPageEnum
+    {
+        Settings,
+        Bookings
+    }
+
+}

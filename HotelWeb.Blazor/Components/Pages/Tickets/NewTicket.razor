@@ -1,0 +1,48 @@
+﻿@page "/newtickets"
+
+@inject ApiService ApiService
+@inject NavigationManager NavigationManager
+@attribute [Authorize]
+
+<PageTitle>New Ticket</PageTitle>
+
+<div class="row justify-content-center">
+    <div class="col col-sm-10 col-md-8 col-lg-7 col-xl-6">
+        <Card Class="shadow">
+            <CardHeader>
+                <h1>Create new ticket</h1>
+            </CardHeader>
+            <CardBody>
+                <EditForm Model="ticket" OnValidSubmit="CreateTicket" novalidate>
+                    <DataAnnotationsValidator />
+                    <div class="mb-3">
+                        <label for="topicInput" class="form-label fw-bold">Topic:</label>
+                        <TextInput @bind-Value="@ticket.Topic" Placeholder="Enter a topic" id="topicInput" />
+                        <ValidationMessage For="@(() => ticket.Topic)" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="messageInput" class="form-label fw-bold">Message:</label>
+                        <TextAreaInput @bind-Value="ticket.Message" class="form-control" Placeholder="Enter a message" id="messageInput" rows="3"></TextAreaInput>
+                        <ValidationMessage For="@(() => ticket.Message)" />
+                    </div>
+
+                    <div class="row justify-content-end">
+                        <div class="col-auto">
+                            <button type="submit" class="btn btn-secondary fw-bold">Create ticket</button>
+                        </div>
+                    </div>
+                </EditForm>
+            </CardBody>
+        </Card>
+    </div>
+</div>
+
+@code {
+    private TicketCreateDTO ticket = new TicketCreateDTO();
+
+    private async Task CreateTicket()
+    {
+        if (await ApiService.CreateTicket(ticket)) NavigationManager.NavigateTo("/tickets");
+    }
+}
