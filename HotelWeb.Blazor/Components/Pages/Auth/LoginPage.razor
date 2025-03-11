@@ -1,0 +1,80 @@
+﻿@page "/Login"
+@using HotelsCommons.Models
+@inject NavigationManager Navigation
+@inject AuthService AuthService
+
+<PageTitle>Login</PageTitle>
+
+<AuthorizeView>
+    <Authorized>
+        @{
+            Navigation.NavigateTo("/");
+        }
+    </Authorized>
+</AuthorizeView>
+
+<div class="row justify-content-center">
+    <div class="col col-sm-8 col-md-7 col-lg-6 col-xl-5">
+        <EditForm Model="LoginDTO" OnValidSubmit="HandleLogin">
+            <DataAnnotationsValidator />
+
+            <Card Class="shadow">
+                <CardHeader>
+                    <h1>Login</h1>
+                </CardHeader>
+                <CardBody>
+                    <div class="mb-3">
+                        <label for="loginInputEmail" class="form-label">Email address</label>
+                        <TextInput @bind-Value="LoginDTO.Email" Placeholder="Enter your email" Id="loginInputEmail" />
+                        <ValidationMessage For="@(() => LoginDTO.Email)" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="loginInputPassword" class="form-label">Password</label>
+                        <PasswordInput @bind-Value="LoginDTO.Password" Placeholder="Enter your Password" Id="loginInputPassword" />
+                        <ValidationMessage For="@(() => LoginDTO.Password)" />
+                    </div>
+                    @if(warningVisible)
+                    {
+                        <div class="validation-message">Incorrect Email or Password!</div>
+                    }
+                </CardBody>
+                <CardFooter>
+                    <div class="d-flex justify-content-center">
+                        <Button Type="ButtonType.Submit"
+                        Color="spinnerVisible ? ButtonColor.Secondary : ButtonColor.Primary"
+                        Loading="spinnerVisible"
+                        Disabled="spinnerVisible"
+                        LoadingText="Logging in"
+                        Style="width: 128px;">
+                            Login
+                        </Button>
+                    </div>
+                </CardFooter>
+            </Card>
+        </EditForm>
+    </div>
+</div>
+
+
+@code {
+    private UserLoginDTO LoginDTO = new UserLoginDTO();
+    private bool warningVisible = false;
+    private bool spinnerVisible = false;
+
+    private async Task HandleLogin()
+    {
+        spinnerVisible = true;
+        var loginResult = await AuthService.Login(LoginDTO);
+        if (loginResult.IsSuccessStatusCode)
+        {
+            Navigation.NavigateTo("/", true);
+        }
+        else 
+        {
+            warningVisible = true;
+        }
+        spinnerVisible = false;
+    }     
+}
+
+

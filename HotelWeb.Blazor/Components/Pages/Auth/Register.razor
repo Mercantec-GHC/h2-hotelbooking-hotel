@@ -1,0 +1,83 @@
+﻿@page "/register"
+@using HotelsCommons.Models
+@inject NavigationManager Navigation
+@inject AuthService AuthService
+
+<div class="row justify-content-center">
+    <div class="col col-sm-8 col-md-7 col-lg-6 col-xl-5">
+        <EditForm Model="RegisterDTO" OnValidSubmit="HandleRegister">
+            <DataAnnotationsValidator />
+
+            <Card Class="shadow">
+                <CardHeader>
+                    <h1>Register</h1>
+                </CardHeader>
+                <CardBody>
+                    <div class="mb-3">
+                        <label for="registerInputFirstName" class="form-label">First name</label>
+                        <TextInput @bind-Value="RegisterDTO.FirstName" Placeholder="Enter your first name" Id="registerInputFirstName" />
+                        <ValidationMessage For="@(() => RegisterDTO.FirstName)" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="registerInputLastName" class="form-label">Last name</label>
+                        <TextInput @bind-Value="RegisterDTO.LastName" Placeholder="Enter your last name" Id="registerInputLastName" />
+                        <ValidationMessage For="@(() => RegisterDTO.LastName)" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="registerInputEmail" class="form-label">Email address</label>
+                        <TextInput @bind-Value="RegisterDTO.Email" Placeholder="Enter your email" Id="registerInputEmail" />
+                        <ValidationMessage For="@(() => RegisterDTO.Email)" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="registerInputPassword" class="form-label">Password</label>
+                        <PasswordInput @bind-Value="RegisterDTO.Password" Placeholder="Enter your Password" Id="registerInputPassword" />
+                        <ValidationMessage For="@(() => RegisterDTO.Password)" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="registerInputPasswordConfirm" class="form-label">Confirm password</label>
+                        <PasswordInput @bind-Value="RegisterDTO.PasswordConfirm" Placeholder="Confirm your Password" Id="registerInputPasswordConfirm" />
+                        <ValidationMessage For="@(() => RegisterDTO.PasswordConfirm)" />
+                    </div>
+                    @if (warningVisible)
+                    {
+                        <div class="validation-message">Incorrect Email or Password!</div>
+                    }
+                </CardBody>
+                <CardFooter>
+                    <div class="d-flex justify-content-center">
+                        <Button Type="ButtonType.Submit"
+                                Color="spinnerVisible ? ButtonColor.Secondary : ButtonColor.Primary"
+                                Loading="spinnerVisible"
+                                Disabled="spinnerVisible"
+                                LoadingText="Registering"
+                                Style="width: 128px;">
+                            Register
+                        </Button>
+                    </div>
+                </CardFooter>
+            </Card>
+        </EditForm>
+    </div>
+</div>
+
+
+@code {
+    private UserCreateDTO RegisterDTO = new UserCreateDTO();
+    private bool warningVisible = false;
+    private bool spinnerVisible = false;
+
+    private async Task HandleRegister()
+    {
+        spinnerVisible = true;
+        var loginResult = await AuthService.Register(RegisterDTO);
+        if (loginResult.IsSuccessStatusCode)
+        {
+            Navigation.NavigateTo("/", true);
+        }
+        else
+        {
+            warningVisible = true;
+        }
+        spinnerVisible = false;
+    }
+}
